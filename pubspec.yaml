@@ -1,0 +1,56 @@
+name: serviko_app
+description: "Serviko mobile application built with Flutter, supporting both customer and provider roles in a unified app. It enables users to discover services, book appointments, make secure payments and communicate in real time via chat, audio and video calls, with AI-powered recommendations and booking assistance."
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.4
+
+# Dependencies
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+# Dev Dependencies
+dev_dependencies:
+  flutter_test:
+    sdk: flutter  
+  flutter_lints: ^6.0.0
+
+# Assets
+flutter:
+  assets:
+    - shorebird.yaml
+  uses-material-design: true
+
+  
+  
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
