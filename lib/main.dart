@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:serviko_app/core/router/app_router.dart';
+import 'package:serviko_app/core/theme/app_theme.dart';
+import 'package:serviko_app/injection_container.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize all dependencies
+  await InjectionContainer.instance.init();
+
+  runApp(const ServikoApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ServikoApp extends StatelessWidget {
+  const ServikoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: "Serviko",
+    return MaterialApp.router(
+      title: 'Serviko',
       debugShowCheckedModeBanner: false,
-      home: Scaffold(body: Center(child: Text("Serviko"))),
+      theme: AppTheme.light,
+      routerConfig: AppRouter.router,
     );
   }
 }
