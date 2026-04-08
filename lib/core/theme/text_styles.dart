@@ -6,7 +6,7 @@ import 'package:serviko_app/core/constants/app_colors.dart';
 abstract final class AppTextStyles {
   static String get _fontFamily => GoogleFonts.poppins().fontFamily!;
 
-  // ── Headings ───
+  // ---- Headings ----
   static TextStyle get h1 => TextStyle(
     fontFamily: _fontFamily,
     fontSize: 28,
@@ -31,7 +31,7 @@ abstract final class AppTextStyles {
     height: 1.4,
   );
 
-  // ── Body ───
+  // ---- Body ----
   static TextStyle get bodyLarge => TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
@@ -56,7 +56,7 @@ abstract final class AppTextStyles {
     height: 1.5,
   );
 
-  // ── Labels / Buttons ───
+  // ---- Labels / Buttons ----
   static TextStyle get labelLarge => TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
@@ -81,7 +81,7 @@ abstract final class AppTextStyles {
     height: 1.4,
   );
 
-  // ── Captions ───
+  // ---- Captions ----
   static TextStyle get caption => TextStyle(
     fontFamily: _fontFamily,
     fontSize: 11,
