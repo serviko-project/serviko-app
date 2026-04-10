@@ -30,6 +30,16 @@ class NetworkFailure extends Failure {
   const NetworkFailure([super.message = 'No internet connection']);
 }
 
+// Failure originating from Firebase Auth.
+class AuthFailure extends Failure {
+  const AuthFailure(super.message, {this.code});
+
+  final String? code;
+
+  @override
+  List<Object?> get props => [message, code];
+}
+
 // Generic Unexpected failure.
 class UnexpectedFailure extends Failure {
   const UnexpectedFailure([super.message = 'An unexpected error occurred']);

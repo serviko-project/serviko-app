@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:serviko_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:serviko_app/core/constants/app_assets.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
-import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
 
-/// Congratulations screen — shown after profile setup is complete.
+// Congratulations screen — shown after profile setup is complete.
 class CongratulationsScreen extends StatelessWidget {
   const CongratulationsScreen({super.key});
 
@@ -61,8 +61,7 @@ class CongratulationsScreen extends StatelessWidget {
               CustomButton(
                 text: 'Get Started',
                 onPressed: () {
-                  // TODO: Mark profile as complete
-                  context.goNamed(AppRouter.home);
+                  context.read<AuthBloc>().add(const AuthProfileCompleted());
                 },
               ),
               const SizedBox(height: AppSizes.xl),

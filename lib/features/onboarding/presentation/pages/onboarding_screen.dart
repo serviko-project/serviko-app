@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:serviko_app/core/constants/app_assets.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
-import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
+import 'package:serviko_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:serviko_app/features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:serviko_app/features/onboarding/presentation/widgets/dot_indicator.dart';
 import 'package:serviko_app/features/onboarding/presentation/widgets/onboarding_page_widget.dart';
@@ -54,20 +53,7 @@ class _OnboardingView extends StatelessWidget {
   const _OnboardingView();
 
   Future<void> _completeOnboarding(BuildContext context) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator.adaptive()),
-    );
-
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!context.mounted) return;
-
-    context.pop(); // Close the dialog
-
-    // Navigate
-    context.goNamed(AppRouter.login);
+    context.read<AuthBloc>().add(const AuthOnboardingCompleted());
   }
 
   @override

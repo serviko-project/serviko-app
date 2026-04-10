@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
-import 'package:serviko_app/core/widgets/back_button_widget.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
 import 'package:serviko_app/features/auth/presentation/cubit/fill_profile_cubit.dart';
@@ -79,8 +78,6 @@ class _FillProfileView extends StatelessWidget {
               children: [
                 const SizedBox(height: AppSizes.xl),
 
-                // ---- Back button ----
-                BackButtonWidget(),
                 const SizedBox(height: AppSizes.xl),
 
                 // ---- Header ----

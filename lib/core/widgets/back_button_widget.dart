@@ -8,7 +8,11 @@ class BackButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.pop(),
+      onTap: () {
+        if (context.canPop()) {
+          context.pop();
+        }
+      },
       child: const Icon(
         Icons.arrow_back_ios_new_rounded,
         size: 20,

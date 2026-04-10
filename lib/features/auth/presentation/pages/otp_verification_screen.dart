@@ -12,22 +12,16 @@ import 'package:serviko_app/features/auth/presentation/cubit/otp_cubit.dart';
 
 // OTP verification screen
 class OtpVerificationScreen extends StatelessWidget {
-  final bool isForgotPassword;
-
-  const OtpVerificationScreen({super.key, this.isForgotPassword = false});
+  const OtpVerificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => OtpCubit(),
-      child: _OtpView(isForgotPassword: isForgotPassword),
-    );
+    return BlocProvider(create: (_) => OtpCubit(), child: _OtpView());
   }
 }
 
 class _OtpView extends StatelessWidget {
-  final bool isForgotPassword;
-  const _OtpView({required this.isForgotPassword});
+  const _OtpView();
 
   void _onVerify(BuildContext context) {
     final cubit = context.read<OtpCubit>();
@@ -38,12 +32,7 @@ class _OtpView extends StatelessWidget {
       return;
     }
 
-    // TODO: Verify OTP with Firebase Auth
-    if (isForgotPassword) {
-      context.pushNamed(AppRouter.createNewPassword);
-    } else {
-      context.pushNamed(AppRouter.fillProfile);
-    }
+    context.pushNamed(AppRouter.createNewPassword);
   }
 
   @override
@@ -98,7 +87,7 @@ class _OtpView extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.md),
               Text(
-                'We have sent an OTP code to your email. '
+                'We have sent an OTP code to your number. '
                 'Enter the OTP code below to verify.',
                 style: GoogleFonts.poppins(
                   fontSize: 14,

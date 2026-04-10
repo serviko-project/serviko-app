@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serviko_app/core/router/go_router_refresh_stream.dart';
+import 'package:serviko_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:serviko_app/features/auth/presentation/pages/address_screen.dart';
 import 'package:serviko_app/features/auth/presentation/pages/congratulations_screen.dart';
+import 'package:serviko_app/features/auth/presentation/pages/choose_reset_method_screen.dart';
 import 'package:serviko_app/features/auth/presentation/pages/create_new_password_screen.dart';
 import 'package:serviko_app/features/auth/presentation/pages/fill_profile_screen.dart';
 import 'package:serviko_app/features/auth/presentation/pages/forgot_password_screen.dart';
@@ -9,6 +12,8 @@ import 'package:serviko_app/features/auth/presentation/pages/otp_verification_sc
 import 'package:serviko_app/features/auth/presentation/pages/reset_success_screen.dart';
 import 'package:serviko_app/features/auth/presentation/pages/sign_in_screen.dart';
 import 'package:serviko_app/features/auth/presentation/pages/sign_up_screen.dart';
+import 'package:serviko_app/features/auth/presentation/pages/splash_screen.dart';
+import 'package:serviko_app/features/home/presentation/pages/home_screen.dart';
 import 'package:serviko_app/features/onboarding/presentation/pages/onboarding_screen.dart';
 
 // App Routes and Paths
@@ -22,7 +27,7 @@ class AppRouter {
   static const String register = 'register';
   static const String otpVerification = 'otpVerification';
   static const String forgotPassword = 'forgotPassword';
-  static const String forgotPasswordOtp = 'forgotPasswordOtp';
+  static const String chooseResetMethod = 'chooseResetMethod';
   static const String createNewPassword = 'createNewPassword';
   static const String resetSuccess = 'resetSuccess';
   static const String fillProfile = 'fillProfile';
@@ -34,12 +39,13 @@ class AppRouter {
   static const String profile = 'profile';
 
   // ---- Route Paths ----
+  static const String _splashPath = '/splash';
   static const String _onboardingPath = '/onboarding';
   static const String _loginPath = '/login';
   static const String _registerPath = '/register';
   static const String _otpVerificationPath = '/otp-verification';
   static const String _forgotPasswordPath = '/forgot-password';
-  static const String _forgotPasswordOtpPath = '/forgot-password-otp';
+  static const String _chooseResetMethodPath = '/choose-reset-method';
   static const String _createNewPasswordPath = '/create-new-password';
   static const String _resetSuccessPath = '/reset-success';
   static const String _fillProfilePath = '/fill-profile';
@@ -50,11 +56,99 @@ class AppRouter {
   static const String _bookingPath = '/booking';
   static const String _profilePath = '/profile';
 
-  // The GoRouter instance
-  static final GoRouter router = GoRouter(
-    initialLocation: _onboardingPath,
+  // Auth-related paths that authenticated users should not see
+  static final Set<String> _authPaths = {
+    _onboardingPath,
+    _loginPath,
+    _registerPath,
+  };
+
+  // Paths that anyone can access without authentication
+  static final Set<String> _publicPaths = {
+    _splashPath,
+    _onboardingPath,
+    _loginPath,
+    _registerPath,
+    _forgotPasswordPath,
+    _chooseResetMethodPath,
+    _otpVerificationPath,
+    _createNewPasswordPath,
+    _resetSuccessPath,
+  };
+
+  // Paths used for profile setup
+  static final Set<String> _profileSetupPaths = {
+    _fillProfilePath,
+    _addressPath,
+    _congratulationsPath,
+  };
+
+  // Router configuration with authentication-based redirection logic
+  static GoRouter router(AuthBloc authBloc) => GoRouter(
+    initialLocation: _splashPath,
     debugLogDiagnostics: true,
+    refreshListenable: GoRouterRefreshStream(authBloc.stream),
+    redirect: (context, state) {
+      final authState = authBloc.state;
+      final currentPath = state.matchedLocation;
+
+      // Loading State
+      if (authState is AuthInitial) {
+        return currentPath == _splashPath ? null : _splashPath;
+      }
+
+      final isAuthenticated = authState is AuthAuthenticated;
+
+      // Unauthenticated user
+      if (!isAuthenticated) {
+        if (!_publicPaths.contains(currentPath)) {
+          return _loginPath;
+        }
+
+        if (authState is AuthUnauthenticated) {
+          final isOnboardingCompleted = authState.isOnboardingCompleted;
+
+          if (isOnboardingCompleted) {
+            if (currentPath == _onboardingPath || currentPath == _splashPath) {
+              return _loginPath;
+            }
+          } else {
+            if (currentPath != _onboardingPath) {
+              return _onboardingPath;
+            }
+          }
+        }
+
+        return null;
+      }
+
+      // --- Authenticated User Logic ---
+      final isNewUser = authState.isNewUser;
+      final isOnAuthPage = _authPaths.contains(currentPath);
+      final isOnProfileSetupPage = _profileSetupPaths.contains(currentPath);
+
+      if (isNewUser) {
+        if (!isOnProfileSetupPage) {
+          return _fillProfilePath;
+        }
+        return null;
+      }
+
+      // Existing user 
+      if (isOnAuthPage || isOnProfileSetupPage || currentPath == _splashPath) {
+        return _homePath;
+      }
+
+      return null;
+    },
     routes: [
+      // ---- Splash ----
+      GoRoute(
+        name: splash,
+        path: _splashPath,
+        builder: (context, state) => const SplashScreen(),
+      ),
+
       // ---- Onboarding ----
       GoRoute(
         name: onboarding,
@@ -84,11 +178,14 @@ class AppRouter {
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
       GoRoute(
-        name: forgotPasswordOtp,
-        path: _forgotPasswordOtpPath,
-        builder: (context, state) =>
-            const OtpVerificationScreen(isForgotPassword: true),
+        name: chooseResetMethod,
+        path: _chooseResetMethodPath,
+        builder: (context, state) {
+          final email = state.extra as String? ?? '';
+          return ChooseResetMethodScreen(email: email);
+        },
       ),
+
       GoRoute(
         name: createNewPassword,
         path: _createNewPasswordPath,
@@ -117,11 +214,11 @@ class AppRouter {
         builder: (context, state) => const CongratulationsScreen(),
       ),
 
-      // ---- Main App (placeholders) ----
+      // ---- Main App ----
       GoRoute(
         name: home,
         path: _homePath,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Home'),
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         name: search,
