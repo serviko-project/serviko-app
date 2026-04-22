@@ -22,7 +22,7 @@ abstract final class AppTheme {
       scaffoldBackgroundColor: AppColors.scaffoldBackground,
       textTheme: GoogleFonts.poppinsTextTheme(),
 
-      // ── AppBar ───
+      // ---- AppBar ----
       appBarTheme: const AppBarTheme(
         elevation: 0,
         centerTitle: false,
@@ -31,7 +31,7 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
       ),
 
-      // ── Elevated Button ───
+      // ---- Elevated Button ----
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
@@ -47,7 +47,7 @@ abstract final class AppTheme {
         ),
       ),
 
-      // ── Outlined Button ───
+      // ---- Outlined Button ----
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
@@ -63,7 +63,7 @@ abstract final class AppTheme {
         ),
       ),
 
-      // ── Text Button ───
+      // ---- Text Button ----
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
@@ -74,7 +74,7 @@ abstract final class AppTheme {
         ),
       ),
 
-      // ── Input Decoration ───
+      // ---- Input Decoration ----
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.background,
@@ -101,7 +101,7 @@ abstract final class AppTheme {
         ),
       ),
 
-      // ── Card ───
+      // ---- Card ----
       cardTheme: CardThemeData(
         color: AppColors.background,
         elevation: 0,
@@ -112,7 +112,7 @@ abstract final class AppTheme {
         margin: EdgeInsets.zero,
       ),
 
-      // ── Bottom Navigation Bar ───
+      // ---- Bottom Navigation Bar ----
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.background,
         selectedItemColor: AppColors.primary,
@@ -121,7 +121,7 @@ abstract final class AppTheme {
         elevation: 8,
       ),
 
-      // ── Divider ───
+      // ---- Divider ----
       dividerTheme: const DividerThemeData(
         color: AppColors.divider,
         thickness: 1,

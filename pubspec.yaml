@@ -1,6 +1,10 @@
 name: serviko_app
-description: "Serviko mobile application built with Flutter, supporting both customer and provider roles in a unified app. It enables users to discover services, book appointments, make secure payments and communicate in real time via chat, audio and video calls, with AI-powered recommendations and booking assistance."
-publish_to: 'none' 
+description: "Serviko mobile application built with Flutter, supporting both
+  customer and provider roles in a unified app. It enables users to discover
+  services, book appointments, make secure payments and communicate in real time
+  via chat, audio and video calls, with AI-powered recommendations and booking
+  assistance."
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
@@ -8,27 +12,33 @@ environment:
 
 # Dependencies
 dependencies:
-  flutter:
-    sdk: flutter
+  cached_network_image: ^3.4.1
   cupertino_icons: ^1.0.8
-  flutter_bloc: ^9.1.1
-  go_router: ^17.2.0
-  equatable: ^2.0.8
   dartz: ^0.10.1
   dio: ^5.9.2
-  google_fonts: ^8.0.2
-  shared_preferences: ^2.5.5
+  equatable: ^2.0.8
+  firebase_auth: ^6.3.0
+  firebase_core: ^4.6.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
   flutter_svg: ^2.2.4
-  cached_network_image: ^3.4.1
+  go_router: ^17.2.0
+  google_fonts: ^8.0.2
+  google_sign_in: ^7.2.0
   internet_connection_checker_plus: ^2.9.1+2
   json_annotation: ^4.11.0
+  lottie: ^3.3.2
+  pinput: ^6.0.2
+  shared_preferences: ^2.5.5
 
 # Dev Dependencies
 dev_dependencies:
-  flutter_test:
-    sdk: flutter  
-  flutter_lints: ^6.0.0
   build_runner: ^2.13.1
+  flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.6
+  flutter_test:
+    sdk: flutter
   json_serializable: ^6.13.1
 
 # Assets & Flutter config
@@ -37,5 +47,16 @@ flutter:
   assets:
     - shorebird.yaml
     - assets/images/
+    - assets/images/social_media_icons/
+    - assets/lottie/
+    - assets/lottie/onboarding/
     - assets/icons/
     - assets/svg/
+
+# ---- Native Splash Configuration ----
+flutter_native_splash:
+  color: "#6C3CE1"
+  image: assets/images/app_logo_splash.png
+  android_12:
+    color: "#6C3CE1"
+    image: assets/images/app_logo_splash.png

@@ -1,6 +1,16 @@
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:serviko_app/core/network/api_client.dart';
 import 'package:serviko_app/core/network/network_info.dart';
+import 'package:serviko_app/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:serviko_app/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:serviko_app/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:serviko_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:serviko_app/features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:serviko_app/features/auth/domain/usecases/get_current_user_usecase.dart';
+import 'package:serviko_app/features/auth/domain/usecases/google_sign_in_usecase.dart';
+import 'package:serviko_app/features/auth/domain/usecases/sign_in_usecase.dart';
+import 'package:serviko_app/features/auth/domain/usecases/sign_out_usecase.dart';
+import 'package:serviko_app/features/auth/domain/usecases/sign_up_usecase.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -12,10 +22,37 @@ class InjectionContainer {
   late final ApiClient apiClient;
   late final NetworkInfo networkInfo;
 
+  // Auth
+  late final AuthLocalDataSource authLocalDataSource;
+  late final AuthRemoteDataSource authRemoteDataSource;
+  late final AuthRepository authRepository;
+  late final SignInUseCase signInUseCase;
+  late final SignUpUseCase signUpUseCase;
+  late final GoogleSignInUseCase googleSignInUseCase;
+  late final ForgotPasswordUseCase forgotPasswordUseCase;
+  late final SignOutUseCase signOutUseCase;
+  late final GetCurrentUserUseCase getCurrentUserUseCase;
+
   // Initialise
   Future<void> init() async {
     // Core
     apiClient = ApiClient();
     networkInfo = NetworkInfoImpl(InternetConnection());
+
+    // Auth - Data
+    authLocalDataSource = AuthLocalDataSourceImpl();
+    authRemoteDataSource = AuthRemoteDataSourceImpl();
+    authRepository = AuthRepositoryImpl(
+      remoteDataSource: authRemoteDataSource,
+      localDataSource: authLocalDataSource,
+    );
+
+    // Auth - Use Cases
+    signInUseCase = SignInUseCase(authRepository);
+    signUpUseCase = SignUpUseCase(authRepository);
+    googleSignInUseCase = GoogleSignInUseCase(authRepository);
+    forgotPasswordUseCase = ForgotPasswordUseCase(authRepository);
+    signOutUseCase = SignOutUseCase(authRepository);
+    getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
   }
 }
