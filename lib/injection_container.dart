@@ -11,6 +11,12 @@ import 'package:serviko_app/features/auth/domain/usecases/google_sign_in_usecase
 import 'package:serviko_app/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:serviko_app/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:serviko_app/features/auth/domain/usecases/sign_up_usecase.dart';
+import 'package:serviko_app/features/profile/data/datasources/profile_remote_datasource.dart';
+import 'package:serviko_app/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:serviko_app/features/profile/domain/repositories/profile_repository.dart';
+import 'package:serviko_app/features/profile/domain/usecases/create_profile_usecase.dart';
+import 'package:serviko_app/features/profile/domain/usecases/get_my_profile_usecase.dart';
+import 'package:serviko_app/features/profile/domain/usecases/update_profile_usecase.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -33,6 +39,13 @@ class InjectionContainer {
   late final SignOutUseCase signOutUseCase;
   late final GetCurrentUserUseCase getCurrentUserUseCase;
 
+  // Profile
+  late final ProfileRemoteDataSource profileRemoteDataSource;
+  late final UserProfileRepository userProfileRepository;
+  late final CreateUserProfileUseCase createUserProfileUseCase;
+  late final GetMyProfileUseCase getMyProfileUseCase;
+  late final UpdateProfileUseCase updateProfileUseCase;
+
   // Initialise
   Future<void> init() async {
     // Core
@@ -54,5 +67,17 @@ class InjectionContainer {
     forgotPasswordUseCase = ForgotPasswordUseCase(authRepository);
     signOutUseCase = SignOutUseCase(authRepository);
     getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
+
+    // Profile - Data
+    profileRemoteDataSource = ProfileRemoteDataSourceImpl(apiClient: apiClient);
+    userProfileRepository = UserUserProfileRepositoryImpl(
+      remoteDataSource: profileRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+
+    // Profile - Use Cases
+    createUserProfileUseCase = CreateUserProfileUseCase(userProfileRepository);
+    getMyProfileUseCase = GetMyProfileUseCase(userProfileRepository);
+    updateProfileUseCase = UpdateProfileUseCase(userProfileRepository);
   }
 }

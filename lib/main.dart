@@ -35,7 +35,10 @@ class _ServikoAppState extends State<ServikoApp> {
   void initState() {
     super.initState();
     final di = InjectionContainer.instance;
-    _authBloc = AuthBloc(repository: di.authRepository);
+    _authBloc = AuthBloc(
+      repository: di.authRepository,
+      getMyProfileUseCase: di.getMyProfileUseCase,
+    );
     _authBloc.add(const AuthCheckRequested());
     _router = AppRouter.router(_authBloc);
   }
