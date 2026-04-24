@@ -9,31 +9,35 @@ import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/back_button_widget.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
 import 'package:serviko_app/features/auth/presentation/cubit/otp_cubit.dart';
+import 'package:serviko_app/features/auth/presentation/models/password_recovery_flow_args.dart';
+import 'package:serviko_app/injection_container.dart';
 
 // OTP verification screen
 class OtpVerificationScreen extends StatelessWidget {
-  const OtpVerificationScreen({super.key});
+  final OtpVerificationArgs args;
+
+  const OtpVerificationScreen({super.key, required this.args});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (_) => OtpCubit(), child: _OtpView());
+    return BlocProvider(
+      create: (_) => OtpCubit(
+        verifyPhoneResetOtpUseCase:
+            InjectionContainer.instance.verifyPhoneResetOtpUseCase,
+        startPhoneResetOtpUseCase:
+            InjectionContainer.instance.startPhoneResetOtpUseCase,
+        initialSessionId: args.sessionId,
+        initialCooldownSeconds: args.resendCooldownSeconds,
+      ),
+      child: _OtpView(args: args),
+    );
   }
 }
 
 class _OtpView extends StatelessWidget {
-  const _OtpView();
+  final OtpVerificationArgs args;
 
-  void _onVerify(BuildContext context) {
-    final cubit = context.read<OtpCubit>();
-    if (cubit.otpController.text.length < 4) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter the complete OTP')),
-      );
-      return;
-    }
-
-    context.pushNamed(AppRouter.createNewPassword);
-  }
+  const _OtpView({required this.args});
 
   @override
   Widget build(BuildContext context) {
@@ -62,85 +66,131 @@ class _OtpView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSizes.screenPadding,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: AppSizes.xl),
+      body: BlocListener<OtpCubit, OtpState>(
+        listenWhen: (previous, current) =>
+            previous.error != current.error ||
+            previous.verificationToken != current.verificationToken,
+        listener: (context, state) {
+          final cubit = context.read<OtpCubit>();
 
-              // ---- Back button ----
-              BackButtonWidget(),
-              const SizedBox(height: AppSizes.xl),
-
-              // ---- Header ----
-              Text(
-                'OTP Code Verification 📱',
-                style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+          if (state.error != null) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(state.error!),
+                  backgroundColor: AppColors.error,
                 ),
-              ),
-              const SizedBox(height: AppSizes.md),
-              Text(
-                'We have sent an OTP code to your number. '
-                'Enter the OTP code below to verify.',
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: AppSizes.xxl),
+              );
+            cubit.clearError();
+          }
 
-              // ---- OTP Input ----
-              Center(
-                child: Pinput(
-                  controller: cubit.otpController,
-                  length: 4,
-                  defaultPinTheme: defaultPinTheme,
-                  focusedPinTheme: focusedPinTheme,
-                  submittedPinTheme: focusedPinTheme,
-                  showCursor: true,
-                  onCompleted: (pin) => _onVerify(context),
-                ),
+          final verificationToken = state.verificationToken;
+          if (verificationToken != null && verificationToken.isNotEmpty) {
+            context.pushNamed(
+              AppRouter.createNewPassword,
+              extra: CreateNewPasswordArgs(
+                email: args.email,
+                verificationToken: verificationToken,
               ),
-              const SizedBox(height: AppSizes.xl),
+            );
+            cubit.clearVerificationToken();
+          }
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.screenPadding,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: AppSizes.xl),
 
-              // ---- Resend ----
-              BlocBuilder<OtpCubit, OtpState>(
-                builder: (context, state) {
-                  return Center(
-                    child: state.canResend
-                        ? GestureDetector(
-                            onTap: cubit.resendOtp,
-                            child: Text(
-                              "Didn't receive code? Resend",
+                // ---- Back button ----
+                BackButtonWidget(),
+                const SizedBox(height: AppSizes.xl),
+
+                // ---- Header ----
+                Text(
+                  'OTP Code Verification 📱',
+                  style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSizes.md),
+                Text(
+                  'We sent an OTP to ${args.maskedPhone ?? 'your phone number'}. '
+                  'Enter the code below to continue.',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: AppSizes.xxl),
+
+                // ---- OTP Input ----
+                Center(
+                  child: Pinput(
+                    controller: cubit.otpController,
+                    length: 4,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: focusedPinTheme,
+                    submittedPinTheme: focusedPinTheme,
+                    showCursor: true,
+                    onCompleted: (_) => cubit.verifyOtp(email: args.email),
+                  ),
+                ),
+                const SizedBox(height: AppSizes.xl),
+
+                // ---- Resend ----
+                BlocBuilder<OtpCubit, OtpState>(
+                  builder: (context, state) {
+                    return Center(
+                      child: state.canResend
+                          ? GestureDetector(
+                              onTap: state.isResending
+                                  ? null
+                                  : () => cubit.resendOtp(email: args.email),
+                              child: Text(
+                                state.isResending
+                                    ? 'Resending OTP...'
+                                    : "Didn't receive code? Resend",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              'You can resend code in ${state.secondsRemaining}s',
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
+                                color: AppColors.textSecondary,
                               ),
                             ),
-                          )
-                        : Text(
-                            'You can resend code in ${state.secondsRemaining}s',
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                  );
-                },
-              ),
-              const SizedBox(height: AppSizes.xxl),
+                    );
+                  },
+                ),
+                const SizedBox(height: AppSizes.xxl),
 
-              // ---- Verify Button ----
-              CustomButton(text: 'Verify', onPressed: () => _onVerify(context)),
-            ],
+                // ---- Verify Button ----
+                BlocBuilder<OtpCubit, OtpState>(
+                  builder: (context, state) {
+                    return CustomButton(
+                      text: 'Verify',
+                      isLoading: state.isVerifying,
+                      onPressed: state.isVerifying
+                          ? null
+                          : () => cubit.verifyOtp(email: args.email),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -13,6 +13,7 @@ import 'package:serviko_app/features/auth/presentation/pages/reset_success_scree
 import 'package:serviko_app/features/auth/presentation/pages/sign_in_screen.dart';
 import 'package:serviko_app/features/auth/presentation/pages/sign_up_screen.dart';
 import 'package:serviko_app/features/auth/presentation/pages/splash_screen.dart';
+import 'package:serviko_app/features/auth/presentation/models/password_recovery_flow_args.dart';
 import 'package:serviko_app/features/home/presentation/pages/home_screen.dart';
 import 'package:serviko_app/features/onboarding/presentation/pages/onboarding_screen.dart';
 
@@ -170,7 +171,9 @@ class AppRouter {
       GoRoute(
         name: otpVerification,
         path: _otpVerificationPath,
-        builder: (context, state) => const OtpVerificationScreen(),
+        builder: (context, state) => OtpVerificationScreen(
+          args: state.extra as OtpVerificationArgs,
+        ),
       ),
       GoRoute(
         name: forgotPassword,
@@ -180,16 +183,17 @@ class AppRouter {
       GoRoute(
         name: chooseResetMethod,
         path: _chooseResetMethodPath,
-        builder: (context, state) {
-          final email = state.extra as String? ?? '';
-          return ChooseResetMethodScreen(email: email);
-        },
+        builder: (context, state) => ChooseResetMethodScreen(
+          args: state.extra as ChooseResetMethodArgs,
+        ),
       ),
 
       GoRoute(
         name: createNewPassword,
         path: _createNewPasswordPath,
-        builder: (context, state) => const CreateNewPasswordScreen(),
+        builder: (context, state) => CreateNewPasswordScreen(
+          args: state.extra as CreateNewPasswordArgs,
+        ),
       ),
       GoRoute(
         name: resetSuccess,

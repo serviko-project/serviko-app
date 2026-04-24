@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/core/utils/form_validators.dart';
 import 'package:serviko_app/features/auth/presentation/cubit/fill_profile_cubit.dart';
 
 // Gender Selection Widget
@@ -69,12 +70,8 @@ class GenderSelectionWidget extends StatelessWidget {
             return DropdownMenuItem(value: gender, child: Text(gender));
           }).toList(),
           onChanged: (value) => cubit.updateGender(value),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please select your gender';
-            }
-            return null;
-          },
+          validator: (value) =>
+              FormValidators.validateRequired(value, 'gender'),
         );
       },
     );

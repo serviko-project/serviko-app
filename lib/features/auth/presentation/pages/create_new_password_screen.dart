@@ -8,160 +8,155 @@ import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/back_button_widget.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
+import 'package:serviko_app/core/utils/form_validators.dart';
 import 'package:serviko_app/features/auth/presentation/cubit/create_new_password_cubit.dart';
+import 'package:serviko_app/features/auth/presentation/models/password_recovery_flow_args.dart';
+import 'package:serviko_app/injection_container.dart';
 
 // Create new password screen
 class CreateNewPasswordScreen extends StatelessWidget {
-  const CreateNewPasswordScreen({super.key});
+  final CreateNewPasswordArgs args;
+
+  const CreateNewPasswordScreen({super.key, required this.args});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => CreateNewPasswordCubit(),
-      child: const _CreateNewPasswordView(),
+      create: (_) => CreateNewPasswordCubit(
+        resetPasswordWithPhoneOtpUseCase:
+            InjectionContainer.instance.resetPasswordWithPhoneOtpUseCase,
+      ),
+      child: _CreateNewPasswordView(args: args),
     );
   }
 }
 
 class _CreateNewPasswordView extends StatelessWidget {
-  const _CreateNewPasswordView();
+  final CreateNewPasswordArgs args;
+
+  const _CreateNewPasswordView({required this.args});
 
   void _onContinue(BuildContext context) {
     final cubit = context.read<CreateNewPasswordCubit>();
-    if (!(cubit.formKey.currentState?.validate() ?? false)) return;
-
-    // TODO: Update password with Firebase Auth
-    context.pushNamed(AppRouter.resetSuccess);
+    cubit.submitResetPassword(
+      email: args.email,
+      verificationToken: args.verificationToken,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<CreateNewPasswordCubit>();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSizes.screenPadding,
-          ),
-          child: Form(
-            key: cubit.formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: AppSizes.xl),
+    return BlocListener<CreateNewPasswordCubit, CreateNewPasswordState>(
+      listenWhen: (prev, curr) =>
+          prev.error != curr.error || prev.isSuccess != curr.isSuccess,
+      listener: (context, state) {
+        if (state.error != null) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(state.error!),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          cubit.clearError();
+        }
 
-                // ---- Back button ----
-                BackButtonWidget(),
-                const SizedBox(height: AppSizes.xl),
+        if (state.isSuccess) {
+          context.goNamed(AppRouter.resetSuccess);
+          cubit.clearSuccessFlag();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.screenPadding,
+            ),
+            child: Form(
+              key: cubit.formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: AppSizes.xl),
 
-                // ---- Header ----
-                Text(
-                  'Create New Password 🔐',
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                  // ---- Back button ----
+                  BackButtonWidget(),
+                  const SizedBox(height: AppSizes.xl),
+
+                  // ---- Header ----
+                  Text(
+                    'Create New Password 🔐',
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSizes.md),
-                Text(
-                  'Create your new password. If you forget it, '
-                  'you can reset it again.',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
+                  const SizedBox(height: AppSizes.md),
+                  Text(
+                    'Create your new password. If you forget it, '
+                    'you can reset it again.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSizes.xl),
+                  const SizedBox(height: AppSizes.xl),
 
-                // ---- New Password ----
-                CustomTextField(
-                  hintText: 'New Password',
-                  controller: cubit.passwordController,
-                  focusNode: cubit.passwordFocusNode,
-                  isPassword: true,
-                  textInputAction: TextInputAction.next,
-                  prefixIcon: const Icon(
-                    Icons.lock_outline_rounded,
-                    color: AppColors.textHint,
-                    size: 20,
+                  // ---- New Password ----
+                  CustomTextField(
+                    hintText: 'New Password',
+                    controller: cubit.passwordController,
+                    focusNode: cubit.passwordFocusNode,
+                    isPassword: true,
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: const Icon(
+                      Icons.lock_outline_rounded,
+                      color: AppColors.textHint,
+                      size: 20,
+                    ),
+                    validator: FormValidators.validatePassword,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: AppSizes.md),
+                  const SizedBox(height: AppSizes.md),
 
-                // ---- Confirm Password ----
-                CustomTextField(
-                  hintText: 'Confirm Password',
-                  controller: cubit.confirmPasswordController,
-                  focusNode: cubit.confirmPasswordFocusNode,
-                  isPassword: true,
-                  textInputAction: TextInputAction.done,
-                  prefixIcon: const Icon(
-                    Icons.lock_outline_rounded,
-                    color: AppColors.textHint,
-                    size: 20,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
-                    }
-                    if (value != cubit.passwordController.text.trim()) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: AppSizes.lg),
-
-                // ---- Remember me ----
-                BlocBuilder<CreateNewPasswordCubit, CreateNewPasswordState>(
-                  builder: (context, state) {
-                    return Row(
-                      children: [
-                        SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: Checkbox(
-                            value: state.rememberMe,
-                            onChanged: (v) =>
-                                cubit.toggleRememberMe(v ?? false),
-                            activeColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
+                  // ---- Confirm Password ----
+                  CustomTextField(
+                    hintText: 'Confirm Password',
+                    controller: cubit.confirmPasswordController,
+                    focusNode: cubit.confirmPasswordFocusNode,
+                    isPassword: true,
+                    textInputAction: TextInputAction.done,
+                    prefixIcon: const Icon(
+                      Icons.lock_outline_rounded,
+                      color: AppColors.textHint,
+                      size: 20,
+                    ),
+                    validator: (value) =>
+                        FormValidators.validateConfirmPassword(
+                          cubit.passwordController.text.trim(),
+                          value,
                         ),
-                        const SizedBox(width: AppSizes.sm),
-                        Text(
-                          'Remember me',
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: AppSizes.xl),
+                  ),
+                  const SizedBox(height: AppSizes.xxl),
 
-                // ---- Continue Button ----
-                CustomButton(
-                  text: 'Continue',
-                  onPressed: () => _onContinue(context),
-                ),
-              ],
+                  // ---- Continue Button ----
+                  BlocBuilder<CreateNewPasswordCubit, CreateNewPasswordState>(
+                    builder: (context, state) {
+                      return CustomButton(
+                        text: 'Continue',
+                        isLoading: state.isLoading,
+                        onPressed: state.isLoading
+                            ? null
+                            : () => _onContinue(context),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
