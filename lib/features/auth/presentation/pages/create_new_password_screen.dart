@@ -8,6 +8,7 @@ import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/back_button_widget.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
+import 'package:serviko_app/core/utils/form_validators.dart';
 import 'package:serviko_app/features/auth/presentation/cubit/create_new_password_cubit.dart';
 import 'package:serviko_app/features/auth/presentation/models/password_recovery_flow_args.dart';
 import 'package:serviko_app/injection_container.dart';
@@ -118,15 +119,7 @@ class _CreateNewPasswordView extends StatelessWidget {
                       color: AppColors.textHint,
                       size: 20,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
+                    validator: FormValidators.validatePassword,
                   ),
                   const SizedBox(height: AppSizes.md),
 
@@ -142,15 +135,11 @@ class _CreateNewPasswordView extends StatelessWidget {
                       color: AppColors.textHint,
                       size: 20,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
-                      }
-                      if (value != cubit.passwordController.text.trim()) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        FormValidators.validateConfirmPassword(
+                          cubit.passwordController.text.trim(),
+                          value,
+                        ),
                   ),
                   const SizedBox(height: AppSizes.xxl),
 

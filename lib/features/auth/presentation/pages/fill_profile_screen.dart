@@ -7,6 +7,7 @@ import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
+import 'package:serviko_app/core/utils/form_validators.dart';
 import 'package:serviko_app/features/auth/presentation/cubit/fill_profile_cubit.dart';
 import 'package:serviko_app/features/auth/presentation/widgets/gender_selection_widget.dart';
 import 'package:serviko_app/features/auth/presentation/widgets/profile_image_picker_widget.dart';
@@ -133,12 +134,8 @@ class _FillProfileView extends StatelessWidget {
               color: AppColors.textHint,
               size: 20,
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your name';
-              }
-              return null;
-            },
+            validator: (value) =>
+                FormValidators.validateRequired(value, 'full name'),
           ),
           const SizedBox(height: AppSizes.md),
 
@@ -173,16 +170,7 @@ class _FillProfileView extends StatelessWidget {
               color: AppColors.textHint,
               size: 20,
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return null;
-              }
-              final phoneRegex = RegExp(r'^\d{10}$');
-              if (!phoneRegex.hasMatch(value)) {
-                return 'Enter a valid 10-digit number';
-              }
-              return null;
-            },
+            validator: FormValidators.validatePhone,
           ),
           const SizedBox(height: AppSizes.xl),
 

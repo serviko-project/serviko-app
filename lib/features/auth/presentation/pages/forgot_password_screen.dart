@@ -8,6 +8,7 @@ import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/back_button_widget.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
+import 'package:serviko_app/core/utils/form_validators.dart';
 import 'package:serviko_app/features/auth/presentation/cubit/forgot_password_cubit.dart';
 import 'package:serviko_app/features/auth/presentation/models/password_recovery_flow_args.dart';
 import 'package:serviko_app/injection_container.dart';
@@ -112,21 +113,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                           color: AppColors.textHint,
                           size: 20,
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-
-                          final emailRegex = RegExp(
-                            r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                          );
-
-                          if (!emailRegex.hasMatch(value.trim())) {
-                            return 'Please enter a valid email';
-                          }
-
-                          return null;
-                        },
+                        validator: FormValidators.validateEmail,
                       ),
 
                       const Spacer(),

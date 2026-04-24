@@ -8,6 +8,7 @@ import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
+import 'package:serviko_app/core/utils/form_validators.dart';
 import 'package:serviko_app/core/widgets/social_login_buttons.dart';
 import 'package:serviko_app/features/auth/presentation/cubit/sign_in_cubit.dart';
 import 'package:serviko_app/features/auth/presentation/widgets/forgot_password_section.dart';
@@ -108,21 +109,7 @@ class _SignInView extends StatelessWidget {
                         color: AppColors.textHint,
                         size: 20,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-
-                        final emailRegex = RegExp(
-                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                        );
-
-                        if (!emailRegex.hasMatch(value.trim())) {
-                          return 'Please enter a valid email';
-                        }
-
-                        return null;
-                      },
+                      validator: FormValidators.validateEmail,
                     ),
                     const SizedBox(height: AppSizes.md),
 
@@ -138,15 +125,7 @@ class _SignInView extends StatelessWidget {
                         color: AppColors.textHint,
                         size: 20,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
+                      validator: FormValidators.validatePassword,
                     ),
                     const SizedBox(height: AppSizes.md),
 
