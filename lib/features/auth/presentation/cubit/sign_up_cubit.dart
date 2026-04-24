@@ -1,38 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:serviko_app/features/auth/domain/entities/user_entity.dart';
 import 'package:serviko_app/features/auth/domain/usecases/sign_up_usecase.dart';
-
-// Sign-up form state
-class SignUpState extends Equatable {
-  final bool agreeToTerms;
-  final bool isLoading;
-  final String? error;
-  final UserEntity? user;
-
-  const SignUpState({
-    this.agreeToTerms = false,
-    this.isLoading = false,
-    this.error,
-    this.user,
-  });
-
-  SignUpState copyWith({
-    bool? agreeToTerms,
-    bool? isLoading,
-    String? error,
-    UserEntity? user,
-  }) => SignUpState(
-    agreeToTerms: agreeToTerms ?? this.agreeToTerms,
-    isLoading: isLoading ?? this.isLoading,
-    error: error,
-    user: user,
-  );
-
-  @override
-  List<Object?> get props => [agreeToTerms, isLoading, error, user];
-}
+part 'sign_up_state.dart';
 
 // Manages sign-up form state and Firebase auth
 class SignUpCubit extends Cubit<SignUpState> {

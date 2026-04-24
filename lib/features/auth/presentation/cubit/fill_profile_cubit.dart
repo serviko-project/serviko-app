@@ -2,36 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/features/profile/domain/entities/profile_entity.dart';
 import 'package:serviko_app/features/profile/domain/usecases/create_profile_usecase.dart';
-
-// Fill profile submission status
-enum FillProfileStatus { idle, submitting, success, error }
-
-// Fill profile form state
-class FillProfileState {
-  final String? gender;
-  final FillProfileStatus status;
-  final String? errorMessage;
-  final UserProfileEntity? profile;
-
-  const FillProfileState({
-    this.gender,
-    this.status = FillProfileStatus.idle,
-    this.errorMessage,
-    this.profile,
-  });
-
-  FillProfileState copyWith({
-    String? gender,
-    FillProfileStatus? status,
-    String? errorMessage,
-    UserProfileEntity? profile,
-  }) => FillProfileState(
-    gender: gender ?? this.gender,
-    status: status ?? this.status,
-    errorMessage: errorMessage,
-    profile: profile ?? this.profile,
-  );
-}
+part 'fill_profile_state.dart';
 
 // Cubit for managing fill profile form state and submission
 class FillProfileCubit extends Cubit<FillProfileState> {

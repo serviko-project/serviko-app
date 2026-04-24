@@ -1,30 +1,9 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/features/auth/domain/entities/user_entity.dart';
 import 'package:serviko_app/features/auth/domain/usecases/google_sign_in_usecase.dart';
 import 'package:serviko_app/core/usecases/usecase.dart';
-
-// Google sign-in state
-class GoogleSignInState extends Equatable {
-  final bool isLoading;
-  final String? error;
-  final UserEntity? user;
-
-  const GoogleSignInState({this.isLoading = false, this.error, this.user});
-
-  GoogleSignInState copyWith({
-    bool? isLoading,
-    String? error,
-    UserEntity? user,
-  }) => GoogleSignInState(
-    isLoading: isLoading ?? this.isLoading,
-    error: error,
-    user: user,
-  );
-
-  @override
-  List<Object?> get props => [isLoading, error, user];
-}
+part 'google_sign_in_state.dart';
 
 // Manages Google sign-in flow
 class GoogleSignInCubit extends Cubit<GoogleSignInState> {
