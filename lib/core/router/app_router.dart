@@ -15,6 +15,7 @@ import 'package:serviko_app/features/auth/presentation/pages/sign_up_screen.dart
 import 'package:serviko_app/features/auth/presentation/pages/splash_screen.dart';
 import 'package:serviko_app/features/auth/presentation/models/password_recovery_flow_args.dart';
 import 'package:serviko_app/features/home/presentation/pages/home_screen.dart';
+import 'package:serviko_app/features/main/presentation/pages/main_screen.dart';
 import 'package:serviko_app/features/onboarding/presentation/pages/onboarding_screen.dart';
 
 // App Routes and Paths
@@ -35,9 +36,11 @@ class AppRouter {
   static const String address = 'address';
   static const String congratulations = 'congratulations';
   static const String home = 'home';
-  static const String search = 'search';
   static const String booking = 'booking';
+  static const String calendar = 'calendar';
+  static const String inbox = 'inbox';
   static const String profile = 'profile';
+  static const String search = 'search';
 
   // ---- Route Paths ----
   static const String _splashPath = '/splash';
@@ -53,9 +56,11 @@ class AppRouter {
   static const String _addressPath = '/address';
   static const String _congratulationsPath = '/congratulations';
   static const String _homePath = '/home';
-  static const String _searchPath = '/search';
   static const String _bookingPath = '/booking';
+  static const String _calendarPath = '/calendar';
+  static const String _inboxPath = '/inbox';
   static const String _profilePath = '/profile';
+  static const String _searchPath = '/search';
 
   // Auth-related paths that authenticated users should not see
   static final Set<String> _authPaths = {
@@ -171,9 +176,8 @@ class AppRouter {
       GoRoute(
         name: otpVerification,
         path: _otpVerificationPath,
-        builder: (context, state) => OtpVerificationScreen(
-          args: state.extra as OtpVerificationArgs,
-        ),
+        builder: (context, state) =>
+            OtpVerificationScreen(args: state.extra as OtpVerificationArgs),
       ),
       GoRoute(
         name: forgotPassword,
@@ -183,17 +187,15 @@ class AppRouter {
       GoRoute(
         name: chooseResetMethod,
         path: _chooseResetMethodPath,
-        builder: (context, state) => ChooseResetMethodScreen(
-          args: state.extra as ChooseResetMethodArgs,
-        ),
+        builder: (context, state) =>
+            ChooseResetMethodScreen(args: state.extra as ChooseResetMethodArgs),
       ),
 
       GoRoute(
         name: createNewPassword,
         path: _createNewPasswordPath,
-        builder: (context, state) => CreateNewPasswordScreen(
-          args: state.extra as CreateNewPasswordArgs,
-        ),
+        builder: (context, state) =>
+            CreateNewPasswordScreen(args: state.extra as CreateNewPasswordArgs),
       ),
       GoRoute(
         name: resetSuccess,
@@ -219,25 +221,66 @@ class AppRouter {
       ),
 
       // ---- Main App ----
-      GoRoute(
-        name: home,
-        path: _homePath,
-        builder: (context, state) => const HomeScreen(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: home,
+                path: _homePath,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: booking,
+                path: _bookingPath,
+                builder: (context, state) =>
+                    const _PlaceholderScreen(title: 'Bookings'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: calendar,
+                path: _calendarPath,
+                builder: (context, state) =>
+                    const _PlaceholderScreen(title: 'Calendar'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: inbox,
+                path: _inboxPath,
+                builder: (context, state) =>
+                    const _PlaceholderScreen(title: 'Inbox'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: profile,
+                path: _profilePath,
+                builder: (context, state) =>
+                    const _PlaceholderScreen(title: 'Profile'),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         name: search,
         path: _searchPath,
         builder: (context, state) => const _PlaceholderScreen(title: 'Search'),
-      ),
-      GoRoute(
-        name: booking,
-        path: _bookingPath,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Booking'),
-      ),
-      GoRoute(
-        name: profile,
-        path: _profilePath,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Profile'),
       ),
     ],
   );
@@ -252,9 +295,8 @@ class _PlaceholderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
       body: Center(
-        child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+        child: Text(title, style: Theme.of(context).textTheme.headlineSmall),
       ),
     );
   }
