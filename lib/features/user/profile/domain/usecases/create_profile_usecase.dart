@@ -10,7 +10,7 @@ class CreateUserProfileUseCase
     extends UseCase<UserProfileEntity, CreateProfileParams> {
   final UserProfileRepository _repository;
 
-CreateUserProfileUseCase(this._repository);
+  CreateUserProfileUseCase(this._repository);
 
   @override
   Future<Either<Failure, UserProfileEntity>> call(CreateProfileParams params) {

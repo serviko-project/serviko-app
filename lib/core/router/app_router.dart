@@ -17,6 +17,10 @@ import 'package:serviko_app/features/user/auth/presentation/models/password_reco
 import 'package:serviko_app/features/user/home/presentation/pages/home_screen.dart';
 import 'package:serviko_app/features/user/main/presentation/pages/main_screen.dart';
 import 'package:serviko_app/features/user/onboarding/presentation/pages/onboarding_screen.dart';
+import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dart';
+import 'package:serviko_app/features/provider/main/presentation/pages/provider_main_screen.dart';
+import 'package:serviko_app/features/user/profile/presentation/pages/profile_screen.dart';
+import 'package:serviko_app/features/provider/profile/presentation/pages/provider_profile_screen.dart';
 
 // App Routes and Paths
 class AppRouter {
@@ -42,6 +46,13 @@ class AppRouter {
   static const String profile = 'profile';
   static const String search = 'search';
 
+  // Provider route names
+  static const String providerDashboard = 'providerDashboard';
+  static const String providerJobs = 'providerJobs';
+  static const String providerInbox = 'providerInbox';
+  static const String providerEarnings = 'providerEarnings';
+  static const String providerProfile = 'providerProfile';
+
   // ---- Route Paths ----
   static const String _splashPath = '/splash';
   static const String _onboardingPath = '/onboarding';
@@ -62,7 +73,14 @@ class AppRouter {
   static const String _profilePath = '/profile';
   static const String _searchPath = '/search';
 
-  // Auth-related paths that authenticated users should not see
+  // Provider paths
+  static const String _providerDashboardPath = '/provider/dashboard';
+  static const String _providerJobsPath = '/provider/jobs';
+  static const String _providerInboxPath = '/provider/inbox';
+  static const String _providerEarningsPath = '/provider/earnings';
+  static const String _providerProfilePath = '/provider/profile';
+
+  // Auth-related paths
   static final Set<String> _authPaths = {
     _onboardingPath,
     _loginPath,
@@ -89,8 +107,32 @@ class AppRouter {
     _congratulationsPath,
   };
 
-  // Router configuration with authentication-based redirection logic
-  static GoRouter router(AuthBloc authBloc) => GoRouter(
+  // Customer Bottom Navigation paths
+  static final Set<String> _customerShellPaths = {
+    _homePath,
+    _bookingPath,
+    _calendarPath,
+    _inboxPath,
+    _profilePath,
+  };
+
+  // Provider Bottom Navigation paths
+  static final Set<String> _providerShellPaths = {
+    _providerDashboardPath,
+    _providerJobsPath,
+    _providerInboxPath,
+    _providerEarningsPath,
+    _providerProfilePath,
+  };
+
+  static bool _isProviderRoute(String path) =>
+      _providerShellPaths.contains(path) || path.startsWith('/provider');
+
+  static bool _isCustomerShellRoute(String path) =>
+      _customerShellPaths.contains(path);
+
+  // Router configuration with auth + role-based redirection
+  static GoRouter router(AuthBloc authBloc, RoleCubit roleCubit) => GoRouter(
     initialLocation: _splashPath,
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream(authBloc.stream),
@@ -140,8 +182,23 @@ class AppRouter {
         return null;
       }
 
-      // Existing user 
+      // Existing user
       if (isOnAuthPage || isOnProfileSetupPage || currentPath == _splashPath) {
+        return _homePath;
+      }
+
+      // --- Role-based redirect for users ---
+      final roleState = roleCubit.state;
+
+      if (_isProviderRoute(currentPath) && !roleState.canSwitchToProvider) {
+        return _homePath;
+      }
+
+      if (roleState.isProvider && _isCustomerShellRoute(currentPath)) {
+        return _providerDashboardPath;
+      }
+
+      if (roleState.isCustomer && _isProviderRoute(currentPath)) {
         return _homePath;
       }
 
@@ -220,7 +277,7 @@ class AppRouter {
         builder: (context, state) => const CongratulationsScreen(),
       ),
 
-      // ---- Main App ----
+      // ---- Customer Shell ----
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return MainScreen(navigationShell: navigationShell);
@@ -270,13 +327,71 @@ class AppRouter {
               GoRoute(
                 name: profile,
                 path: _profilePath,
-                builder: (context, state) =>
-                    const _PlaceholderScreen(title: 'Profile'),
+                builder: (context, state) => const ProfileScreen(),
               ),
             ],
           ),
         ],
       ),
+
+      // ---- Provider Shell ----
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return ProviderMainScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: providerDashboard,
+                path: _providerDashboardPath,
+                builder: (context, state) =>
+                    const _PlaceholderScreen(title: 'Provider Dashboard'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: providerJobs,
+                path: _providerJobsPath,
+                builder: (context, state) =>
+                    const _PlaceholderScreen(title: 'Jobs'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: providerInbox,
+                path: _providerInboxPath,
+                builder: (context, state) =>
+                    const _PlaceholderScreen(title: 'Inbox'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: providerEarnings,
+                path: _providerEarningsPath,
+                builder: (context, state) =>
+                    const _PlaceholderScreen(title: 'Earnings'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: providerProfile,
+                path: _providerProfilePath,
+                builder: (context, state) => const ProviderProfileScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+
       GoRoute(
         name: search,
         path: _searchPath,
