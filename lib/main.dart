@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/theme/app_theme.dart';
-import 'package:serviko_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:serviko_app/features/user/auth/presentation/bloc/auth_bloc.dart';
 import 'package:serviko_app/firebase_options.dart';
 import 'package:serviko_app/injection_container.dart';
 

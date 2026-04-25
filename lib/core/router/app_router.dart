@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/router/go_router_refresh_stream.dart';
-import 'package:serviko_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:serviko_app/features/auth/presentation/pages/address_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/congratulations_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/choose_reset_method_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/create_new_password_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/fill_profile_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/forgot_password_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/otp_verification_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/reset_success_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/sign_in_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/sign_up_screen.dart';
-import 'package:serviko_app/features/auth/presentation/pages/splash_screen.dart';
-import 'package:serviko_app/features/auth/presentation/models/password_recovery_flow_args.dart';
-import 'package:serviko_app/features/home/presentation/pages/home_screen.dart';
-import 'package:serviko_app/features/main/presentation/pages/main_screen.dart';
-import 'package:serviko_app/features/onboarding/presentation/pages/onboarding_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/bloc/auth_bloc.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/address_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/congratulations_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/choose_reset_method_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/create_new_password_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/fill_profile_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/forgot_password_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/otp_verification_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/reset_success_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/sign_in_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/sign_up_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/pages/splash_screen.dart';
+import 'package:serviko_app/features/user/auth/presentation/models/password_recovery_flow_args.dart';
+import 'package:serviko_app/features/user/home/presentation/pages/home_screen.dart';
+import 'package:serviko_app/features/user/main/presentation/pages/main_screen.dart';
+import 'package:serviko_app/features/user/onboarding/presentation/pages/onboarding_screen.dart';
 
 // App Routes and Paths
 class AppRouter {
