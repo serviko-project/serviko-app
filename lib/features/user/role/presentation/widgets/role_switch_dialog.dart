@@ -7,6 +7,8 @@ import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/features/user/role/domain/enums.dart';
 import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dart';
 import 'package:serviko_app/features/user/role/presentation/cubit/role_state.dart';
+import 'package:serviko_app/features/user/role/presentation/widgets/role_switch_action_button.dart';
+import 'package:serviko_app/features/user/role/presentation/widgets/role_switch_mode_tile.dart';
 
 // Bottom sheet dialog for switching between customer and provider modes
 class RoleSwitchDialog extends StatelessWidget {
@@ -66,7 +68,7 @@ class RoleSwitchDialog extends StatelessWidget {
               const SizedBox(height: 30),
 
               // Customer tile
-              _ModeTile(
+              RoleSwitchModeTile(
                 icon: HugeIcons.strokeRoundedUser03,
                 title: 'Customer',
                 subtitle: 'Find and book services',
@@ -76,7 +78,7 @@ class RoleSwitchDialog extends StatelessWidget {
               const SizedBox(height: 15),
 
               // Provider tile
-              _ModeTile(
+              RoleSwitchModeTile(
                 icon: HugeIcons.strokeRoundedBriefcase01,
                 title: 'Service Provider',
                 subtitle: _providerSubtitle(state.providerStatus),
@@ -88,20 +90,26 @@ class RoleSwitchDialog extends StatelessWidget {
                     : null,
               ),
 
-              // CTA for unapplied or rejected providers
-              if (state.providerStatus == ProviderStatus.none ||
-                  state.providerStatus == ProviderStatus.rejected) ...[
+              // CTA based on provider status
+              if (state.providerStatus == ProviderStatus.none) ...[
                 const SizedBox(height: 25),
-                _ActionButton(
-                  label: state.providerStatus == ProviderStatus.none
-                      ? 'Become a Service Provider'
-                      : 'Re-apply as Provider',
-                  icon: state.providerStatus == ProviderStatus.none
-                      ? HugeIcons.strokeRoundedAdd01
-                      : HugeIcons.strokeRoundedRefresh03,
+                ActionButton(
+                  label: 'Become a Service Provider',
+                  icon: HugeIcons.strokeRoundedAdd01,
                   onTap: () {
                     Navigator.pop(context);
-                    // TODO: Navigate to provider onboarding
+                    context.pushNamed(AppRouter.providerOnboarding);
+                  },
+                ),
+              ] else if (state.providerStatus == ProviderStatus.pending ||
+                  state.providerStatus == ProviderStatus.rejected) ...[
+                const SizedBox(height: 25),
+                ActionButton(
+                  label: 'Check Application Status',
+                  icon: HugeIcons.strokeRoundedSearch01,
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.pushNamed(AppRouter.providerApplicationStatus);
                   },
                 ),
               ],
@@ -163,177 +171,6 @@ class RoleSwitchDialog extends StatelessWidget {
           fontSize: 10,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.2,
-        ),
-      ),
-    );
-  }
-}
-
-// Mode selection tile
-class _ModeTile extends StatelessWidget {
-  const _ModeTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.isSelected,
-    this.isEnabled = true,
-    this.statusBadge,
-    this.onTap,
-  });
-
-  final dynamic icon;
-  final String title;
-  final String subtitle;
-  final bool isSelected;
-  final bool isEnabled;
-  final Widget? statusBadge;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final tileColor = isSelected
-        ? AppColors.primary.withAlpha(10)
-        : AppColors.surface;
-    final borderColor = isSelected
-        ? AppColors.primary.withAlpha(80)
-        : AppColors.border.withAlpha(120);
-    final iconBg = isSelected
-        ? AppColors.primary.withAlpha(20)
-        : AppColors.border.withAlpha(60);
-    final iconColor = isSelected ? AppColors.primary : AppColors.textHint;
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeOut,
-      decoration: BoxDecoration(
-        color: tileColor,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: borderColor, width: 1),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: isEnabled ? onTap : null,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              // Icon
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: iconBg,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: HugeIcon(
-                    icon: icon,
-                    color: iconColor,
-                    size: 22,
-                    strokeWidth: 1.8,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-
-              // Text + badge
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14.5,
-                            color: isEnabled
-                                ? AppColors.textPrimary
-                                : AppColors.textHint,
-                            letterSpacing: 0.2,
-                          ),
-                        ),
-                        if (statusBadge != null) ...[
-                          const SizedBox(width: 10),
-                          statusBadge!,
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isEnabled
-                            ? AppColors.textSecondary
-                            : AppColors.textHint,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Check indicator
-              if (isSelected)
-                const HugeIcon(
-                  icon: HugeIcons.strokeRoundedCheckmarkCircle01,
-                  color: AppColors.primary,
-                  size: 25,
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// CTA button for becoming or re-applying as provider
-class _ActionButton extends StatelessWidget {
-  final String label;
-  final dynamic icon;
-  final VoidCallback onTap;
-
-  const _ActionButton({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: OutlinedButton(
-        onPressed: onTap,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          side: BorderSide(width: 2, color: AppColors.primary.withAlpha(60)),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            HugeIcon(
-              icon: icon,
-              color: AppColors.primary,
-              size: 18,
-              strokeWidth: 2,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.2,
-              ),
-            ),
-          ],
         ),
       ),
     );

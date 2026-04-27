@@ -10,6 +10,8 @@ abstract final class AppAssets {
       'assets/lottie/onboarding/booking.json';
   static const String onboardingMessaging =
       'assets/lottie/onboarding/messaging.json';
+  static const String providerOnboarding =
+      'assets/lottie/onboarding/provider_onboarding.json';
 
   // ---- Success Animation ----
   static const String successAnimation = 'assets/lottie/success_animation.json';

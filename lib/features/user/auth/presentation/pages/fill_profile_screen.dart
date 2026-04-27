@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
+import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
@@ -101,19 +101,11 @@ class _FillProfileView extends StatelessWidget {
           const SizedBox(height: AppSizes.xl),
 
           // ---- Header ----
-          Text(
-            'Fill Your Profile ✏️',
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
-            ),
-          ),
+          Text('Fill Your Profile ✏️', style: AppTextStyles.h2),
           const SizedBox(height: AppSizes.sm),
           Text(
             "Don't worry, you can always change it later.",
-            style: GoogleFonts.poppins(
-              fontSize: 14,
+            style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
