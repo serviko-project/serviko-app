@@ -19,8 +19,10 @@ import 'package:serviko_app/features/user/profile/data/datasources/profile_remot
 import 'package:serviko_app/features/user/profile/data/repositories/profile_repository_impl.dart';
 import 'package:serviko_app/features/user/profile/domain/repositories/profile_repository.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/create_profile_usecase.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/delete_profile_image_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/update_profile_usecase.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/upload_profile_image_usecase.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -53,6 +55,8 @@ class InjectionContainer {
   late final CreateUserProfileUseCase createUserProfileUseCase;
   late final GetMyProfileUseCase getMyProfileUseCase;
   late final UpdateProfileUseCase updateProfileUseCase;
+  late final UploadProfileImageUseCase uploadProfileImageUseCase;
+  late final DeleteProfileImageUseCase deleteProfileImageUseCase;
 
   // Initialise
   Future<void> init() async {
@@ -93,5 +97,7 @@ class InjectionContainer {
     createUserProfileUseCase = CreateUserProfileUseCase(userProfileRepository);
     getMyProfileUseCase = GetMyProfileUseCase(userProfileRepository);
     updateProfileUseCase = UpdateProfileUseCase(userProfileRepository);
+    uploadProfileImageUseCase = UploadProfileImageUseCase(userProfileRepository);
+    deleteProfileImageUseCase = DeleteProfileImageUseCase(userProfileRepository);
   }
 }
