@@ -23,6 +23,10 @@ class FillProfileScreen extends StatelessWidget {
       create: (_) => FillProfileCubit(
         createUserProfileUseCase:
             InjectionContainer.instance.createUserProfileUseCase,
+        uploadProfileImageUseCase:
+            InjectionContainer.instance.uploadProfileImageUseCase,
+        deleteProfileImageUseCase:
+            InjectionContainer.instance.deleteProfileImageUseCase,
       ),
       child: const _FillProfileView(),
     );

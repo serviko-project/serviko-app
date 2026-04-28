@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:serviko_app/core/errors/failures.dart';
 import 'package:serviko_app/features/user/profile/domain/entities/profile_entity.dart';
@@ -15,4 +17,10 @@ abstract class UserProfileRepository {
   Future<Either<Failure, UserProfileEntity>> updateProfile(
     UpdateProfileParams params,
   );
+
+  Future<Either<Failure, UserProfileEntity>> uploadProfileImage(
+    File imageFile,
+  );
+
+  Future<Either<Failure, UserProfileEntity>> deleteProfileImage();
 }

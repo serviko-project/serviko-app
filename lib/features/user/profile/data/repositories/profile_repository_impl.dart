@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:serviko_app/core/errors/exceptions.dart';
 import 'package:serviko_app/core/errors/failures.dart';
@@ -74,6 +76,36 @@ class UserUserProfileRepositoryImpl implements UserProfileRepository {
         profileImageUrl: params.profileImageUrl,
       );
       final profile = await _remoteDataSource.updateProfile(data);
+      return Right(profile);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserProfileEntity>> uploadProfileImage(
+    File imageFile,
+  ) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+
+    try {
+      final profile = await _remoteDataSource.uploadProfileImage(imageFile);
+      return Right(profile);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserProfileEntity>> deleteProfileImage() async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+
+    try {
+      final profile = await _remoteDataSource.deleteProfileImage();
       return Right(profile);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, statusCode: e.statusCode));

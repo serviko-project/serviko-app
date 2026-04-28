@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:serviko_app/core/errors/exceptions.dart';
 import 'package:serviko_app/core/network/api_client.dart';
@@ -8,6 +10,8 @@ abstract class ProfileRemoteDataSource {
   Future<UserProfileModel> createProfile(Map<String, dynamic> data);
   Future<UserProfileModel> getMyProfile();
   Future<UserProfileModel> updateProfile(Map<String, dynamic> data);
+  Future<UserProfileModel> uploadProfileImage(File imageFile);
+  Future<UserProfileModel> deleteProfileImage();
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
@@ -48,6 +52,45 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       final response = await _apiClient.dio.patch(
         '/api/v1/users/me',
         data: data,
+      );
+      return UserProfileModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  // Upload profile image
+  @override
+  Future<UserProfileModel> uploadProfileImage(File imageFile) async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+
+      final fileName = imageFile.path.split(Platform.pathSeparator).last;
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          imageFile.path,
+          filename: fileName,
+        ),
+      });
+
+      final response = await _apiClient.dio.post(
+        '/api/v1/users/me/profile-image',
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      );
+      return UserProfileModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  // Delete profile image
+  @override
+  Future<UserProfileModel> deleteProfileImage() async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+      final response = await _apiClient.dio.delete(
+        '/api/v1/users/me/profile-image',
       );
       return UserProfileModel.fromJson(response.data['data']);
     } on DioException catch (e) {
