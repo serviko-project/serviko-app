@@ -1,26 +1,28 @@
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:serviko_app/core/network/api_client.dart';
 import 'package:serviko_app/core/network/network_info.dart';
-import 'package:serviko_app/features/auth/data/datasources/auth_local_datasource.dart';
-import 'package:serviko_app/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:serviko_app/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:serviko_app/features/auth/domain/repositories/auth_repository.dart';
-import 'package:serviko_app/features/auth/domain/usecases/forgot_password_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/check_recovery_options_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/get_current_user_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/google_sign_in_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/reset_password_with_phone_otp_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/sign_in_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/sign_out_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/sign_up_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/start_phone_reset_otp_usecase.dart';
-import 'package:serviko_app/features/auth/domain/usecases/verify_phone_reset_otp_usecase.dart';
-import 'package:serviko_app/features/profile/data/datasources/profile_remote_datasource.dart';
-import 'package:serviko_app/features/profile/data/repositories/profile_repository_impl.dart';
-import 'package:serviko_app/features/profile/domain/repositories/profile_repository.dart';
-import 'package:serviko_app/features/profile/domain/usecases/create_profile_usecase.dart';
-import 'package:serviko_app/features/profile/domain/usecases/get_my_profile_usecase.dart';
-import 'package:serviko_app/features/profile/domain/usecases/update_profile_usecase.dart';
+import 'package:serviko_app/features/user/auth/data/datasources/auth_local_datasource.dart';
+import 'package:serviko_app/features/user/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:serviko_app/features/user/auth/data/repositories/auth_repository_impl.dart';
+import 'package:serviko_app/features/user/auth/domain/repositories/auth_repository.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/check_recovery_options_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/get_current_user_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/google_sign_in_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/reset_password_with_phone_otp_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/sign_in_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/sign_out_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/sign_up_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/start_phone_reset_otp_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/verify_phone_reset_otp_usecase.dart';
+import 'package:serviko_app/features/user/profile/data/datasources/profile_remote_datasource.dart';
+import 'package:serviko_app/features/user/profile/data/repositories/profile_repository_impl.dart';
+import 'package:serviko_app/features/user/profile/domain/repositories/profile_repository.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/create_profile_usecase.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/delete_profile_image_usecase.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile_usecase.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/update_profile_usecase.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/upload_profile_image_usecase.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -53,6 +55,8 @@ class InjectionContainer {
   late final CreateUserProfileUseCase createUserProfileUseCase;
   late final GetMyProfileUseCase getMyProfileUseCase;
   late final UpdateProfileUseCase updateProfileUseCase;
+  late final UploadProfileImageUseCase uploadProfileImageUseCase;
+  late final DeleteProfileImageUseCase deleteProfileImageUseCase;
 
   // Initialise
   Future<void> init() async {
@@ -93,5 +97,7 @@ class InjectionContainer {
     createUserProfileUseCase = CreateUserProfileUseCase(userProfileRepository);
     getMyProfileUseCase = GetMyProfileUseCase(userProfileRepository);
     updateProfileUseCase = UpdateProfileUseCase(userProfileRepository);
+    uploadProfileImageUseCase = UploadProfileImageUseCase(userProfileRepository);
+    deleteProfileImageUseCase = DeleteProfileImageUseCase(userProfileRepository);
   }
 }
