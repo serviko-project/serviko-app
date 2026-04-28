@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // Centralized Dio HTTP client configuration.
 class ApiClient {
-  static const String _baseUrl = 'https://api.serviko.com/v1';
+  // Emulator
+  static const String _baseUrl = 'http://10.0.2.2:8000';
 
   late final Dio dio;
 
@@ -25,7 +27,19 @@ class ApiClient {
       LogInterceptor(requestBody: true, responseBody: true, error: true),
     );
   }
-  // Attach an auth token to every outgoing request.
+
+  // Fetch a fresh Firebase ID token and set it as the auth header.
+  Future<void> setFirebaseAuthToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final token = await user.getIdToken();
+      if (token != null) {
+        setAuthToken(token);
+      }
+    }
+  }
+
+  // Attach auth token to every request
   void setAuthToken(String token) {
     dio.options.headers['Authorization'] = 'Bearer $token';
   }

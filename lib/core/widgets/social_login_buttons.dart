@@ -5,7 +5,7 @@ import 'package:serviko_app/core/constants/app_assets.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
-import 'package:serviko_app/features/auth/presentation/cubit/google_sign_in_cubit.dart';
+import 'package:serviko_app/features/user/auth/presentation/cubit/google_sign_in_cubit.dart';
 import 'package:serviko_app/injection_container.dart';
 
 // Social Login Buttons
