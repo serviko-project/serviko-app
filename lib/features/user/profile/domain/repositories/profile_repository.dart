@@ -18,9 +18,7 @@ abstract class UserProfileRepository {
     UpdateProfileParams params,
   );
 
-  Future<Either<Failure, UserProfileEntity>> uploadProfileImage(
-    File imageFile,
-  );
+  Future<Either<Failure, UserProfileEntity>> uploadProfileImage(File imageFile);
 
   Future<Either<Failure, UserProfileEntity>> deleteProfileImage();
 }
