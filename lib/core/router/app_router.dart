@@ -21,6 +21,8 @@ import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dar
 import 'package:serviko_app/features/provider/main/presentation/pages/provider_main_screen.dart';
 import 'package:serviko_app/features/user/profile/presentation/pages/profile_screen.dart';
 import 'package:serviko_app/features/provider/profile/presentation/pages/provider_profile_screen.dart';
+import 'package:serviko_app/features/provider/onboarding/presentation/pages/provider_onboarding_screen.dart';
+import 'package:serviko_app/features/provider/onboarding/presentation/pages/application_status_screen.dart';
 
 // App Routes and Paths
 class AppRouter {
@@ -47,6 +49,8 @@ class AppRouter {
   static const String search = 'search';
 
   // Provider route names
+  static const String providerOnboarding = 'providerOnboarding';
+  static const String providerApplicationStatus = 'providerApplicationStatus';
   static const String providerDashboard = 'providerDashboard';
   static const String providerJobs = 'providerJobs';
   static const String providerInbox = 'providerInbox';
@@ -74,6 +78,9 @@ class AppRouter {
   static const String _searchPath = '/search';
 
   // Provider paths
+  static const String _providerOnboardingPath = '/provider/onboarding';
+  static const String _providerApplicationStatusPath =
+      '/provider/application-status';
   static const String _providerDashboardPath = '/provider/dashboard';
   static const String _providerJobsPath = '/provider/jobs';
   static const String _providerInboxPath = '/provider/inbox';
@@ -126,7 +133,9 @@ class AppRouter {
   };
 
   static bool _isProviderRoute(String path) =>
-      _providerShellPaths.contains(path) || path.startsWith('/provider');
+      path != _providerOnboardingPath &&
+      path != _providerApplicationStatusPath &&
+      (_providerShellPaths.contains(path) || path.startsWith('/provider'));
 
   static bool _isCustomerShellRoute(String path) =>
       _customerShellPaths.contains(path);
@@ -332,6 +341,20 @@ class AppRouter {
             ],
           ),
         ],
+      ),
+
+      // ---- Provider Onboarding ----
+      GoRoute(
+        name: providerOnboarding,
+        path: _providerOnboardingPath,
+        builder: (context, state) => const ProviderOnboardingScreen(),
+      ),
+
+      // ---- Provider Application Status ----
+      GoRoute(
+        name: providerApplicationStatus,
+        path: _providerApplicationStatusPath,
+        builder: (context, state) => const ApplicationStatusScreen(),
       ),
 
       // ---- Provider Shell ----
