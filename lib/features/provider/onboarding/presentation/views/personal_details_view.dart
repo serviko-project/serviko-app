@@ -9,7 +9,7 @@ import 'package:serviko_app/features/provider/onboarding/presentation/cubit/prov
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_state.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/info_banner.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/number_stepper_widget.dart';
-import 'package:serviko_app/features/user/auth/presentation/widgets/profile_image_picker_widget.dart';
+
 
 class PersonalDetailsView extends StatelessWidget {
   const PersonalDetailsView({super.key});
@@ -38,7 +38,15 @@ class PersonalDetailsView extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  ProfileImagePickerWidget(),
+                  CircleAvatar(
+                    radius: 56,
+                    backgroundColor: AppColors.surface,
+                    child: const Icon(
+                      Icons.person_rounded,
+                      size: 56,
+                      color: AppColors.textHint,
+                    ),
+                  ),
                   const SizedBox(height: AppSizes.lg),
                   Text('User Name', style: AppTextStyles.h3),
                   const SizedBox(height: AppSizes.sm),
