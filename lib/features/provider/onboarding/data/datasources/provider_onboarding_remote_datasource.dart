@@ -108,7 +108,7 @@ class ProviderOnboardingRemoteDataSourceImpl
       await _apiClient.setFirebaseAuthToken();
       final response = await _apiClient.dio.get(
         '/api/v1/categories',
-        queryParameters: {'limit': 100},
+        queryParameters: {'limit': 100, 'status': 'active'},
       );
       final items = response.data['data'] as List<dynamic>;
       return items
