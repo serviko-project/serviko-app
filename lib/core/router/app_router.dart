@@ -347,7 +347,11 @@ class AppRouter {
       GoRoute(
         name: providerOnboarding,
         path: _providerOnboardingPath,
-        builder: (context, state) => const ProviderOnboardingScreen(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final isReapplication = extra?['isReapplication'] == true;
+          return ProviderOnboardingScreen(isReapplication: isReapplication);
+        },
       ),
 
       // ---- Provider Application Status ----

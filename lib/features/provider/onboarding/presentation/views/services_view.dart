@@ -3,19 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:serviko_app/core/utils/icon_mapper.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_cubit.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_state.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/info_banner.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/service_card.dart';
-
-// Mock data for services
-const _mockServices = [
-  {'id': '1', 'name': 'Appliance Repair', 'icon': Icons.kitchen_rounded},
-  {'id': '2', 'name': 'Plumbing Repair', 'icon': Icons.plumbing_rounded},
-  {'id': '3', 'name': 'House Shifting', 'icon': Icons.local_shipping_rounded},
-  {'id': '4', 'name': 'Gardening', 'icon': Icons.yard_rounded},
-  {'id': '5', 'name': 'Electrician', 'icon': Icons.electrical_services_rounded},
-];
 
 class ServicesView extends StatelessWidget {
   const ServicesView({super.key});
@@ -65,37 +57,66 @@ class ServicesView extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.md),
 
-          // Grid View
+          // Grid View with categories
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.only(bottom: AppSizes.xl * 2),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: AppSizes.md,
-                mainAxisSpacing: AppSizes.md,
-                childAspectRatio: 1.1,
-              ),
-              itemCount: _mockServices.length,
-              itemBuilder: (context, index) {
-                final service = _mockServices[index];
-                return BlocBuilder<
-                  ProviderOnboardingCubit,
-                  ProviderOnboardingState
-                >(
+            child:
+                BlocBuilder<ProviderOnboardingCubit, ProviderOnboardingState>(
+                  buildWhen: (prev, curr) =>
+                      prev.availableCategories != curr.availableCategories ||
+                      prev.selectedServices != curr.selectedServices ||
+                      prev.isCategoriesLoading != curr.isCategoriesLoading,
                   builder: (context, state) {
-                    final isSelected = state.selectedServices.contains(
-                      service['id'],
-                    );
-                    return ServiceCard(
-                      name: service['name'] as String,
-                      icon: service['icon'] as IconData,
-                      isSelected: isSelected,
-                      onTap: () => cubit.toggleService(service['id'] as String),
+                    if (state.isCategoriesLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (state.availableCategories.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.category_outlined,
+                              size: 48,
+                              color: AppColors.textHint,
+                            ),
+                            const SizedBox(height: AppSizes.md),
+                            Text(
+                              'No categories available',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.textHint,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return GridView.builder(
+                      padding: const EdgeInsets.only(bottom: AppSizes.xl * 2),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: AppSizes.md,
+                            mainAxisSpacing: AppSizes.md,
+                            childAspectRatio: 1.1,
+                          ),
+                      itemCount: state.availableCategories.length,
+                      itemBuilder: (context, index) {
+                        final category = state.availableCategories[index];
+                        final isSelected = state.selectedServices.contains(
+                          category.id,
+                        );
+                        return ServiceCard(
+                          name: category.title,
+                          icon: IconMapper.fromName(category.icon),
+                          isSelected: isSelected,
+                          onTap: () => cubit.toggleService(category.id),
+                        );
+                      },
                     );
                   },
-                );
-              },
-            ),
+                ),
           ),
         ],
       ),

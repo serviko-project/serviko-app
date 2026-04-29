@@ -1,7 +1,16 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/entities/category_entity.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/entities/provider_profile_entity.dart';
 
-enum ProviderOnboardingStatus { initial, submitting, success, error }
+enum ProviderOnboardingStatus {
+  initial,
+  loading,
+  submitting,
+  success,
+  alreadySubmitted,
+  error,
+}
 
 // Provider Onboarding State
 class ProviderOnboardingState extends Equatable {
@@ -13,28 +22,46 @@ class ProviderOnboardingState extends Equatable {
   final int yearsOfExperience;
 
   // Step 3: Services
+  final List<CategoryEntity> availableCategories;
   final Set<String> selectedServices;
+  final bool isCategoriesLoading;
 
   // Step 4: Availability
   final Map<int, DayAvailability> availability;
 
   // Step 5: Documents
-  final String? document1Path;
-  final String? document2Path;
+  final ProviderDocumentEntity? governmentIdDoc;
+  final ProviderDocumentEntity? certificateDoc;
+  final bool isUploadingDoc1;
+  final bool isUploadingDoc2;
 
   // Step 6: Service Area
   final double coverageRadius;
+
+  // Re-application flag
+  final bool isReapplication;
+
+  // User profile info
+  final String? userName;
+  final String? profileImageUrl;
 
   const ProviderOnboardingState({
     this.currentStep = 0,
     this.status = ProviderOnboardingStatus.initial,
     this.errorMessage,
     this.yearsOfExperience = 0,
+    this.availableCategories = const [],
     this.selectedServices = const {},
+    this.isCategoriesLoading = false,
     this.availability = const {},
-    this.document1Path,
-    this.document2Path,
+    this.governmentIdDoc,
+    this.certificateDoc,
+    this.isUploadingDoc1 = false,
+    this.isUploadingDoc2 = false,
     this.coverageRadius = 15.0,
+    this.isReapplication = false,
+    this.userName,
+    this.profileImageUrl,
   });
 
   ProviderOnboardingState copyWith({
@@ -42,28 +69,43 @@ class ProviderOnboardingState extends Equatable {
     ProviderOnboardingStatus? status,
     String? errorMessage,
     int? yearsOfExperience,
+    List<CategoryEntity>? availableCategories,
     Set<String>? selectedServices,
+    bool? isCategoriesLoading,
     Map<int, DayAvailability>? availability,
-    String? document1Path,
-    String? document2Path,
+    ProviderDocumentEntity? governmentIdDoc,
+    ProviderDocumentEntity? certificateDoc,
+    bool? isUploadingDoc1,
+    bool? isUploadingDoc2,
     double? coverageRadius,
-    bool clearDocument1 = false,
-    bool clearDocument2 = false,
+    bool? isReapplication,
+    String? userName,
+    String? profileImageUrl,
+    bool clearGovernmentIdDoc = false,
+    bool clearCertificateDoc = false,
+    bool clearError = false,
   }) {
     return ProviderOnboardingState(
       currentStep: currentStep ?? this.currentStep,
       status: status ?? this.status,
-      errorMessage: errorMessage,
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       yearsOfExperience: yearsOfExperience ?? this.yearsOfExperience,
+      availableCategories: availableCategories ?? this.availableCategories,
       selectedServices: selectedServices ?? this.selectedServices,
+      isCategoriesLoading: isCategoriesLoading ?? this.isCategoriesLoading,
       availability: availability ?? this.availability,
-      document1Path: clearDocument1
+      governmentIdDoc: clearGovernmentIdDoc
           ? null
-          : (document1Path ?? this.document1Path),
-      document2Path: clearDocument2
+          : (governmentIdDoc ?? this.governmentIdDoc),
+      certificateDoc: clearCertificateDoc
           ? null
-          : (document2Path ?? this.document2Path),
+          : (certificateDoc ?? this.certificateDoc),
+      isUploadingDoc1: isUploadingDoc1 ?? this.isUploadingDoc1,
+      isUploadingDoc2: isUploadingDoc2 ?? this.isUploadingDoc2,
       coverageRadius: coverageRadius ?? this.coverageRadius,
+      isReapplication: isReapplication ?? this.isReapplication,
+      userName: userName ?? this.userName,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
     );
   }
 
@@ -73,11 +115,18 @@ class ProviderOnboardingState extends Equatable {
     status,
     errorMessage,
     yearsOfExperience,
+    availableCategories,
     selectedServices,
+    isCategoriesLoading,
     availability,
-    document1Path,
-    document2Path,
+    governmentIdDoc,
+    certificateDoc,
+    isUploadingDoc1,
+    isUploadingDoc2,
     coverageRadius,
+    isReapplication,
+    userName,
+    profileImageUrl,
   ];
 }
 
@@ -102,6 +151,11 @@ class DayAvailability extends Equatable {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
     );
+  }
+
+  // Convert TimeOfDay to "HH:mm"
+  static String formatTime(TimeOfDay time) {
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
   @override

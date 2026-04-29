@@ -10,7 +10,6 @@ import 'package:serviko_app/features/provider/onboarding/presentation/cubit/prov
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/info_banner.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/number_stepper_widget.dart';
 
-
 class PersonalDetailsView extends StatelessWidget {
   const PersonalDetailsView({super.key});
 
@@ -36,22 +35,69 @@ class PersonalDetailsView extends StatelessWidget {
 
             // Profile Info
             Center(
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 56,
-                    backgroundColor: AppColors.surface,
-                    child: const Icon(
-                      Icons.person_rounded,
-                      size: 56,
-                      color: AppColors.textHint,
-                    ),
+              child:
+                  BlocBuilder<ProviderOnboardingCubit, ProviderOnboardingState>(
+                    buildWhen: (prev, curr) =>
+                        prev.userName != curr.userName ||
+                        prev.profileImageUrl != curr.profileImageUrl ||
+                        prev.isReapplication != curr.isReapplication,
+                    builder: (context, state) {
+                      final userName = state.userName ?? 'User';
+                      final photoUrl = state.profileImageUrl;
+                      final greeting = state.isReapplication
+                          ? 'Welcome back, $userName'
+                          : 'Hey, $userName 👋';
+                      final subtitle = state.isReapplication
+                          ? 'Let\'s update your details'
+                          : 'Let\'s build your provider profile';
+
+                      return Column(
+                        children: [
+                          // Profile Image
+                          Container(
+                            width: 110,
+                            height: 110,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColors.primary.withAlpha(60),
+                                width: 3,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withAlpha(25),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: photoUrl != null && photoUrl.isNotEmpty
+                                  ? Image.network(
+                                      photoUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, _, _) =>
+                                          _buildDefaultAvatar(userName),
+                                    )
+                                  : _buildDefaultAvatar(userName),
+                            ),
+                          ),
+                          const SizedBox(height: AppSizes.lg),
+
+                          // Greeting and Subtitle
+                          Text(greeting, style: AppTextStyles.h3),
+                          const SizedBox(height: AppSizes.xs),
+                          Text(
+                            subtitle,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: AppSizes.sm),
+                        ],
+                      );
+                    },
                   ),
-                  const SizedBox(height: AppSizes.lg),
-                  Text('User Name', style: AppTextStyles.h3),
-                  const SizedBox(height: AppSizes.sm),
-                ],
-              ),
             ),
             const SizedBox(height: AppSizes.xl * 1.2),
 
@@ -125,6 +171,23 @@ class PersonalDetailsView extends StatelessWidget {
             ),
             const SizedBox(height: AppSizes.xl * 2),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Default avatar with user initial
+  Widget _buildDefaultAvatar(String name) {
+    final initial = name.isNotEmpty ? name[0].toUpperCase() : 'U';
+    return Container(
+      color: AppColors.primary.withAlpha(20),
+      child: Center(
+        child: Text(
+          initial,
+          style: AppTextStyles.h2.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

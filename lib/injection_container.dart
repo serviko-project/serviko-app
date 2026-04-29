@@ -1,6 +1,15 @@
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:serviko_app/core/network/api_client.dart';
 import 'package:serviko_app/core/network/network_info.dart';
+import 'package:serviko_app/features/provider/onboarding/data/datasources/provider_onboarding_remote_datasource.dart';
+import 'package:serviko_app/features/provider/onboarding/data/repositories/provider_onboarding_repository_impl.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/repositories/provider_onboarding_repository.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_document_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_categories_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_my_provider_profile_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/reapply_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_application_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
 import 'package:serviko_app/features/user/auth/data/datasources/auth_local_datasource.dart';
 import 'package:serviko_app/features/user/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:serviko_app/features/user/auth/data/repositories/auth_repository_impl.dart';
@@ -58,6 +67,17 @@ class InjectionContainer {
   late final UploadProfileImageUseCase uploadProfileImageUseCase;
   late final DeleteProfileImageUseCase deleteProfileImageUseCase;
 
+  // Provider Onboarding
+  late final ProviderOnboardingRemoteDataSource
+  providerOnboardingRemoteDataSource;
+  late final ProviderOnboardingRepository providerOnboardingRepository;
+  late final SubmitApplicationUseCase submitApplicationUseCase;
+  late final GetMyProviderProfileUseCase getMyProviderProfileUseCase;
+  late final UploadDocumentUseCase uploadDocumentUseCase;
+  late final DeleteDocumentUseCase deleteDocumentUseCase;
+  late final ReapplyUseCase reapplyUseCase;
+  late final GetCategoriesUseCase getCategoriesUseCase;
+
   // Initialise
   Future<void> init() async {
     // Core
@@ -97,7 +117,32 @@ class InjectionContainer {
     createUserProfileUseCase = CreateUserProfileUseCase(userProfileRepository);
     getMyProfileUseCase = GetMyProfileUseCase(userProfileRepository);
     updateProfileUseCase = UpdateProfileUseCase(userProfileRepository);
-    uploadProfileImageUseCase = UploadProfileImageUseCase(userProfileRepository);
-    deleteProfileImageUseCase = DeleteProfileImageUseCase(userProfileRepository);
+    uploadProfileImageUseCase = UploadProfileImageUseCase(
+      userProfileRepository,
+    );
+    deleteProfileImageUseCase = DeleteProfileImageUseCase(
+      userProfileRepository,
+    );
+
+    // Provider Onboarding - Data
+    providerOnboardingRemoteDataSource = ProviderOnboardingRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    providerOnboardingRepository = ProviderOnboardingRepositoryImpl(
+      remoteDataSource: providerOnboardingRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+
+    // Provider Onboarding - Use Cases
+    submitApplicationUseCase = SubmitApplicationUseCase(
+      providerOnboardingRepository,
+    );
+    getMyProviderProfileUseCase = GetMyProviderProfileUseCase(
+      providerOnboardingRepository,
+    );
+    uploadDocumentUseCase = UploadDocumentUseCase(providerOnboardingRepository);
+    deleteDocumentUseCase = DeleteDocumentUseCase(providerOnboardingRepository);
+    reapplyUseCase = ReapplyUseCase(providerOnboardingRepository);
+    getCategoriesUseCase = GetCategoriesUseCase(providerOnboardingRepository);
   }
 }
