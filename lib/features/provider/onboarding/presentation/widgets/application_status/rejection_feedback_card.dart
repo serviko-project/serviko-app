@@ -6,9 +6,7 @@ import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 
 class RejectionFeedbackCard extends StatelessWidget {
-  final String? reason;
-
-  const RejectionFeedbackCard({super.key, this.reason});
+  const RejectionFeedbackCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +50,7 @@ class RejectionFeedbackCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.md),
           Text(
-            reason ??
-                'Your application was rejected. Please review the requirements and submit again.',
+            'Your uploaded ID document is expired or unreadable. Please update your document and submit the application again.',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
               fontSize: 13,
@@ -72,10 +69,7 @@ class RejectionFeedbackCard extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                context.goNamed(
-                  AppRouter.providerOnboarding,
-                  extra: {'isReapplication': true},
-                );
+                context.goNamed(AppRouter.providerOnboarding);
               },
               child: Text(
                 'Resubmit Application',

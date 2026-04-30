@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/theme/app_theme.dart';
 import 'package:serviko_app/features/user/auth/presentation/bloc/auth_bloc.dart';
-import 'package:serviko_app/features/user/profile/presentation/cubit/profile_cubit.dart';
 import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dart';
 import 'package:serviko_app/firebase_options.dart';
 import 'package:serviko_app/injection_container.dart';
@@ -32,7 +31,6 @@ class ServikoApp extends StatefulWidget {
 class _ServikoAppState extends State<ServikoApp> {
   late final AuthBloc _authBloc;
   late final RoleCubit _roleCubit;
-  late final ProfileCubit _profileCubit;
   late final GoRouter _router;
 
   @override
@@ -42,23 +40,9 @@ class _ServikoAppState extends State<ServikoApp> {
     _authBloc = AuthBloc(
       repository: di.authRepository,
       getMyProfileUseCase: di.getMyProfileUseCase,
-      profileLocalDataSource: di.profileLocalDataSource,
     );
     _roleCubit = RoleCubit();
-    _profileCubit = ProfileCubit(
-      getMyProfileUseCase: di.getMyProfileUseCase,
-      getCachedProfileUseCase: di.getCachedProfileUseCase,
-      updateProfileUseCase: di.updateProfileUseCase,
-      uploadProfileImageUseCase: di.uploadProfileImageUseCase,
-      deleteProfileImageUseCase: di.deleteProfileImageUseCase,
-    );
     _authBloc.add(const AuthCheckRequested());
-
-    // Trigger profile fetch
-    if (_authBloc.state is AuthAuthenticated) {
-      _profileCubit.fetchProfile();
-    }
-
     _router = AppRouter.router(_authBloc, _roleCubit);
   }
 
@@ -66,7 +50,6 @@ class _ServikoAppState extends State<ServikoApp> {
   void dispose() {
     _authBloc.close();
     _roleCubit.close();
-    _profileCubit.close();
     _router.dispose();
     super.dispose();
   }
@@ -77,23 +60,12 @@ class _ServikoAppState extends State<ServikoApp> {
       providers: [
         BlocProvider.value(value: _authBloc),
         BlocProvider.value(value: _roleCubit),
-        BlocProvider.value(value: _profileCubit),
       ],
-      child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            _profileCubit.fetchProfile();
-          } else if (state is AuthUnauthenticated) {
-            _profileCubit.reset();
-            _roleCubit.reset();
-          }
-        },
-        child: MaterialApp.router(
-          title: 'Serviko',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          routerConfig: _router,
-        ),
+      child: MaterialApp.router(
+        title: 'Serviko',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        routerConfig: _router,
       ),
     );
   }

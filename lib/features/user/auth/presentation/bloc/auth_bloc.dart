@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:serviko_app/core/usecases/usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/entities/user_entity.dart';
 import 'package:serviko_app/features/user/auth/domain/repositories/auth_repository.dart';
-import 'package:serviko_app/features/user/profile/data/datasources/profile_local_datasource.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile_usecase.dart';
 part 'auth_events.dart';
 part 'auth_states.dart';
@@ -13,16 +12,13 @@ part 'auth_states.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _repository;
   final GetMyProfileUseCase? _getMyProfileUseCase;
-  final ProfileLocalDataSource? _profileLocalDataSource;
   late final StreamSubscription<UserEntity?> _authSub;
 
   AuthBloc({
     required AuthRepository repository,
     GetMyProfileUseCase? getMyProfileUseCase,
-    ProfileLocalDataSource? profileLocalDataSource,
   }) : _repository = repository,
        _getMyProfileUseCase = getMyProfileUseCase,
-       _profileLocalDataSource = profileLocalDataSource,
        super(const AuthInitial()) {
     on<AuthCheckRequested>(_onCheckRequested);
     on<AuthUserChanged>(_onUserChanged);
@@ -83,7 +79,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignOutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    await _profileLocalDataSource?.clearCache();
     await _repository.signOut();
   }
 

@@ -8,11 +8,9 @@ class DocumentUploadCard extends StatelessWidget {
   final String subtitle;
   final IconData icon;
   final bool isUploaded;
-  final bool isUploading;
   final String? fileName;
   final VoidCallback onTap;
   final VoidCallback onDelete;
-  final VoidCallback? onView;
 
   const DocumentUploadCard({
     super.key,
@@ -20,11 +18,9 @@ class DocumentUploadCard extends StatelessWidget {
     required this.subtitle,
     required this.icon,
     required this.isUploaded,
-    this.isUploading = false,
     this.fileName,
     required this.onTap,
     required this.onDelete,
-    this.onView,
   });
 
   @override
@@ -41,33 +37,7 @@ class DocumentUploadCard extends StatelessWidget {
           width: 1,
         ),
       ),
-      child: isUploading
-          ? _buildUploadingState()
-          : isUploaded
-          ? _buildUploadedState()
-          : _buildUploadPromptState(),
-    );
-  }
-
-  // Uploading in progress
-  Widget _buildUploadingState() {
-    return Column(
-      children: [
-        const SizedBox(height: AppSizes.md),
-        const SizedBox(
-          width: 30,
-          height: 30,
-          child: CircularProgressIndicator(strokeWidth: 3),
-        ),
-        const SizedBox(height: AppSizes.md),
-        Text(
-          'Uploading...',
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        const SizedBox(height: AppSizes.md),
-      ],
+      child: isUploaded ? _buildUploadedState() : _buildUploadPromptState(),
     );
   }
 
@@ -182,7 +152,7 @@ class DocumentUploadCard extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: onView,
+                onTap: () {},
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(

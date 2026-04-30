@@ -102,8 +102,7 @@ class RoleSwitchDialog extends StatelessWidget {
                   },
                 ),
               ] else if (state.providerStatus == ProviderStatus.pending ||
-                  state.providerStatus == ProviderStatus.rejected ||
-                  state.providerStatus == ProviderStatus.blocked) ...[
+                  state.providerStatus == ProviderStatus.rejected) ...[
                 const SizedBox(height: 25),
                 ActionButton(
                   label: 'Check Application Status',

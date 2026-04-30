@@ -1,129 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:serviko_app/core/usecases/usecase.dart';
-import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_document_usecase.dart';
-import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_categories_usecase.dart';
-import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_my_provider_profile_usecase.dart';
-import 'package:serviko_app/features/provider/onboarding/domain/usecases/reapply_usecase.dart';
-import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_application_usecase.dart';
-import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
-import 'package:serviko_app/features/provider/onboarding/presentation/cubit/onboarding_document_mixin.dart';
-import 'package:serviko_app/features/provider/onboarding/presentation/cubit/onboarding_submission_mixin.dart';
-import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_cubit_base.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_state.dart';
-import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile_usecase.dart';
 
-class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
-    with OnboardingDocumentMixin, OnboardingSubmissionMixin {
-  final SubmitApplicationUseCase _submitApplicationUseCase;
-  final GetMyProviderProfileUseCase _getMyProviderProfileUseCase;
-  final UploadDocumentUseCase _uploadDocumentUseCase;
-  final DeleteDocumentUseCase _deleteDocumentUseCase;
-  final ReapplyUseCase _reapplyUseCase;
-  final GetCategoriesUseCase _getCategoriesUseCase;
-  final GetMyProfileUseCase _getMyProfileUseCase;
-  final bool isReapplication;
-
+class ProviderOnboardingCubit extends Cubit<ProviderOnboardingState> {
   final PageController pageController;
 
   // Form Controllers
   final formKey = GlobalKey<FormState>();
-  @override
   final titleController = TextEditingController();
   final titleFocusNode = FocusNode();
-  @override
   final aboutController = TextEditingController();
   final aboutFocusNode = FocusNode();
 
-  ProviderOnboardingCubit({
-    required SubmitApplicationUseCase submitApplicationUseCase,
-    required GetMyProviderProfileUseCase getMyProviderProfileUseCase,
-    required UploadDocumentUseCase uploadDocumentUseCase,
-    required DeleteDocumentUseCase deleteDocumentUseCase,
-    required ReapplyUseCase reapplyUseCase,
-    required GetCategoriesUseCase getCategoriesUseCase,
-    required GetMyProfileUseCase getMyProfileUseCase,
-    this.isReapplication = false,
-  }) : _submitApplicationUseCase = submitApplicationUseCase,
-       _getMyProviderProfileUseCase = getMyProviderProfileUseCase,
-       _uploadDocumentUseCase = uploadDocumentUseCase,
-       _deleteDocumentUseCase = deleteDocumentUseCase,
-       _reapplyUseCase = reapplyUseCase,
-       _getCategoriesUseCase = getCategoriesUseCase,
-       _getMyProfileUseCase = getMyProfileUseCase,
-       pageController = PageController(),
-       super(ProviderOnboardingState(isReapplication: isReapplication)) {
+  ProviderOnboardingCubit()
+    : pageController = PageController(),
+      super(const ProviderOnboardingState()) {
     _initAvailability();
-    loadCategories();
-    _loadUserProfile();
-    if (isReapplication) {
-      prefillFromExistingProfile();
-    } else {
-      checkExistingApplication();
-    }
   }
 
-  @override
-  SubmitApplicationUseCase get submitApplicationUseCase =>
-      _submitApplicationUseCase;
-  @override
-  GetMyProviderProfileUseCase get getMyProviderProfileUseCase =>
-      _getMyProviderProfileUseCase;
-  @override
-  UploadDocumentUseCase get uploadDocumentUseCase => _uploadDocumentUseCase;
-  @override
-  DeleteDocumentUseCase get deleteDocumentUseCase => _deleteDocumentUseCase;
-  @override
-  ReapplyUseCase get reapplyUseCase => _reapplyUseCase;
-  @override
-  GetCategoriesUseCase get getCategoriesUseCase => _getCategoriesUseCase;
-  @override
-  GetMyProfileUseCase get getMyProfileUseCase => _getMyProfileUseCase;
-
-  @override
-  Future<void> close() {
-    pageController.dispose();
-    titleController.dispose();
-    titleFocusNode.dispose();
-    aboutController.dispose();
-    aboutFocusNode.dispose();
-    return super.close();
-  }
-
-  // Load categories from API
-  Future<void> loadCategories() async {
-    emit(state.copyWith(isCategoriesLoading: true));
-    final result = await _getCategoriesUseCase(const NoParams());
-    result.fold(
-      (failure) => emit(
-        state.copyWith(
-          isCategoriesLoading: false,
-          errorMessage: failure.message,
-        ),
-      ),
-      (categories) => emit(
-        state.copyWith(
-          isCategoriesLoading: false,
-          availableCategories: categories,
-        ),
-      ),
-    );
-  }
-
-  // Load user profile for display
-  Future<void> _loadUserProfile() async {
-    final result = await _getMyProfileUseCase(const NoParams());
-    result.fold(
-      (_) {},
-      (profile) => emit(
-        state.copyWith(
-          userName: profile.fullName,
-          profileImageUrl: profile.profileImageUrl,
-        ),
-      ),
-    );
-  }
-
-  // Initialize availability with default values
+  // Initialize availability with default values (Monday to Friday enabled, 9am-5pm)
   void _initAvailability() {
     final Map<int, DayAvailability> initialAvailability = {};
     for (int i = 1; i <= 7; i++) {
@@ -137,15 +32,34 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
     emit(state.copyWith(availability: initialAvailability));
   }
 
+  @override
+  Future<void> close() {
+    pageController.dispose();
+    titleController.dispose();
+    titleFocusNode.dispose();
+    aboutController.dispose();
+    aboutFocusNode.dispose();
+    return super.close();
+  }
+
   // ---- Navigation ----
   void nextStep() {
+    // Step 1: Personal Details
     if (state.currentStep == 1 &&
         !(formKey.currentState?.validate() ?? false)) {
       return;
     }
-    if (state.currentStep == 2 && state.selectedServices.isEmpty) return;
+
+    // Step 2: Services
+    if (state.currentStep == 2 && state.selectedServices.isEmpty) {
+      return;
+    }
+
+    // Step 4: Documents
     if (state.currentStep == 4) {
-      if (state.governmentIdDoc == null || state.certificateDoc == null) return;
+      if (state.document1Path == null || state.document2Path == null) {
+        return;
+      }
     }
 
     if (state.currentStep < 5) {
@@ -171,13 +85,14 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
     }
   }
 
-  // ---- Form Setters ----
+  // ---- Step 2: Details ----
   void setYearsOfExperience(int years) {
     if (years >= 0 && years <= 50) {
       emit(state.copyWith(yearsOfExperience: years));
     }
   }
 
+  // ---- Step 3: Services ----
   void toggleService(String serviceId) {
     final updatedServices = Set<String>.from(state.selectedServices);
     if (updatedServices.contains(serviceId)) {
@@ -188,6 +103,7 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
     emit(state.copyWith(selectedServices: updatedServices));
   }
 
+  // ---- Step 4: Availability ----
   void toggleDay(int dayOfWeek) {
     final currentDay = state.availability[dayOfWeek]!;
     final updatedAvailability = Map<int, DayAvailability>.from(
@@ -215,8 +131,38 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
     emit(state.copyWith(availability: updatedAvailability));
   }
 
-  void setCoverageRadius(double radius) =>
-      emit(state.copyWith(coverageRadius: radius));
+  // ---- Step 5: Documents ----
+  Future<void> pickDocument(int docNumber) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final path = '/path/document_$docNumber.pdf';
 
-  void clearError() => emit(state.copyWith(clearError: true));
+    if (docNumber == 1) {
+      emit(state.copyWith(document1Path: path));
+    } else if (docNumber == 2) {
+      emit(state.copyWith(document2Path: path));
+    }
+  }
+
+  void removeDocument(int docNumber) {
+    if (docNumber == 1) {
+      emit(state.copyWith(clearDocument1: true));
+    } else if (docNumber == 2) {
+      emit(state.copyWith(clearDocument2: true));
+    }
+  }
+
+  // ---- Step 6: Service Area ----
+  void setCoverageRadius(double radius) {
+    emit(state.copyWith(coverageRadius: radius));
+  }
+
+  // ---- Final Submission ----
+  void submitOnboarding() async {
+    emit(state.copyWith(status: ProviderOnboardingStatus.submitting));
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    // Success
+    emit(state.copyWith(status: ProviderOnboardingStatus.success));
+  }
 }
