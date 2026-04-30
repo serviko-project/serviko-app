@@ -24,11 +24,13 @@ import 'package:serviko_app/features/user/auth/domain/usecases/sign_out_usecase.
 import 'package:serviko_app/features/user/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/usecases/start_phone_reset_otp_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/usecases/verify_phone_reset_otp_usecase.dart';
+import 'package:serviko_app/features/user/profile/data/datasources/profile_local_datasource.dart';
 import 'package:serviko_app/features/user/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:serviko_app/features/user/profile/data/repositories/profile_repository_impl.dart';
 import 'package:serviko_app/features/user/profile/domain/repositories/profile_repository.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/create_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/delete_profile_image_usecase.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/get_cached_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/upload_profile_image_usecase.dart';
@@ -59,10 +61,12 @@ class InjectionContainer {
   late final GetCurrentUserUseCase getCurrentUserUseCase;
 
   // Profile
+  late final ProfileLocalDataSource profileLocalDataSource;
   late final ProfileRemoteDataSource profileRemoteDataSource;
   late final UserProfileRepository userProfileRepository;
   late final CreateUserProfileUseCase createUserProfileUseCase;
   late final GetMyProfileUseCase getMyProfileUseCase;
+  late final GetCachedProfileUseCase getCachedProfileUseCase;
   late final UpdateProfileUseCase updateProfileUseCase;
   late final UploadProfileImageUseCase uploadProfileImageUseCase;
   late final DeleteProfileImageUseCase deleteProfileImageUseCase;
@@ -107,15 +111,18 @@ class InjectionContainer {
     getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
 
     // Profile - Data
+    profileLocalDataSource = ProfileLocalDataSourceImpl();
     profileRemoteDataSource = ProfileRemoteDataSourceImpl(apiClient: apiClient);
     userProfileRepository = UserUserProfileRepositoryImpl(
       remoteDataSource: profileRemoteDataSource,
+      localDataSource: profileLocalDataSource,
       networkInfo: networkInfo,
     );
 
     // Profile - Use Cases
     createUserProfileUseCase = CreateUserProfileUseCase(userProfileRepository);
     getMyProfileUseCase = GetMyProfileUseCase(userProfileRepository);
+    getCachedProfileUseCase = GetCachedProfileUseCase(userProfileRepository);
     updateProfileUseCase = UpdateProfileUseCase(userProfileRepository);
     uploadProfileImageUseCase = UploadProfileImageUseCase(
       userProfileRepository,

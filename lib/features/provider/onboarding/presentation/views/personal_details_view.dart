@@ -44,9 +44,7 @@ class PersonalDetailsView extends StatelessWidget {
                     builder: (context, state) {
                       final userName = state.userName ?? 'User';
                       final photoUrl = state.profileImageUrl;
-                      final greeting = state.isReapplication
-                          ? 'Welcome back, $userName'
-                          : 'Hey, $userName 👋';
+                      final greeting = 'Hey, $userName 👋';
                       final subtitle = state.isReapplication
                           ? 'Let\'s update your details'
                           : 'Let\'s build your provider profile';
