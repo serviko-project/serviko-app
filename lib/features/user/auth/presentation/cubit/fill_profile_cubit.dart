@@ -85,8 +85,6 @@ class FillProfileCubit extends Cubit<FillProfileState> {
 
   // Remove uploaded image
   Future<void> deleteUploadedImage() async {
-    emit(state.copyWith(imageStatus: ImageUploadStatus.uploading));
-
     final result = await _deleteProfileImageUseCase();
 
     result.fold(
@@ -124,57 +122,53 @@ class FillProfileCubit extends Cubit<FillProfileState> {
       ),
     );
 
-    final profileFailed = result.fold(
-      (failure) {
+    await result.fold(
+      (failure) async {
         emit(
           state.copyWith(
             status: FillProfileStatus.error,
             errorMessage: failure.message,
           ),
         );
-        return true;
       },
-      (profile) {
-        emit(state.copyWith(profile: profile));
-        return false;
+      (profile) async {
+        // If profile created successfully, upload image if selected
+        if (state.selectedImage != null) {
+          final uploadResult = await _uploadProfileImageUseCase(
+            state.selectedImage!,
+          );
+
+          uploadResult.fold(
+            (failure) {
+              // Image upload failed but profile was created
+              emit(
+                state.copyWith(
+                  status: FillProfileStatus.success,
+                  imageStatus: ImageUploadStatus.error,
+                  imageError: 'Profile saved, but image upload failed.',
+                  profile: profile,
+                ),
+              );
+            },
+            (updatedProfile) {
+              emit(
+                state.copyWith(
+                  status: FillProfileStatus.success,
+                  imageStatus: ImageUploadStatus.uploaded,
+                  uploadedImageUrl: updatedProfile.profileImageUrl,
+                  profile: updatedProfile,
+                ),
+              );
+            },
+          );
+        } else {
+          // No image to upload
+          emit(
+            state.copyWith(status: FillProfileStatus.success, profile: profile),
+          );
+        }
       },
     );
-
-    if (profileFailed) return;
-
-    // Upload image
-    if (state.selectedImage != null) {
-      emit(state.copyWith(imageStatus: ImageUploadStatus.uploading));
-
-      final uploadResult = await _uploadProfileImageUseCase(
-        state.selectedImage!,
-      );
-
-      uploadResult.fold(
-        (failure) {
-          // Image upload failed but profile was created
-          emit(
-            state.copyWith(
-              status: FillProfileStatus.success,
-              imageStatus: ImageUploadStatus.error,
-              imageError: 'Profile saved, but image upload failed.',
-            ),
-          );
-        },
-        (profile) {
-          emit(
-            state.copyWith(
-              status: FillProfileStatus.success,
-              imageStatus: ImageUploadStatus.uploaded,
-              uploadedImageUrl: profile.profileImageUrl,
-              profile: profile,
-            ),
-          );
-        },
-      );
-    } else {
-      emit(state.copyWith(status: FillProfileStatus.success));
-    }
   }
 
   @override

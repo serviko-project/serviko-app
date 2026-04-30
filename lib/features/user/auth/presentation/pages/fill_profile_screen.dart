@@ -176,7 +176,7 @@ class _FillProfileView extends StatelessWidget {
             builder: (context, state) {
               final isLoading = state.status == FillProfileStatus.submitting;
               return CustomButton(
-                text: isLoading ? 'Creating Profile...' : 'Continue',
+                text: isLoading ? 'Saving Profile...' : 'Continue',
                 onPressed: isLoading ? null : () => _onContinue(context),
               );
             },

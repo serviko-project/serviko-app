@@ -1,5 +1,5 @@
 class DateTimeUtils {
-  // Formats a DateTime 
+  // Formats a DateTime
   static String formatDate(DateTime date) {
     const months = [
       'Jan',

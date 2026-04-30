@@ -14,6 +14,8 @@ abstract class UserProfileRepository {
 
   Future<Either<Failure, UserProfileEntity>> getMyProfile();
 
+  Future<Either<Failure, UserProfileEntity?>> getCachedProfile();
+
   Future<Either<Failure, UserProfileEntity>> updateProfile(
     UpdateProfileParams params,
   );
