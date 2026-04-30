@@ -20,6 +20,7 @@ import 'package:serviko_app/features/user/onboarding/presentation/pages/onboardi
 import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dart';
 import 'package:serviko_app/features/provider/main/presentation/pages/provider_main_screen.dart';
 import 'package:serviko_app/features/user/profile/presentation/pages/profile_screen.dart';
+import 'package:serviko_app/features/user/profile/presentation/pages/edit_profile_screen.dart';
 import 'package:serviko_app/features/provider/profile/presentation/pages/provider_profile_screen.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/pages/provider_onboarding_screen.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/pages/application_status_screen.dart';
@@ -46,6 +47,7 @@ class AppRouter {
   static const String calendar = 'calendar';
   static const String inbox = 'inbox';
   static const String profile = 'profile';
+  static const String editProfile = 'editProfile';
   static const String search = 'search';
 
   // Provider route names
@@ -75,6 +77,7 @@ class AppRouter {
   static const String _calendarPath = '/calendar';
   static const String _inboxPath = '/inbox';
   static const String _profilePath = '/profile';
+  static const String _editProfilePath = '/profile/edit';
   static const String _searchPath = '/search';
 
   // Provider paths
@@ -347,7 +350,11 @@ class AppRouter {
       GoRoute(
         name: providerOnboarding,
         path: _providerOnboardingPath,
-        builder: (context, state) => const ProviderOnboardingScreen(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final isReapplication = extra?['isReapplication'] == true;
+          return ProviderOnboardingScreen(isReapplication: isReapplication);
+        },
       ),
 
       // ---- Provider Application Status ----
@@ -415,6 +422,11 @@ class AppRouter {
         ],
       ),
 
+      GoRoute(
+        name: editProfile,
+        path: _editProfilePath,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
       GoRoute(
         name: search,
         path: _searchPath,
