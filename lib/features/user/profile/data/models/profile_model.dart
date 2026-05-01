@@ -11,6 +11,7 @@ class UserProfileModel extends UserProfileEntity {
     super.gender,
     super.profileImageUrl,
     required super.isActive,
+    super.providerStatus,
     required super.createdAt,
     required super.updatedAt,
   });
@@ -27,6 +28,7 @@ class UserProfileModel extends UserProfileEntity {
       gender: json['gender'] as String?,
       profileImageUrl: json['profile_image_url'] as String?,
       isActive: json['is_active'] as bool,
+      providerStatus: json['provider_status'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -85,6 +87,7 @@ class UserProfileModel extends UserProfileEntity {
       'gender': gender,
       'profile_image_url': profileImageUrl,
       'is_active': isActive,
+      'provider_status': providerStatus,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };

@@ -10,6 +10,7 @@ class UserProfileEntity extends Equatable {
   final String? gender;
   final String? profileImageUrl;
   final bool isActive;
+  final String? providerStatus;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -22,6 +23,7 @@ class UserProfileEntity extends Equatable {
     this.gender,
     this.profileImageUrl,
     required this.isActive,
+    this.providerStatus,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -36,6 +38,7 @@ class UserProfileEntity extends Equatable {
     gender,
     profileImageUrl,
     isActive,
+    providerStatus,
     createdAt,
     updatedAt,
   ];

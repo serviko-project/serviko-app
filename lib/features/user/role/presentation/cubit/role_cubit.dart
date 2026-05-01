@@ -40,6 +40,24 @@ class RoleCubit extends Cubit<RoleState> {
     }
   }
 
+  // Sync provider status 
+  void syncProviderStatusFromProfile(String? statusString) {
+    if (statusString == null) {
+      emit(state.copyWith(providerStatus: ProviderStatus.none));
+      return;
+    }
+
+    final status = ProviderStatus.values.firstWhere(
+      (e) => e.name == statusString,
+      orElse: () => ProviderStatus.none,
+    );
+    updateProviderStatus(status);
+
+    if (status == ProviderStatus.approved) {
+      initialize();
+    }
+  }
+
   // Reset on sign out
   void reset() {
     emit(const RoleState.initial());
