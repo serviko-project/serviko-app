@@ -54,9 +54,9 @@ class _PopularServicesView extends StatelessWidget {
                             selected: isSelected,
                             onSelected: (selected) {
                               if (selected) {
-                              final controller = context
-                                  .read<PopularServicesFilterCubit>();
-                              controller.updateFilter(filter);
+                                final controller = context
+                                    .read<PopularServicesFilterCubit>();
+                                controller.updateFilter(filter);
                               }
                             },
                             labelStyle: AppTextStyles.labelMedium.copyWith(

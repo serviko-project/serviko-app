@@ -6,6 +6,7 @@ import '../../../features/user/auth/presentation/pages/fill_profile_screen.dart'
 import '../../../features/user/auth/presentation/pages/splash_screen.dart';
 import '../../../features/user/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../../features/user/profile/presentation/pages/edit_profile_screen.dart';
+import '../../../features/user/bookmarks/presentation/pages/bookmarks_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -49,5 +50,10 @@ List<RouteBase> miscRoutes = [
     name: RouteNames.search,
     path: RoutePaths.search,
     builder: (context, state) => const PlaceholderScreen(title: 'Search'),
+  ),
+  GoRoute(
+    name: RouteNames.bookmarks,
+    path: RoutePaths.bookmarks,
+    builder: (context, state) => const BookmarksScreen(),
   ),
 ];

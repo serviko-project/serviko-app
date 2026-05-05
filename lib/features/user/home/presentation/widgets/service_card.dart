@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
@@ -13,6 +12,7 @@ class ServiceCard extends StatelessWidget {
   final int reviews;
   final VoidCallback? onBookmarkTap;
   final VoidCallback? onTap;
+  final bool isBookmarked;
 
   const ServiceCard({
     super.key,
@@ -24,6 +24,7 @@ class ServiceCard extends StatelessWidget {
     required this.reviews,
     this.onBookmarkTap,
     this.onTap,
+    this.isBookmarked = false,
   });
 
   @override
@@ -91,10 +92,12 @@ class ServiceCard extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: onBookmarkTap,
-                        icon: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedBookmark02,
+                        icon: Icon(
+                          isBookmarked
+                              ? Icons.bookmark
+                              : Icons.bookmark_add_outlined,
                           color: AppColors.primary,
-                          size: 20,
+                          size: 25,
                         ),
                       ),
                     ],

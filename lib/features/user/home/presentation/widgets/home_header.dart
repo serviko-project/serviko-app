@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
+import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
 
 // Profile image, User Name and action icons at the top of the home screen
@@ -56,7 +58,7 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => context.pushNamed(AppRouter.bookmarks),
             icon: const HugeIcon(
               icon: HugeIcons.strokeRoundedBookmark02,
               color: AppColors.textPrimary,

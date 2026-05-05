@@ -20,6 +20,7 @@ class RouteNames {
   static const String profile = 'profile';
   static const String editProfile = 'editProfile';
   static const String search = 'search';
+  static const String bookmarks = 'bookmarks';
 
   // Provider route names
   static const String providerOnboarding = 'providerOnboarding';
@@ -53,6 +54,7 @@ class RoutePaths {
   static const String profile = '/profile';
   static const String editProfile = '/profile/edit';
   static const String search = '/search';
+  static const String bookmarks = '/bookmarks';
 
   // Provider paths
   static const String providerOnboarding = '/provider/onboarding';
