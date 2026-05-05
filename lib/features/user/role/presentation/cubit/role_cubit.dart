@@ -40,7 +40,7 @@ class RoleCubit extends Cubit<RoleState> {
     }
   }
 
-  // Sync provider status 
+  // Sync provider status
   void syncProviderStatusFromProfile(String? statusString) {
     if (statusString == null) {
       emit(state.copyWith(providerStatus: ProviderStatus.none));

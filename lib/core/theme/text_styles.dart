@@ -9,7 +9,7 @@ abstract final class AppTextStyles {
   // ---- Headings ----
   static TextStyle get h1 => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
     height: 1.3,
@@ -17,7 +17,7 @@ abstract final class AppTextStyles {
 
   static TextStyle get h2 => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     height: 1.3,
@@ -25,7 +25,7 @@ abstract final class AppTextStyles {
 
   static TextStyle get h3 => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     height: 1.4,
@@ -34,7 +34,7 @@ abstract final class AppTextStyles {
   // ---- Body ----
   static TextStyle get bodyLarge => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
     height: 1.5,
@@ -42,7 +42,7 @@ abstract final class AppTextStyles {
 
   static TextStyle get bodyMedium => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
     height: 1.5,
@@ -50,7 +50,7 @@ abstract final class AppTextStyles {
 
   static TextStyle get bodySmall => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,
     height: 1.5,
@@ -59,7 +59,7 @@ abstract final class AppTextStyles {
   // ---- Labels / Buttons ----
   static TextStyle get labelLarge => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     height: 1.4,
@@ -67,7 +67,7 @@ abstract final class AppTextStyles {
 
   static TextStyle get labelMedium => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
     color: AppColors.textPrimary,
     height: 1.4,
@@ -75,7 +75,7 @@ abstract final class AppTextStyles {
 
   static TextStyle get labelSmall => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
     height: 1.4,
