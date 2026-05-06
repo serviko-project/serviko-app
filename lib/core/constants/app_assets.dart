@@ -16,6 +16,9 @@ abstract final class AppAssets {
   // ---- Success Animation ----
   static const String successAnimation = 'assets/lottie/success_animation.json';
 
+  // ---- Not Found Animation ----
+  static const String notFoundAnimation = 'assets/lottie/not_found.json';
+
   // ---- Social Media Icons ----
   static const String googleIcon =
       'assets/images/social_media_icons/google.webp';
