@@ -6,6 +6,7 @@ import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/theme/app_theme.dart';
 import 'package:serviko_app/features/user/auth/presentation/bloc/auth_bloc.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_cubit.dart';
+import 'package:serviko_app/features/user/profile/presentation/cubit/profile_state.dart';
 import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dart';
 import 'package:serviko_app/firebase_options.dart';
 import 'package:serviko_app/injection_container.dart';
@@ -79,15 +80,28 @@ class _ServikoAppState extends State<ServikoApp> {
         BlocProvider.value(value: _roleCubit),
         BlocProvider.value(value: _profileCubit),
       ],
-      child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            _profileCubit.fetchProfile();
-          } else if (state is AuthUnauthenticated) {
-            _profileCubit.reset();
-            _roleCubit.reset();
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthAuthenticated) {
+                _profileCubit.fetchProfile();
+              } else if (state is AuthUnauthenticated) {
+                _profileCubit.reset();
+                _roleCubit.reset();
+              }
+            },
+          ),
+          BlocListener<ProfileCubit, ProfileState>(
+            listener: (context, state) {
+              if (state is ProfileLoaded) {
+                _roleCubit.syncProviderStatusFromProfile(
+                  state.profile.providerStatus,
+                );
+              }
+            },
+          ),
+        ],
         child: MaterialApp.router(
           title: 'Serviko',
           debugShowCheckedModeBanner: false,

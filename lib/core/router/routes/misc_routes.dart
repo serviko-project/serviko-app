@@ -1,11 +1,15 @@
 import 'package:go_router/go_router.dart';
-import '../../widgets/placeholder_screen.dart';
 import '../../../features/user/auth/presentation/pages/address_screen.dart';
 import '../../../features/user/auth/presentation/pages/congratulations_screen.dart';
 import '../../../features/user/auth/presentation/pages/fill_profile_screen.dart';
 import '../../../features/user/auth/presentation/pages/splash_screen.dart';
 import '../../../features/user/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../../features/user/profile/presentation/pages/edit_profile_screen.dart';
+import '../../../features/user/bookmarks/presentation/pages/bookmarks_screen.dart';
+import '../../../features/user/search/presentation/pages/search_screen.dart';
+import '../../../features/user/category/presentation/pages/all_categories_screen.dart';
+import '../../../features/user/category/presentation/pages/category_details_screen.dart';
+import '../../../features/user/home/presentation/pages/service_detail_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -48,6 +52,35 @@ List<RouteBase> miscRoutes = [
   GoRoute(
     name: RouteNames.search,
     path: RoutePaths.search,
-    builder: (context, state) => const PlaceholderScreen(title: 'Search'),
+    builder: (context, state) {
+      final openFilter = state.extra as bool? ?? false;
+      return SearchScreen(openFilter: openFilter);
+    },
+  ),
+  GoRoute(
+    name: RouteNames.bookmarks,
+    path: RoutePaths.bookmarks,
+    builder: (context, state) => const BookmarksScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.allCategories,
+    path: RoutePaths.allCategories,
+    builder: (context, state) => const AllCategoriesScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.categoryDetails,
+    path: RoutePaths.categoryDetails,
+    builder: (context, state) {
+      final categoryName = state.extra as String? ?? 'Category Details';
+      return CategoryDetailsScreen(categoryName: categoryName);
+    },
+  ),
+  GoRoute(
+    name: RouteNames.serviceDetails,
+    path: RoutePaths.serviceDetails,
+    builder: (context, state) {
+      final serviceIndex = state.extra as int? ?? 0;
+      return ServiceDetailScreen(serviceIndex: serviceIndex);
+    },
   ),
 ];
