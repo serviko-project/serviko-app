@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
 import 'search_result_header.dart';
@@ -33,10 +35,13 @@ class SearchResultsView extends StatelessWidget {
               return ServiceCard(
                 imageUrl: result['image'],
                 providerName: result['name'],
-                serviceTitle: result['service'],
+                categories: [result['service']],
                 price: result['price'],
                 rating: result['rating'],
                 reviews: result['reviews'],
+                onTap: () {
+                  context.pushNamed(AppRouter.serviceDetails, extra: index);
+                },
               );
             },
           ),

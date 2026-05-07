@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/core/widgets/custom_app_bar.dart';
 import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_filter_cubit.dart';
@@ -102,13 +104,15 @@ class _BookmarksView extends StatelessWidget {
                   imageUrl:
                       "https://imgs.search.brave.com/UveizRxweFrraMwnNtB7kFdENT_6dhwB5FpySUMnm3I/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wbHVz/LnVuc3BsYXNoLmNv/bS9wcmVtaXVtX3Bo/b3RvLTE2NjEzMzM0/NDU5NDEtOTUzMTcz/OWU1NGUwP2ZtPWpw/ZyZxPTYwJnc9MzAw/MCZhdXRvPWZvcm1h/dCZmaXQ9Y3JvcCZp/eGxpYj1yYi00LjEu/MCZpeGlkPU0zd3hN/akEzZkRCOE1IeHpa/V0Z5WTJoOE9YeDhj/bVZ3WVdseUpUSXdj/MlZ5ZG1salpYeGxi/bnd3Zkh3d2ZIeDhN/QT09",
                   providerName: 'Provider ${index + 1}',
-                  serviceTitle: 'Service ${index + 1}',
+                  categories: const ['Category 1', 'Category 2'],
                   price: 20.0 + (index * 5),
                   rating: 4.5 + (index * 0.05),
                   reviews: 120 + (index * 42),
                   isBookmarked: true,
                   onBookmarkTap: () =>
                       RemoveBookmarkBottomSheetWidget.show(context, index),
+                  onTap: () =>
+                      context.pushNamed(AppRouter.serviceDetails, extra: index),
                 );
               },
             ),

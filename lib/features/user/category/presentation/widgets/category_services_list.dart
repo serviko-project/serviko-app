@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
 
@@ -17,12 +19,13 @@ class CategoryServicesList extends StatelessWidget {
         return ServiceCard(
           imageUrl: 'https://picsum.photos/seed/service$index/200/200',
           providerName: 'Provider ${index + 1}',
-          serviceTitle: 'Service ${index + 1}',
+          categories: const ['Category 1', 'Category 2'],
           price: 20.0 + (index * 5),
           rating: 4.0 + (index % 10) / 10,
           reviews: 100 + (index * 10),
           onBookmarkTap: () {},
-          onTap: () {},
+          onTap: () =>
+              context.pushNamed(AppRouter.serviceDetails, extra: index),
         );
       },
     );

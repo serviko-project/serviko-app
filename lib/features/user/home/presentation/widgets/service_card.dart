@@ -6,7 +6,7 @@ import 'package:serviko_app/core/theme/text_styles.dart';
 class ServiceCard extends StatelessWidget {
   final String imageUrl;
   final String providerName;
-  final String serviceTitle;
+  final List<String> categories;
   final double price;
   final double rating;
   final int reviews;
@@ -18,7 +18,7 @@ class ServiceCard extends StatelessWidget {
     super.key,
     required this.imageUrl,
     required this.providerName,
-    required this.serviceTitle,
+    this.categories = const [],
     required this.price,
     required this.rating,
     required this.reviews,
@@ -26,6 +26,15 @@ class ServiceCard extends StatelessWidget {
     this.onTap,
     this.isBookmarked = false,
   });
+
+  String _formatCategories(List<String> categories) {
+    if (categories.isEmpty) return '';
+    if (categories.length <= 2) {
+      return categories.join(' • ');
+    }
+    final remaining = categories.length - 2;
+    return '${categories.take(2).join(' • ')} (+$remaining)';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,35 +90,38 @@ class ServiceCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           providerName,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
-                            fontSize: 13,
+                          style: TextStyle(
+                            fontSize: 15.5,
                             letterSpacing: 0.5,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
                         onPressed: onBookmarkTap,
                         icon: Icon(
                           isBookmarked
                               ? Icons.bookmark
                               : Icons.bookmark_add_outlined,
                           color: AppColors.primary,
-                          size: 25,
+                          size: 22,
                         ),
                       ),
                     ],
                   ),
-                  // Service Title
+                  const SizedBox(height: 2),
+
+                  // Selected Categories
                   Text(
-                    serviceTitle,
-                    style: TextStyle(
-                      fontSize: 15.5,
-                      letterSpacing: 0.5,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                    _formatCategories(categories),
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w500,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -121,8 +133,7 @@ class ServiceCard extends StatelessWidget {
                     '₹${price.toStringAsFixed(0)} / hr',
                     style: AppTextStyles.h3.copyWith(
                       color: AppColors.primary,
-                      fontSize: 15,
-                      letterSpacing: 0.25,
+                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -143,10 +154,12 @@ class ServiceCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text('|', style: AppTextStyles.bodySmall),
                       const SizedBox(width: 4),
-                      Text('$reviews reviews', style: AppTextStyles.bodySmall),
+                      Text(
+                        '${reviews > 1000 ? '${(reviews / 1000).toStringAsFixed(1)}k' : reviews} reviews',
+                        style: AppTextStyles.bodySmall,
+                      ),
                     ],
                   ),
-                  SizedBox(height: AppSizes.sm),
                 ],
               ),
             ),

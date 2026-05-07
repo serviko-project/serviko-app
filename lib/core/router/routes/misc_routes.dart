@@ -9,6 +9,7 @@ import '../../../features/user/bookmarks/presentation/pages/bookmarks_screen.dar
 import '../../../features/user/search/presentation/pages/search_screen.dart';
 import '../../../features/user/category/presentation/pages/all_categories_screen.dart';
 import '../../../features/user/category/presentation/pages/category_details_screen.dart';
+import '../../../features/user/home/presentation/pages/service_detail_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -72,6 +73,14 @@ List<RouteBase> miscRoutes = [
     builder: (context, state) {
       final categoryName = state.extra as String? ?? 'Category Details';
       return CategoryDetailsScreen(categoryName: categoryName);
+    },
+  ),
+  GoRoute(
+    name: RouteNames.serviceDetails,
+    path: RoutePaths.serviceDetails,
+    builder: (context, state) {
+      final serviceIndex = state.extra as int? ?? 0;
+      return ServiceDetailScreen(serviceIndex: serviceIndex);
     },
   ),
 ];

@@ -23,6 +23,7 @@ class RouteNames {
   static const String bookmarks = 'bookmarks';
   static const String allCategories = 'allCategories';
   static const String categoryDetails = 'categoryDetails';
+  static const String serviceDetails = 'serviceDetails';
 
   // Provider route names
   static const String providerOnboarding = 'providerOnboarding';
@@ -59,6 +60,7 @@ class RoutePaths {
   static const String bookmarks = '/bookmarks';
   static const String allCategories = '/all-categories';
   static const String categoryDetails = '/category-details';
+  static const String serviceDetails = '/service-details';
 
   // Provider paths
   static const String providerOnboarding = '/provider/onboarding';
