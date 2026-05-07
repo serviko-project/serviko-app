@@ -24,7 +24,9 @@ class ProviderOnboardingState extends Equatable {
   // Step 3: Services
   final List<CategoryEntity> availableCategories;
   final Set<String> selectedServices;
+  final Map<String, double> categoryPrices;
   final bool isCategoriesLoading;
+  final bool showPriceValidation;
 
   // Step 4: Availability
   final Map<int, DayAvailability> availability;
@@ -52,7 +54,9 @@ class ProviderOnboardingState extends Equatable {
     this.yearsOfExperience = 0,
     this.availableCategories = const [],
     this.selectedServices = const {},
+    this.categoryPrices = const {},
     this.isCategoriesLoading = false,
+    this.showPriceValidation = false,
     this.availability = const {},
     this.governmentIdDoc,
     this.certificateDoc,
@@ -71,7 +75,9 @@ class ProviderOnboardingState extends Equatable {
     int? yearsOfExperience,
     List<CategoryEntity>? availableCategories,
     Set<String>? selectedServices,
+    Map<String, double>? categoryPrices,
     bool? isCategoriesLoading,
+    bool? showPriceValidation,
     Map<int, DayAvailability>? availability,
     ProviderDocumentEntity? governmentIdDoc,
     ProviderDocumentEntity? certificateDoc,
@@ -92,7 +98,9 @@ class ProviderOnboardingState extends Equatable {
       yearsOfExperience: yearsOfExperience ?? this.yearsOfExperience,
       availableCategories: availableCategories ?? this.availableCategories,
       selectedServices: selectedServices ?? this.selectedServices,
+      categoryPrices: categoryPrices ?? this.categoryPrices,
       isCategoriesLoading: isCategoriesLoading ?? this.isCategoriesLoading,
+      showPriceValidation: showPriceValidation ?? this.showPriceValidation,
       availability: availability ?? this.availability,
       governmentIdDoc: clearGovernmentIdDoc
           ? null
@@ -117,7 +125,9 @@ class ProviderOnboardingState extends Equatable {
     yearsOfExperience,
     availableCategories,
     selectedServices,
+    categoryPrices,
     isCategoriesLoading,
+    showPriceValidation,
     availability,
     governmentIdDoc,
     certificateDoc,

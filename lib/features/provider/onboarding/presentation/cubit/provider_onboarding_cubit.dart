@@ -143,7 +143,31 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
         !(formKey.currentState?.validate() ?? false)) {
       return;
     }
-    if (state.currentStep == 2 && state.selectedServices.isEmpty) return;
+    if (state.currentStep == 2 && state.selectedServices.isEmpty) {
+      emit(
+        state.copyWith(
+          status: ProviderOnboardingStatus.error,
+          errorMessage: 'Please select at least one service category.',
+        ),
+      );
+      return;
+    }
+    if (state.currentStep == 2) {
+      final allPriced = state.selectedServices.every(
+        (id) => (state.categoryPrices[id] ?? 0) > 0,
+      );
+      if (!allPriced) {
+        emit(
+          state.copyWith(
+            showPriceValidation: true,
+            status: ProviderOnboardingStatus.error,
+            errorMessage:
+                'Please set an hourly rate for all selected services.',
+          ),
+        );
+        return;
+      }
+    }
     if (state.currentStep == 4) {
       if (state.governmentIdDoc == null || state.certificateDoc == null) return;
     }
@@ -180,12 +204,28 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
 
   void toggleService(String serviceId) {
     final updatedServices = Set<String>.from(state.selectedServices);
+    final updatedPrices = Map<String, double>.from(state.categoryPrices);
     if (updatedServices.contains(serviceId)) {
       updatedServices.remove(serviceId);
+      updatedPrices.remove(serviceId);
     } else {
       updatedServices.add(serviceId);
     }
-    emit(state.copyWith(selectedServices: updatedServices));
+    emit(
+      state.copyWith(
+        selectedServices: updatedServices,
+        categoryPrices: updatedPrices,
+        showPriceValidation: false,
+      ),
+    );
+  }
+
+  void updateCategoryPrice(String categoryId, double price) {
+    final updatedPrices = Map<String, double>.from(state.categoryPrices);
+    updatedPrices[categoryId] = price;
+    emit(
+      state.copyWith(categoryPrices: updatedPrices, showPriceValidation: false),
+    );
   }
 
   void toggleDay(int dayOfWeek) {

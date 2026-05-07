@@ -25,7 +25,7 @@ class SubmitApplicationParams extends Equatable {
   final String professionalTitle;
   final int yearsOfExperience;
   final String? about;
-  final List<String> serviceCategoryIds;
+  final List<ServiceCategoryParam> serviceCategories;
   final List<AvailabilitySlotParams> availability;
   final double? latitude;
   final double? longitude;
@@ -35,7 +35,7 @@ class SubmitApplicationParams extends Equatable {
     required this.professionalTitle,
     required this.yearsOfExperience,
     this.about,
-    required this.serviceCategoryIds,
+    required this.serviceCategories,
     required this.availability,
     this.latitude,
     this.longitude,
@@ -46,7 +46,7 @@ class SubmitApplicationParams extends Equatable {
     'professional_title': professionalTitle,
     'years_of_experience': yearsOfExperience,
     'about': about,
-    'service_category_ids': serviceCategoryIds,
+    'service_categories': serviceCategories.map((s) => s.toJson()).toList(),
     'availability': availability.map((a) => a.toJson()).toList(),
     'latitude': latitude,
     'longitude': longitude,
@@ -58,12 +58,31 @@ class SubmitApplicationParams extends Equatable {
     professionalTitle,
     yearsOfExperience,
     about,
-    serviceCategoryIds,
+    serviceCategories,
     availability,
     latitude,
     longitude,
     coverageRadiusKm,
   ];
+}
+
+// Category + price
+class ServiceCategoryParam extends Equatable {
+  final String categoryId;
+  final double basePricePerHour;
+
+  const ServiceCategoryParam({
+    required this.categoryId,
+    required this.basePricePerHour,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'category_id': categoryId,
+    'base_price_per_hour': basePricePerHour,
+  };
+
+  @override
+  List<Object?> get props => [categoryId, basePricePerHour];
 }
 
 // Single day availability slot
