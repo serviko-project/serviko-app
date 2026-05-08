@@ -35,6 +35,8 @@ mixin OnboardingSubmissionMixin on ProviderOnboardingCubitBase {
           : null,
       serviceCategories: serviceCategories,
       availability: availabilitySlots,
+      latitude: state.latitude,
+      longitude: state.longitude,
       coverageRadiusKm: state.coverageRadius,
     );
 
@@ -116,6 +118,8 @@ mixin OnboardingSubmissionMixin on ProviderOnboardingCubitBase {
             governmentIdDoc: govDoc,
             certificateDoc: certDoc,
             coverageRadius: profile.coverageRadiusKm ?? 15.0,
+            latitude: profile.latitude,
+            longitude: profile.longitude,
           ),
         );
       },

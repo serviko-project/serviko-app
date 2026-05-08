@@ -39,6 +39,10 @@ class ProviderOnboardingState extends Equatable {
 
   // Step 6: Service Area
   final double coverageRadius;
+  final double? latitude;
+  final double? longitude;
+  final String? resolvedAddress;
+  final bool isLocationLoading;
 
   // Re-application flag
   final bool isReapplication;
@@ -63,6 +67,10 @@ class ProviderOnboardingState extends Equatable {
     this.isUploadingDoc1 = false,
     this.isUploadingDoc2 = false,
     this.coverageRadius = 15.0,
+    this.latitude,
+    this.longitude,
+    this.resolvedAddress,
+    this.isLocationLoading = false,
     this.isReapplication = false,
     this.userName,
     this.profileImageUrl,
@@ -84,6 +92,10 @@ class ProviderOnboardingState extends Equatable {
     bool? isUploadingDoc1,
     bool? isUploadingDoc2,
     double? coverageRadius,
+    double? latitude,
+    double? longitude,
+    String? resolvedAddress,
+    bool? isLocationLoading,
     bool? isReapplication,
     String? userName,
     String? profileImageUrl,
@@ -111,6 +123,10 @@ class ProviderOnboardingState extends Equatable {
       isUploadingDoc1: isUploadingDoc1 ?? this.isUploadingDoc1,
       isUploadingDoc2: isUploadingDoc2 ?? this.isUploadingDoc2,
       coverageRadius: coverageRadius ?? this.coverageRadius,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      resolvedAddress: resolvedAddress ?? this.resolvedAddress,
+      isLocationLoading: isLocationLoading ?? this.isLocationLoading,
       isReapplication: isReapplication ?? this.isReapplication,
       userName: userName ?? this.userName,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
@@ -134,6 +150,10 @@ class ProviderOnboardingState extends Equatable {
     isUploadingDoc1,
     isUploadingDoc2,
     coverageRadius,
+    latitude,
+    longitude,
+    resolvedAddress,
+    isLocationLoading,
     isReapplication,
     userName,
     profileImageUrl,
