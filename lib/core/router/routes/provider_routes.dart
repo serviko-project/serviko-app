@@ -3,8 +3,11 @@ import '../../../features/provider/main/presentation/pages/provider_main_screen.
 import '../../../features/provider/onboarding/presentation/pages/application_status_screen.dart';
 import '../../../features/provider/onboarding/presentation/pages/provider_onboarding_screen.dart';
 import '../../../features/provider/profile/presentation/pages/provider_profile_screen.dart';
+import '../../../features/provider/profile/presentation/cubit/provider_profile_cubit.dart';
 import '../../widgets/placeholder_screen.dart';
 import '../route_constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../injection_container.dart';
 
 List<RouteBase> providerRoutes = [
   // ---- Provider Onboarding ----
@@ -28,7 +31,13 @@ List<RouteBase> providerRoutes = [
   // ---- Provider Shell ----
   StatefulShellRoute.indexedStack(
     builder: (context, state, navigationShell) {
-      return ProviderMainScreen(navigationShell: navigationShell);
+      return BlocProvider(
+        create: (context) => ProviderProfileCubit(
+          getMyProviderProfileUseCase:
+              InjectionContainer.instance.getMyProviderProfileUseCase,
+        )..fetchProviderProfile(),
+        child: ProviderMainScreen(navigationShell: navigationShell),
+      );
     },
     branches: [
       StatefulShellBranch(
