@@ -7,6 +7,7 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/reapply
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_application_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_state.dart';
+import 'package:serviko_app/features/shared/location/data/services/location_service.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile_usecase.dart';
 
 // Base class for ProviderOnboardingCubit
@@ -24,8 +25,13 @@ abstract class ProviderOnboardingCubitBase
   GetMyProfileUseCase get getMyProfileUseCase;
 
   // Controllers
+  PageController get pageController;
+  GlobalKey<FormState> get formKey;
   TextEditingController get titleController;
   TextEditingController get aboutController;
+
+  // Location Service
+  LocationService get locationService;
 
   // Helpers
   TimeOfDay parseTime(String time) {

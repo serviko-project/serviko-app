@@ -59,4 +59,15 @@ class FormValidators {
     }
     return null;
   }
+
+  // Validates a required numeric field
+  static String? validateNumeric(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName is required';
+    }
+    if (num.tryParse(value.trim()) == null) {
+      return 'Please enter a valid number';
+    }
+    return null;
+  }
 }

@@ -116,4 +116,50 @@ class ProviderOnboardingRepositoryImpl implements ProviderOnboardingRepository {
       return Left(ServerFailure(e.message, statusCode: e.statusCode));
     }
   }
+
+  @override
+  Future<Either<Failure, ProviderProfileEntity>> updateProviderDetails(
+    Map<String, dynamic> data,
+  ) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+
+    try {
+      final profile = await _remoteDataSource.updateProviderDetails(data);
+      return Right(profile);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ProviderProfileEntity>> uploadBannerImage(
+    File file,
+  ) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+
+    try {
+      final profile = await _remoteDataSource.uploadBannerImage(file);
+      return Right(profile);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ProviderProfileEntity>> deleteBannerImage() async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+
+    try {
+      final profile = await _remoteDataSource.deleteBannerImage();
+      return Right(profile);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    }
+  }
 }

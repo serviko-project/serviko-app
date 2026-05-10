@@ -48,7 +48,10 @@ class AppRouter {
   static GoRouter router(AuthBloc authBloc, RoleCubit roleCubit) => GoRouter(
     initialLocation: RoutePaths.splash,
     debugLogDiagnostics: true,
-    refreshListenable: GoRouterRefreshStream(authBloc.stream),
+    refreshListenable: GoRouterRefreshStream([
+      authBloc.stream,
+      roleCubit.stream,
+    ]),
     redirect: (context, state) =>
         RouterRedirection.handle(context, state, authBloc, roleCubit),
     routes: [...miscRoutes, ...authRoutes, customerRoutes, ...providerRoutes],

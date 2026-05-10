@@ -11,8 +11,7 @@ class RoleCubit extends Cubit<RoleState> {
 
   Future<void> initialize() async {
     final savedRole = await _loadSavedRole();
-    if (savedRole == UserRole.provider &&
-        state.providerStatus == ProviderStatus.approved) {
+    if (savedRole == UserRole.provider) {
       emit(state.copyWith(activeRole: UserRole.provider));
     }
   }

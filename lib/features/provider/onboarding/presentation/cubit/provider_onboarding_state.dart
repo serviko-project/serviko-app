@@ -24,7 +24,9 @@ class ProviderOnboardingState extends Equatable {
   // Step 3: Services
   final List<CategoryEntity> availableCategories;
   final Set<String> selectedServices;
+  final Map<String, double> categoryPrices;
   final bool isCategoriesLoading;
+  final bool showPriceValidation;
 
   // Step 4: Availability
   final Map<int, DayAvailability> availability;
@@ -37,6 +39,10 @@ class ProviderOnboardingState extends Equatable {
 
   // Step 6: Service Area
   final double coverageRadius;
+  final double? latitude;
+  final double? longitude;
+  final String? resolvedAddress;
+  final bool isLocationLoading;
 
   // Re-application flag
   final bool isReapplication;
@@ -52,13 +58,19 @@ class ProviderOnboardingState extends Equatable {
     this.yearsOfExperience = 0,
     this.availableCategories = const [],
     this.selectedServices = const {},
+    this.categoryPrices = const {},
     this.isCategoriesLoading = false,
+    this.showPriceValidation = false,
     this.availability = const {},
     this.governmentIdDoc,
     this.certificateDoc,
     this.isUploadingDoc1 = false,
     this.isUploadingDoc2 = false,
     this.coverageRadius = 15.0,
+    this.latitude,
+    this.longitude,
+    this.resolvedAddress,
+    this.isLocationLoading = false,
     this.isReapplication = false,
     this.userName,
     this.profileImageUrl,
@@ -71,13 +83,19 @@ class ProviderOnboardingState extends Equatable {
     int? yearsOfExperience,
     List<CategoryEntity>? availableCategories,
     Set<String>? selectedServices,
+    Map<String, double>? categoryPrices,
     bool? isCategoriesLoading,
+    bool? showPriceValidation,
     Map<int, DayAvailability>? availability,
     ProviderDocumentEntity? governmentIdDoc,
     ProviderDocumentEntity? certificateDoc,
     bool? isUploadingDoc1,
     bool? isUploadingDoc2,
     double? coverageRadius,
+    double? latitude,
+    double? longitude,
+    String? resolvedAddress,
+    bool? isLocationLoading,
     bool? isReapplication,
     String? userName,
     String? profileImageUrl,
@@ -92,7 +110,9 @@ class ProviderOnboardingState extends Equatable {
       yearsOfExperience: yearsOfExperience ?? this.yearsOfExperience,
       availableCategories: availableCategories ?? this.availableCategories,
       selectedServices: selectedServices ?? this.selectedServices,
+      categoryPrices: categoryPrices ?? this.categoryPrices,
       isCategoriesLoading: isCategoriesLoading ?? this.isCategoriesLoading,
+      showPriceValidation: showPriceValidation ?? this.showPriceValidation,
       availability: availability ?? this.availability,
       governmentIdDoc: clearGovernmentIdDoc
           ? null
@@ -103,6 +123,10 @@ class ProviderOnboardingState extends Equatable {
       isUploadingDoc1: isUploadingDoc1 ?? this.isUploadingDoc1,
       isUploadingDoc2: isUploadingDoc2 ?? this.isUploadingDoc2,
       coverageRadius: coverageRadius ?? this.coverageRadius,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      resolvedAddress: resolvedAddress ?? this.resolvedAddress,
+      isLocationLoading: isLocationLoading ?? this.isLocationLoading,
       isReapplication: isReapplication ?? this.isReapplication,
       userName: userName ?? this.userName,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
@@ -117,13 +141,19 @@ class ProviderOnboardingState extends Equatable {
     yearsOfExperience,
     availableCategories,
     selectedServices,
+    categoryPrices,
     isCategoriesLoading,
+    showPriceValidation,
     availability,
     governmentIdDoc,
     certificateDoc,
     isUploadingDoc1,
     isUploadingDoc2,
     coverageRadius,
+    latitude,
+    longitude,
+    resolvedAddress,
+    isLocationLoading,
     isReapplication,
     userName,
     profileImageUrl,

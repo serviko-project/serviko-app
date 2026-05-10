@@ -45,7 +45,7 @@ class _ServikoAppState extends State<ServikoApp> {
       getMyProfileUseCase: di.getMyProfileUseCase,
       profileLocalDataSource: di.profileLocalDataSource,
     );
-    _roleCubit = RoleCubit();
+    _roleCubit = RoleCubit()..initialize();
     _profileCubit = ProfileCubit(
       getMyProfileUseCase: di.getMyProfileUseCase,
       getCachedProfileUseCase: di.getCachedProfileUseCase,

@@ -17,6 +17,7 @@ class ProviderProfileModel extends ProviderProfileEntity {
     super.latitude,
     super.longitude,
     super.coverageRadiusKm,
+    super.bannerImageUrl,
     super.services,
     super.availability,
     super.documents,
@@ -44,6 +45,7 @@ class ProviderProfileModel extends ProviderProfileEntity {
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       coverageRadiusKm: (json['coverage_radius_km'] as num?)?.toDouble(),
+      bannerImageUrl: json['banner_image_url'] as String?,
       services:
           (json['services'] as List<dynamic>?)
               ?.map(
@@ -81,6 +83,7 @@ class ProviderServiceModel extends ProviderServiceEntity {
     required super.categoryId,
     required super.categoryTitle,
     required super.categoryIcon,
+    required super.basePricePerHour,
   });
 
   factory ProviderServiceModel.fromJson(Map<String, dynamic> json) {
@@ -89,6 +92,7 @@ class ProviderServiceModel extends ProviderServiceEntity {
       categoryId: json['category_id'] as String,
       categoryTitle: json['category_title'] as String,
       categoryIcon: json['category_icon'] as String,
+      basePricePerHour: (json['base_price_per_hour'] as num?)?.toDouble(),
     );
   }
 }

@@ -9,6 +9,9 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_cat
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_my_provider_profile_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/reapply_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_application_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_provider_details_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_banner_image_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
 import 'package:serviko_app/features/user/auth/data/datasources/auth_local_datasource.dart';
 import 'package:serviko_app/features/user/auth/data/datasources/auth_remote_datasource.dart';
@@ -81,6 +84,9 @@ class InjectionContainer {
   late final DeleteDocumentUseCase deleteDocumentUseCase;
   late final ReapplyUseCase reapplyUseCase;
   late final GetCategoriesUseCase getCategoriesUseCase;
+  late final UpdateProviderDetailsUseCase updateProviderDetailsUseCase;
+  late final UploadBannerImageUseCase uploadBannerImageUseCase;
+  late final DeleteBannerImageUseCase deleteBannerImageUseCase;
 
   // Initialise
   Future<void> init() async {
@@ -151,5 +157,14 @@ class InjectionContainer {
     deleteDocumentUseCase = DeleteDocumentUseCase(providerOnboardingRepository);
     reapplyUseCase = ReapplyUseCase(providerOnboardingRepository);
     getCategoriesUseCase = GetCategoriesUseCase(providerOnboardingRepository);
+    updateProviderDetailsUseCase = UpdateProviderDetailsUseCase(
+      providerOnboardingRepository,
+    );
+    uploadBannerImageUseCase = UploadBannerImageUseCase(
+      providerOnboardingRepository,
+    );
+    deleteBannerImageUseCase = DeleteBannerImageUseCase(
+      providerOnboardingRepository,
+    );
   }
 }

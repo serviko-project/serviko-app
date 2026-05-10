@@ -20,14 +20,23 @@ mixin OnboardingSubmissionMixin on ProviderOnboardingCubitBase {
       );
     }).toList();
 
+    final serviceCategories = state.selectedServices.map((id) {
+      return ServiceCategoryParam(
+        categoryId: id,
+        basePricePerHour: state.categoryPrices[id] ?? 0,
+      );
+    }).toList();
+
     final params = SubmitApplicationParams(
       professionalTitle: titleController.text.trim(),
       yearsOfExperience: state.yearsOfExperience,
       about: aboutController.text.trim().isNotEmpty
           ? aboutController.text.trim()
           : null,
-      serviceCategoryIds: state.selectedServices.toList(),
+      serviceCategories: serviceCategories,
       availability: availabilitySlots,
+      latitude: state.latitude,
+      longitude: state.longitude,
       coverageRadiusKm: state.coverageRadius,
     );
 
@@ -64,6 +73,14 @@ mixin OnboardingSubmissionMixin on ProviderOnboardingCubitBase {
 
         final selectedIds = profile.services.map((s) => s.categoryId).toSet();
 
+        // Pre-fill per-category prices
+        final Map<String, double> prices = {};
+        for (final service in profile.services) {
+          if (service.basePricePerHour != null) {
+            prices[service.categoryId] = service.basePricePerHour!;
+          }
+        }
+
         final Map<int, DayAvailability> prefillAvailability = {};
         for (final slot in profile.availability) {
           prefillAvailability[slot.dayOfWeek] = DayAvailability(
@@ -96,10 +113,13 @@ mixin OnboardingSubmissionMixin on ProviderOnboardingCubitBase {
             status: ProviderOnboardingStatus.initial,
             yearsOfExperience: profile.yearsOfExperience ?? 0,
             selectedServices: selectedIds,
+            categoryPrices: prices,
             availability: prefillAvailability,
             governmentIdDoc: govDoc,
             certificateDoc: certDoc,
             coverageRadius: profile.coverageRadiusKm ?? 15.0,
+            latitude: profile.latitude,
+            longitude: profile.longitude,
           ),
         );
       },
