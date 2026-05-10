@@ -8,6 +8,7 @@ import '../../widgets/placeholder_screen.dart';
 import '../route_constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../injection_container.dart';
+import '../../../features/provider/profile/presentation/pages/edit_provider_details_screen.dart';
 
 List<RouteBase> providerRoutes = [
   // ---- Provider Onboarding ----
@@ -32,6 +33,7 @@ List<RouteBase> providerRoutes = [
   StatefulShellRoute.indexedStack(
     builder: (context, state, navigationShell) {
       return BlocProvider(
+        lazy: false,
         create: (context) => ProviderProfileCubit(
           getMyProviderProfileUseCase:
               InjectionContainer.instance.getMyProviderProfileUseCase,
@@ -85,6 +87,13 @@ List<RouteBase> providerRoutes = [
             name: RouteNames.providerProfile,
             path: RoutePaths.providerProfile,
             builder: (context, state) => const ProviderProfileScreen(),
+            routes: [
+              GoRoute(
+                name: RouteNames.providerEditDetails,
+                path: RoutePaths.providerEditDetails,
+                builder: (context, state) => const EditProviderDetailsScreen(),
+              ),
+            ],
           ),
         ],
       ),

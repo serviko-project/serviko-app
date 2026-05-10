@@ -33,6 +33,7 @@ class RouteNames {
   static const String providerInbox = 'providerInbox';
   static const String providerEarnings = 'providerEarnings';
   static const String providerProfile = 'providerProfile';
+  static const String providerEditDetails = 'providerEditDetails';
 }
 
 class RoutePaths {
@@ -71,6 +72,7 @@ class RoutePaths {
   static const String providerInbox = '/provider/inbox';
   static const String providerEarnings = '/provider/earnings';
   static const String providerProfile = '/provider/profile';
+  static const String providerEditDetails = '/provider/profile/edit';
 
   // Auth-related paths
   static final Set<String> authPaths = {onboarding, login, register};

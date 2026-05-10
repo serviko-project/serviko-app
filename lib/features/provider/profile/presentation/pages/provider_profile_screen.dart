@@ -5,6 +5,8 @@ import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/widgets/custom_app_bar.dart';
 import 'package:serviko_app/core/widgets/role_switch_tile.dart';
+import 'package:go_router/go_router.dart';
+import 'package:serviko_app/core/router/route_constants.dart';
 import 'package:serviko_app/features/user/auth/presentation/bloc/auth_bloc.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_cubit.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_state.dart';
@@ -72,13 +74,15 @@ class ProviderProfileScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: AppColors.border, width: 1),
                         ),
-                        child: const Column(
+                        child: Column(
                           children: [
                             // Edit Profie Tile
                             ProfileMenuTile(
                               title: 'Edit Provider Details',
                               icon: HugeIcons.strokeRoundedUserEdit01,
-                              onTap: null,
+                              onTap: () => context.pushNamed(
+                                RouteNames.providerEditDetails,
+                              ),
                             ),
                             ProfileMenuDivider(),
 
