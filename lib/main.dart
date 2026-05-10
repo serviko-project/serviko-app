@@ -20,11 +20,17 @@ Future<void> main() async {
   // Initialize all dependencies
   await InjectionContainer.instance.init();
 
-  runApp(const ServikoApp());
+  // Pre-load saved role
+  final roleCubit = RoleCubit();
+  await roleCubit.initialize();
+
+  runApp(ServikoApp(roleCubit: roleCubit));
 }
 
 class ServikoApp extends StatefulWidget {
-  const ServikoApp({super.key});
+  final RoleCubit roleCubit;
+
+  const ServikoApp({super.key, required this.roleCubit});
 
   @override
   State<ServikoApp> createState() => _ServikoAppState();
@@ -32,7 +38,6 @@ class ServikoApp extends StatefulWidget {
 
 class _ServikoAppState extends State<ServikoApp> {
   late final AuthBloc _authBloc;
-  late final RoleCubit _roleCubit;
   late final ProfileCubit _profileCubit;
   late final GoRouter _router;
 
@@ -45,7 +50,6 @@ class _ServikoAppState extends State<ServikoApp> {
       getMyProfileUseCase: di.getMyProfileUseCase,
       profileLocalDataSource: di.profileLocalDataSource,
     );
-    _roleCubit = RoleCubit()..initialize();
     _profileCubit = ProfileCubit(
       getMyProfileUseCase: di.getMyProfileUseCase,
       getCachedProfileUseCase: di.getCachedProfileUseCase,
@@ -60,13 +64,13 @@ class _ServikoAppState extends State<ServikoApp> {
       _profileCubit.fetchProfile();
     }
 
-    _router = AppRouter.router(_authBloc, _roleCubit);
+    _router = AppRouter.router(_authBloc, widget.roleCubit);
   }
 
   @override
   void dispose() {
     _authBloc.close();
-    _roleCubit.close();
+    widget.roleCubit.close();
     _profileCubit.close();
     _router.dispose();
     super.dispose();
@@ -77,7 +81,7 @@ class _ServikoAppState extends State<ServikoApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: _authBloc),
-        BlocProvider.value(value: _roleCubit),
+        BlocProvider.value(value: widget.roleCubit),
         BlocProvider.value(value: _profileCubit),
       ],
       child: MultiBlocListener(
@@ -88,14 +92,14 @@ class _ServikoAppState extends State<ServikoApp> {
                 _profileCubit.fetchProfile();
               } else if (state is AuthUnauthenticated) {
                 _profileCubit.reset();
-                _roleCubit.reset();
+                widget.roleCubit.reset();
               }
             },
           ),
           BlocListener<ProfileCubit, ProfileState>(
             listener: (context, state) {
               if (state is ProfileLoaded) {
-                _roleCubit.syncProviderStatusFromProfile(
+                widget.roleCubit.syncProviderStatusFromProfile(
                   state.profile.providerStatus,
                 );
               }

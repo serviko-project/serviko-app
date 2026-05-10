@@ -36,7 +36,7 @@ class SignInCubit extends Cubit<SignInState> {
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
-      (user) => emit(state.copyWith(isLoading: false, user: user)),
+      (user) => emit(state.copyWith(user: user)),
     );
   }
 

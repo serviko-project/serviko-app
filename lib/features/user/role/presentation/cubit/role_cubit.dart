@@ -8,12 +8,33 @@ class RoleCubit extends Cubit<RoleState> {
   RoleCubit() : super(const RoleState.initial());
 
   static const _activeRoleKey = 'active_role';
+  static const _providerStatusKey = 'provider_status';
 
   Future<void> initialize() async {
-    final savedRole = await _loadSavedRole();
-    if (savedRole == UserRole.provider) {
-      emit(state.copyWith(activeRole: UserRole.provider));
-    }
+    final prefs = await SharedPreferences.getInstance();
+
+    final savedRoleValue = prefs.getString(_activeRoleKey);
+    final savedStatusValue = prefs.getString(_providerStatusKey);
+
+    final savedRole = savedRoleValue == UserRole.provider.name
+        ? UserRole.provider
+        : UserRole.customer;
+
+    final savedStatus = ProviderStatus.values.firstWhere(
+      (e) => e.name == savedStatusValue,
+      orElse: () => ProviderStatus.none,
+    );
+
+    // Only switch to provider if status=approved
+    final effectiveRole =
+        (savedRole == UserRole.provider &&
+            savedStatus == ProviderStatus.approved)
+        ? UserRole.provider
+        : UserRole.customer;
+
+    emit(
+      state.copyWith(activeRole: effectiveRole, providerStatus: savedStatus),
+    );
   }
 
   // Switch to provider mode
@@ -32,6 +53,7 @@ class RoleCubit extends Cubit<RoleState> {
   // Update provider status
   void updateProviderStatus(ProviderStatus status) {
     emit(state.copyWith(providerStatus: status));
+    _saveProviderStatus(status);
 
     if (status != ProviderStatus.approved && state.isProvider) {
       emit(state.copyWith(activeRole: UserRole.customer));
@@ -39,10 +61,10 @@ class RoleCubit extends Cubit<RoleState> {
     }
   }
 
-  // Sync provider status
+  // Sync provider status from profile API response
   void syncProviderStatusFromProfile(String? statusString) {
     if (statusString == null) {
-      emit(state.copyWith(providerStatus: ProviderStatus.none));
+      updateProviderStatus(ProviderStatus.none);
       return;
     }
 
@@ -60,14 +82,7 @@ class RoleCubit extends Cubit<RoleState> {
   // Reset on sign out
   void reset() {
     emit(const RoleState.initial());
-    _clearSavedRole();
-  }
-
-  Future<UserRole> _loadSavedRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    final value = prefs.getString(_activeRoleKey);
-    if (value == UserRole.provider.name) return UserRole.provider;
-    return UserRole.customer;
+    _clearSavedData();
   }
 
   Future<void> _saveRole(UserRole role) async {
@@ -75,8 +90,14 @@ class RoleCubit extends Cubit<RoleState> {
     await prefs.setString(_activeRoleKey, role.name);
   }
 
-  Future<void> _clearSavedRole() async {
+  Future<void> _saveProviderStatus(ProviderStatus status) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_providerStatusKey, status.name);
+  }
+
+  Future<void> _clearSavedData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_activeRoleKey);
+    await prefs.remove(_providerStatusKey);
   }
 }

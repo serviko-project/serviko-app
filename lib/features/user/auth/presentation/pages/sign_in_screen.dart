@@ -52,11 +52,6 @@ class _SignInView extends StatelessWidget {
             );
           cubit.clearError();
         }
-
-        // Sign-in success
-        if (state.user != null) {
-          context.goNamed(AppRouter.home);
-        }
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
