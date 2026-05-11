@@ -1,6 +1,7 @@
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:serviko_app/core/network/api_client.dart';
 import 'package:serviko_app/core/network/network_info.dart';
+import 'package:serviko_app/features/shared/location/data/services/location_service.dart';
 import 'package:serviko_app/features/provider/onboarding/data/datasources/provider_onboarding_remote_datasource.dart';
 import 'package:serviko_app/features/provider/onboarding/data/repositories/provider_onboarding_repository_impl.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/repositories/provider_onboarding_repository.dart';
@@ -47,6 +48,7 @@ class InjectionContainer {
   // Core
   late final ApiClient apiClient;
   late final NetworkInfo networkInfo;
+  late final LocationService locationService;
 
   // Auth
   late final AuthLocalDataSource authLocalDataSource;
@@ -93,6 +95,7 @@ class InjectionContainer {
     // Core
     apiClient = ApiClient();
     networkInfo = NetworkInfoImpl(InternetConnection());
+    locationService = LocationService();
 
     // Auth - Data
     authLocalDataSource = AuthLocalDataSourceImpl();

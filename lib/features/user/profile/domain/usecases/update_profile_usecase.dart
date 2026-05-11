@@ -25,6 +25,8 @@ class UpdateProfileParams extends Equatable {
   final DateTime? dateOfBirth;
   final String? gender;
   final String? profileImageUrl;
+  final double? latitude;
+  final double? longitude;
 
   const UpdateProfileParams({
     this.fullName,
@@ -32,6 +34,8 @@ class UpdateProfileParams extends Equatable {
     this.dateOfBirth,
     this.gender,
     this.profileImageUrl,
+    this.latitude,
+    this.longitude,
   });
 
   @override
@@ -41,5 +45,7 @@ class UpdateProfileParams extends Equatable {
     dateOfBirth,
     gender,
     profileImageUrl,
+    latitude,
+    longitude,
   ];
 }

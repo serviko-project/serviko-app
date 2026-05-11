@@ -99,6 +99,8 @@ class UserUserProfileRepositoryImpl implements UserProfileRepository {
         dateOfBirth: params.dateOfBirth,
         gender: params.gender,
         profileImageUrl: params.profileImageUrl,
+        latitude: params.latitude,
+        longitude: params.longitude,
       );
       final profile = await _remoteDataSource.updateProfile(data);
       await _localDataSource.cacheProfile(profile);
