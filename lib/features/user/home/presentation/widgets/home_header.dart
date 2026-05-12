@@ -6,10 +6,25 @@ import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serviko_app/features/user/profile/presentation/cubit/profile_cubit.dart';
+import 'package:serviko_app/features/user/profile/presentation/cubit/profile_state.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 // Profile image, User Name and action icons at the top of the home screen
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends StatefulWidget {
   const HomeHeader({super.key});
+
+  @override
+  State<HomeHeader> createState() => _HomeHeaderState();
+}
+
+class _HomeHeaderState extends State<HomeHeader> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProfileCubit>().fetchProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +33,27 @@ class HomeHeader extends StatelessWidget {
       child: Row(
         children: [
           // Profile Image
-          CircleAvatar(
-            radius: 24,
-            backgroundImage: const NetworkImage(
-              "https://imgs.search.brave.com/escqQ8ZcajwNi21WSqfUpZo9B9rNcmsmh42fdgstEI0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMzIv/MTc2LzE5MS9zbWFs/bC9idXNpbmVzcy1h/dmF0YXItcHJvZmls/ZS1ibGFjay1pY29u/LW1hbi1vZi11c2Vy/LXN5bWJvbC1pbi10/cmVuZHktZmxhdC1z/dHlsZS1pc29sYXRl/ZC1vbi1tYWxlLXBy/b2ZpbGUtcGVvcGxl/LWRpdmVyc2UtZmFj/ZS1mb3Itc29jaWFs/LW5ldHdvcmstb3It/d2ViLXZlY3Rvci5q/cGc",
-            ),
-            backgroundColor: AppColors.shimmerBase,
+          BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, state) {
+              String? imageUrl;
+              if (state is ProfileLoaded) {
+                imageUrl = state.profile.profileImageUrl;
+              }
+              return CircleAvatar(
+                radius: 24,
+                backgroundColor: AppColors.shimmerBase,
+                backgroundImage: imageUrl != null
+                    ? CachedNetworkImageProvider(imageUrl)
+                    : null,
+                child: imageUrl == null
+                    ? const Icon(
+                        Icons.person,
+                        size: 27,
+                        color: AppColors.textSecondary,
+                      )
+                    : null,
+              );
+            },
           ),
           const SizedBox(width: AppSizes.md),
 
@@ -38,11 +68,21 @@ class HomeHeader extends StatelessWidget {
                     color: AppColors.textSecondary,
                   ),
                 ),
-                Text(
-                  "User Name",
-                  style: AppTextStyles.h3,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                BlocBuilder<ProfileCubit, ProfileState>(
+                  builder: (context, state) {
+                    String name = "User";
+                    if (state is ProfileLoaded) {
+                      name = state.profile.fullName;
+                    } else if (state is ProfileLoading) {
+                      name = "...";
+                    }
+                    return Text(
+                      name,
+                      style: AppTextStyles.h3,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  },
                 ),
               ],
             ),
@@ -51,7 +91,7 @@ class HomeHeader extends StatelessWidget {
           // Action Icons
           IconButton(
             onPressed: () {},
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.bell,
               color: AppColors.textPrimary,
               size: 25,

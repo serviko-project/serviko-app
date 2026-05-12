@@ -71,16 +71,22 @@ List<RouteBase> miscRoutes = [
     name: RouteNames.categoryDetails,
     path: RoutePaths.categoryDetails,
     builder: (context, state) {
-      final categoryName = state.extra as String? ?? 'Category Details';
-      return CategoryDetailsScreen(categoryName: categoryName);
+      final Map<String, dynamic> extra =
+          state.extra as Map<String, dynamic>? ?? {};
+      final categoryId = extra['id'] as String? ?? '';
+      final categoryName = extra['name'] as String? ?? 'Category Details';
+      return CategoryDetailsScreen(
+        categoryId: categoryId,
+        categoryName: categoryName,
+      );
     },
   ),
   GoRoute(
     name: RouteNames.serviceDetails,
     path: RoutePaths.serviceDetails,
     builder: (context, state) {
-      final serviceIndex = state.extra as int? ?? 0;
-      return ServiceDetailScreen(serviceIndex: serviceIndex);
+      final serviceId = state.extra as String? ?? "";
+      return ServiceDetailScreen(serviceId: serviceId);
     },
   ),
 ];

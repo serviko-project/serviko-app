@@ -3,20 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
-import 'package:serviko_app/features/user/home/presentation/cubit/service_detail_cubit.dart';
-import 'package:serviko_app/features/user/home/presentation/cubit/service_detail_state.dart';
+import 'package:serviko_app/features/user/service/presentation/cubit/service_detail_cubit.dart';
 
 class ServiceAboutSection extends StatelessWidget {
-  const ServiceAboutSection({super.key});
+  final String? about;
 
-  static const String _description =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do '
-      'eiusmod tempor incididunt ut labore et dolore magna aliqua. '
-      'Ut enim ad minim nostrud exercitation ullamco laboris nisi ut '
-      'aliquip ex ea commodo consequat. Duis aute irure dolor in '
-      'reprehenderit in voluptate velit esse cillum dolore eu fugiat '
-      'nulla pariatur. Excepteur sint occaecat cupidatat non proident, '
-      'sunt in culpa qui officia deserunt mollit anim id est laborum.';
+  const ServiceAboutSection({super.key, this.about});
 
   @override
   Widget build(BuildContext context) {
@@ -36,31 +28,60 @@ class ServiceAboutSection extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _description,
-                    maxLines: state.isAboutExpanded ? null : 4,
-                    overflow: state.isAboutExpanded
-                        ? TextOverflow.visible
-                        : TextOverflow.ellipsis,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.textSecondary,
-                      height: 1.6,
-                    ),
-                  ),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final span = TextSpan(
+                        text: about,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                          fontSize: 13,
+                          height: 1.6,
+                        ),
+                      );
+                      final tp = TextPainter(
+                        text: span,
+                        textDirection: TextDirection.ltr,
+                        maxLines: 4,
+                      );
+                      tp.layout(maxWidth: constraints.maxWidth);
 
-                  const SizedBox(height: AppSizes.xs),
+                      final isOverflowing = tp.didExceedMaxLines;
 
-                  GestureDetector(
-                    onTap: () {
-                      context.read<ServiceDetailCubit>().toggleAboutExpanded();
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            about ?? 'No description provided.',
+                            maxLines: state.isAboutExpanded ? null : 4,
+                            overflow: state.isAboutExpanded
+                                ? TextOverflow.visible
+                                : TextOverflow.ellipsis,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                              fontSize: 13,
+                              height: 1.6,
+                            ),
+                          ),
+                          if (isOverflowing) ...[
+                            const SizedBox(height: AppSizes.xs),
+                            GestureDetector(
+                              onTap: () => context
+                                  .read<ServiceDetailCubit>()
+                                  .toggleAboutExpanded(),
+                              child: Text(
+                                state.isAboutExpanded
+                                    ? 'Read less'
+                                    : 'Read more',
+                                style: AppTextStyles.labelMedium.copyWith(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      );
                     },
-                    child: Text(
-                      state.isAboutExpanded ? 'Read less' : 'Read more',
-                      style: AppTextStyles.labelMedium.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
                   ),
                 ],
               );

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:serviko_app/core/widgets/back_button_widget.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
+import 'package:serviko_app/core/widgets/custom_error_widget.dart';
 import '../bloc/search_cubit.dart';
 import '../bloc/search_state.dart';
 import '../widgets/filter_bottom_sheet.dart';
@@ -13,6 +15,7 @@ import '../widgets/recent_searches_view.dart';
 import '../widgets/search_results_view.dart';
 import '../widgets/search_empty_view.dart';
 import '../bloc/filter_cubit.dart';
+import 'package:serviko_app/injection_container.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key, this.openFilter = false});
@@ -23,7 +26,12 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => SearchCubit()),
+        BlocProvider(
+          create: (context) => SearchCubit(
+            searchServicesUseCase:
+                InjectionContainer.instance.searchServicesUseCase,
+          ),
+        ),
         BlocProvider(create: (context) => FilterCubit()),
       ],
       child: _SearchScreenView(openFilter: openFilter),
@@ -64,18 +72,20 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
     _searchController.text = value;
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      context.read<SearchCubit>().search(value);
+      final categoryId = context.read<FilterCubit>().state.categoryId;
+      context.read<SearchCubit>().search(value, categoryId: categoryId);
     });
   }
 
   void _onSearchSubmit(String value) {
     _searchController.text = value;
-    context.read<SearchCubit>().search(value);
+    final categoryId = context.read<FilterCubit>().state.categoryId;
+    context.read<SearchCubit>().search(value, categoryId: categoryId);
   }
 
-  void _showFilterBottomSheet() {
+  void _showFilterBottomSheet() async {
     final filterCubit = context.read<FilterCubit>();
-    showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -84,6 +94,12 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
         child: const FilterBottomSheet(),
       ),
     );
+
+    if (mounted) {
+      final query = _searchController.text;
+      final categoryId = context.read<FilterCubit>().state.categoryId;
+      context.read<SearchCubit>().search(query, categoryId: categoryId);
+    }
   }
 
   @override
@@ -115,6 +131,7 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
                       child: CustomTextField(
                         controller: _searchController,
                         hintText: 'Search',
+                        autofocus: !widget.openFilter,
                         textInputAction: TextInputAction.search,
                         onChanged: _onSearchChanged,
                         onFieldSubmitted: _onSearchSubmit,
@@ -149,11 +166,24 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
                       onSearchSubmit: _onSearchSubmit,
                     );
                   } else if (state is SearchLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return _buildLoadingSkeleton();
                   } else if (state is SearchLoaded) {
                     return SearchResultsView(state: state);
                   } else if (state is SearchEmpty) {
                     return SearchEmptyView(state: state);
+                  } else if (state is SearchError) {
+                    return CustomErrorWidget(
+                      message: state.message,
+                      isFullPage: true,
+                      onRetry: () {
+                        final cubit = context.read<FilterCubit>();
+                        final categoryId = cubit.state.categoryId;
+                        context.read<SearchCubit>().search(
+                          _searchController.text,
+                          categoryId: categoryId,
+                        );
+                      },
+                    );
                   }
                   return const SizedBox.shrink();
                 },
@@ -162,6 +192,13 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLoadingSkeleton() {
+    return const Skeletonizer(
+      enabled: true,
+      child: SearchResultsView(isLoading: true),
     );
   }
 }

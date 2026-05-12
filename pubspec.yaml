@@ -38,6 +38,7 @@ dependencies:
   lottie: ^3.3.2
   pinput: ^6.0.2
   shared_preferences: ^2.5.5
+  skeletonizer: ^2.1.3
   url_launcher: ^6.3.2
 
 # Dev Dependencies

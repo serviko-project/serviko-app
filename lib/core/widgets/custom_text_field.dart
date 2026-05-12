@@ -23,6 +23,7 @@ class CustomTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextInputAction? textInputAction;
   final AutovalidateMode? autovalidateMode;
+  final bool autofocus;
 
   const CustomTextField({
     super.key,
@@ -43,6 +44,7 @@ class CustomTextField extends StatefulWidget {
     this.inputFormatters,
     this.textInputAction,
     this.autovalidateMode,
+    this.autofocus = false,
   });
 
   @override
@@ -80,6 +82,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         TextFormField(
           controller: widget.controller,
           focusNode: widget.focusNode,
+          autofocus: widget.autofocus,
           obscureText: widget.isPassword ? _obscureText : false,
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,

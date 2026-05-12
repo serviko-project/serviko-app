@@ -1,47 +1,44 @@
+import 'package:serviko_app/features/user/service/domain/entities/service_entity.dart';
+
+enum CategoryDetailsStatus { initial, loading, success, error }
+
 class CategoryDetailsState {
   final bool isSearching;
   final String searchQuery;
-  final int totalServices;
+  final List<ServiceEntity> services;
+  final CategoryDetailsStatus status;
+  final String? errorMessage;
 
   const CategoryDetailsState({
     this.isSearching = false,
     this.searchQuery = '',
-    this.totalServices = 10,
+    this.services = const [],
+    this.status = CategoryDetailsStatus.initial,
+    this.errorMessage,
   });
 
-  // Filtered count based on search query
-  int get filteredCount {
-    if (searchQuery.isEmpty) return totalServices;
-    return List.generate(totalServices, (i) => i).where((i) {
-      final title = 'Service ${i + 1}'.toLowerCase();
-      final provider = 'Provider ${i + 1}'.toLowerCase();
-      final query = searchQuery.toLowerCase();
-      return title.contains(query) || provider.contains(query);
-    }).length;
-  }
-
-  // Filtered indices
-  List<int> get filteredIndices {
-    if (searchQuery.isEmpty) {
-      return List.generate(totalServices, (i) => i);
-    }
-    return List.generate(totalServices, (i) => i).where((i) {
-      final title = 'Service ${i + 1}'.toLowerCase();
-      final provider = 'Provider ${i + 1}'.toLowerCase();
-      final query = searchQuery.toLowerCase();
-      return title.contains(query) || provider.contains(query);
+  List<ServiceEntity> get filteredServices {
+    if (searchQuery.isEmpty) return services;
+    final query = searchQuery.toLowerCase();
+    return services.where((service) {
+      return service.categoryName.toLowerCase().contains(query) ||
+          (service.providerName.toLowerCase().contains(query));
     }).toList();
   }
 
   CategoryDetailsState copyWith({
     bool? isSearching,
     String? searchQuery,
-    int? totalServices,
+    List<ServiceEntity>? services,
+    CategoryDetailsStatus? status,
+    String? errorMessage,
   }) {
     return CategoryDetailsState(
       isSearching: isSearching ?? this.isSearching,
       searchQuery: searchQuery ?? this.searchQuery,
-      totalServices: totalServices ?? this.totalServices,
+      services: services ?? this.services,
+      status: status ?? this.status,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

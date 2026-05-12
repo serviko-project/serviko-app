@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PopularServicesFilterCubit extends Cubit<String> {
-  PopularServicesFilterCubit() : super('All');
+class PopularServicesFilterCubit extends Cubit<String?> {
+  PopularServicesFilterCubit() : super(null);
 
-  void updateFilter(String newFilter) => emit(newFilter);
+  void updateFilter(String? categoryId) => emit(categoryId);
 }

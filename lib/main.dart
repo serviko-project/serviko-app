@@ -8,6 +8,9 @@ import 'package:serviko_app/features/user/auth/presentation/bloc/auth_bloc.dart'
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_cubit.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_state.dart';
 import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dart';
+import 'package:serviko_app/features/user/category/presentation/cubit/category_cubit.dart';
+import 'package:serviko_app/features/user/service/presentation/cubit/popular_services_cubit.dart';
+import 'package:serviko_app/features/user/service/presentation/cubit/service_detail_cubit.dart';
 import 'package:serviko_app/firebase_options.dart';
 import 'package:serviko_app/injection_container.dart';
 
@@ -39,6 +42,9 @@ class ServikoApp extends StatefulWidget {
 class _ServikoAppState extends State<ServikoApp> {
   late final AuthBloc _authBloc;
   late final ProfileCubit _profileCubit;
+  late final CategoryCubit _categoryCubit;
+  late final PopularServicesCubit _popularServicesCubit;
+  late final ServiceDetailCubit _serviceDetailCubit;
   late final GoRouter _router;
 
   @override
@@ -57,6 +63,17 @@ class _ServikoAppState extends State<ServikoApp> {
       uploadProfileImageUseCase: di.uploadProfileImageUseCase,
       deleteProfileImageUseCase: di.deleteProfileImageUseCase,
     );
+    _categoryCubit = CategoryCubit(
+      getCategoriesUseCase: di.userGetCategoriesUseCase,
+    );
+    _popularServicesCubit = PopularServicesCubit(
+      getPopularServicesUseCase: di.getPopularServicesUseCase,
+    );
+    _serviceDetailCubit = ServiceDetailCubit(
+      getServiceDetailUseCase: di.getServiceDetailUseCase,
+      locationService: di.locationService,
+    );
+
     _authBloc.add(const AuthCheckRequested());
 
     // Trigger profile fetch
@@ -72,7 +89,11 @@ class _ServikoAppState extends State<ServikoApp> {
     _authBloc.close();
     widget.roleCubit.close();
     _profileCubit.close();
+    _categoryCubit.close();
+    _popularServicesCubit.close();
+    _serviceDetailCubit.close();
     _router.dispose();
+
     super.dispose();
   }
 
@@ -83,7 +104,11 @@ class _ServikoAppState extends State<ServikoApp> {
         BlocProvider.value(value: _authBloc),
         BlocProvider.value(value: widget.roleCubit),
         BlocProvider.value(value: _profileCubit),
+        BlocProvider.value(value: _categoryCubit),
+        BlocProvider.value(value: _popularServicesCubit),
+        BlocProvider.value(value: _serviceDetailCubit),
       ],
+
       child: MultiBlocListener(
         listeners: [
           BlocListener<AuthBloc, AuthState>(

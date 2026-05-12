@@ -7,9 +7,17 @@ import 'package:serviko_app/core/utils/icon_mapper.dart';
 // Reusable category grid item
 class CategoryItemWidget extends StatelessWidget {
   final int index;
+  final String? title;
+  final String? icon;
   final VoidCallback? onTap;
 
-  const CategoryItemWidget({super.key, required this.index, this.onTap});
+  const CategoryItemWidget({
+    super.key,
+    required this.index,
+    this.title,
+    this.icon,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +36,7 @@ class CategoryItemWidget extends StatelessWidget {
             decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
             child: Center(
               child: Icon(
-                IconMapper.fromName('category_rounded'),
+                IconMapper.fromName(icon ?? 'category_rounded'),
                 color: baseColor,
                 size: 28,
               ),
@@ -36,7 +44,7 @@ class CategoryItemWidget extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.sm),
           Text(
-            'Category ${index + 1}',
+            title ?? 'Category ${index + 1}',
             style: AppTextStyles.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
             ),

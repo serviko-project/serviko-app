@@ -53,14 +53,6 @@ class UserUserProfileRepositoryImpl implements UserProfileRepository {
 
   @override
   Future<Either<Failure, UserProfileEntity>> getMyProfile() async {
-    if (!await _networkInfo.isConnected) {
-      final localProfile = await _localDataSource.getLastProfile();
-      if (localProfile != null) {
-        return Right(localProfile);
-      }
-      return const Left(NetworkFailure());
-    }
-
     try {
       final profile = await _remoteDataSource.getMyProfile();
       await _localDataSource.cacheProfile(profile);
@@ -71,6 +63,15 @@ class UserUserProfileRepositoryImpl implements UserProfileRepository {
         return Right(localProfile);
       }
       return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    } catch (e) {
+      final localProfile = await _localDataSource.getLastProfile();
+      if (localProfile != null) {
+        return Right(localProfile);
+      }
+      if (!await _networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
     }
   }
 

@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
-import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:serviko_app/core/utils/icon_mapper.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 // Service Banner
 class ServiceCoverImage extends StatelessWidget {
   final VoidCallback? onBookmarkTap;
-  final int serviceIndex;
+  final String? imageUrl;
+  final String categoryIcon;
+  final String? providerImage;
+  final bool isLoading;
 
   const ServiceCoverImage({
     super.key,
     this.onBookmarkTap,
-    required this.serviceIndex,
+    this.imageUrl,
+    this.categoryIcon = 'category_rounded',
+    this.providerImage,
+    this.isLoading = false,
   });
 
   static const double _bannerHeight = 280;
@@ -36,13 +43,22 @@ class ServiceCoverImage extends StatelessWidget {
                 bottomRight: Radius.circular(AppSizes.radiusXl),
               ),
             ),
-            child: const Center(
-              child: Icon(
-                Icons.image_rounded,
-                size: 64,
-                color: AppColors.textHint,
-              ),
-            ),
+            clipBehavior: Clip.antiAlias,
+
+            // Service Banner Image
+            child: isLoading
+                ? _buildFallbackBanner(isNeutral: true)
+                : imageUrl != null && imageUrl!.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: imageUrl!,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        _buildFallbackBanner(isNeutral: true),
+                    fadeInDuration: const Duration(milliseconds: 500),
+                    errorWidget: (context, url, error) =>
+                        _buildFallbackBanner(),
+                  )
+                : _buildFallbackBanner(),
           ),
 
           // Top gradient overlay
@@ -105,19 +121,94 @@ class ServiceCoverImage extends StatelessWidget {
               child: CircleAvatar(
                 radius: _avatarRadius,
                 backgroundColor: AppColors.primary.withAlpha(20),
-                child: Text(
-                  'P${serviceIndex + 1}',
-                  style: AppTextStyles.h2.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                backgroundImage:
+                    providerImage != null && providerImage!.isNotEmpty
+                    ? CachedNetworkImageProvider(providerImage!)
+                    : null,
+                child: providerImage == null || providerImage!.isEmpty
+                    ? const Icon(
+                        Icons.person_rounded,
+                        color: AppColors.primary,
+                        size: 50,
+                      )
+                    : null,
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildFallbackBanner({bool isNeutral = false}) {
+    final Color baseColor = isNeutral
+        ? AppColors.shimmerBase
+        : _getCategoryColor(categoryIcon);
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: isNeutral
+            ? null
+            : LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  baseColor,
+                  baseColor.withAlpha(200),
+                  baseColor.withAlpha(150),
+                ],
+              ),
+        color: isNeutral ? AppColors.shimmerBase : null,
+      ),
+      child: Stack(
+        children: [
+          // Background large icon
+          Positioned(
+            right: -30,
+            bottom: -30,
+            child: Opacity(
+              opacity: isNeutral ? 0.05 : 0.15,
+              child: Icon(
+                IconMapper.fromName(categoryIcon),
+                size: 240,
+                color: isNeutral ? AppColors.textHint : Colors.white,
+              ),
+            ),
+          ),
+
+          // Central icon
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(AppSizes.xl),
+              decoration: BoxDecoration(
+                color: isNeutral
+                    ? AppColors.background.withAlpha(100)
+                    : Colors.white.withAlpha(40),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isNeutral
+                      ? AppColors.border.withAlpha(150)
+                      : Colors.white.withAlpha(60),
+                  width: 2,
+                ),
+              ),
+              child: Icon(
+                IconMapper.fromName(categoryIcon),
+                size: 56,
+                color: isNeutral ? AppColors.textHint : Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getCategoryColor(String iconName) {
+    final int hash = iconName.codeUnits.fold(0, (prev, element) {
+      return prev + element;
+    });
+    return AppColors.categoryPalette[hash % AppColors.categoryPalette.length];
   }
 }
 
