@@ -10,6 +10,11 @@ import '../../../features/user/search/presentation/pages/search_screen.dart';
 import '../../../features/user/category/presentation/pages/all_categories_screen.dart';
 import '../../../features/user/category/presentation/pages/category_details_screen.dart';
 import '../../../features/user/home/presentation/pages/service_detail_screen.dart';
+import '../../../features/user/booking/presentation/pages/booking_details_screen.dart';
+import '../../../features/user/booking/presentation/pages/booking_location_screen.dart';
+import '../../../features/user/booking/presentation/pages/promo_selection_screen.dart';
+import '../../../features/user/booking/presentation/pages/booking_summary_screen.dart';
+import '../../../features/user/booking/presentation/pages/booking_success_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -88,5 +93,30 @@ List<RouteBase> miscRoutes = [
       final serviceId = state.extra as String? ?? "";
       return ServiceDetailScreen(serviceId: serviceId);
     },
+  ),
+  GoRoute(
+    name: RouteNames.bookingDetails,
+    path: RoutePaths.bookingDetails,
+    builder: (context, state) => BookingDetailsScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.promoSelection,
+    path: RoutePaths.promoSelection,
+    builder: (context, state) => const PromoSelectionScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.bookingLocation,
+    path: RoutePaths.bookingLocation,
+    builder: (context, state) => const BookingLocationScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.bookingSummary,
+    path: RoutePaths.bookingSummary,
+    builder: (context, state) => const BookingSummaryScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.bookingSuccess,
+    path: RoutePaths.bookingSuccess,
+    builder: (context, state) => const BookingSuccessScreen(),
   ),
 ];

@@ -12,6 +12,8 @@ import 'package:serviko_app/features/user/home/presentation/widgets/service_deta
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:serviko_app/features/user/service/domain/entities/service_entity.dart';
 import 'package:serviko_app/core/widgets/custom_error_widget.dart';
+import 'package:go_router/go_router.dart';
+import 'package:serviko_app/core/router/route_constants.dart';
 
 // Service detail Screen
 class ServiceDetailScreen extends StatefulWidget {
@@ -154,7 +156,9 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                       state.selectedService?.basePricePerHour ??
                       service.basePricePerHour,
                   onMessageTap: () {},
-                  onBookNowTap: () {},
+                  onBookNowTap: () {
+                    context.pushNamed(RouteNames.bookingDetails);
+                  },
                 ),
         );
       },
