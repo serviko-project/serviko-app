@@ -17,6 +17,13 @@ class FilterState {
     required this.availableCategories,
   });
 
+  bool get isFiltered =>
+      categoryId != null ||
+      priceRange.start != 0 ||
+      priceRange.end != 500 ||
+      rating != RatingFilter.all ||
+      experience != ExperienceFilter.any;
+
   FilterState copyWith({
     String? categoryId,
     bool clearCategory = false,

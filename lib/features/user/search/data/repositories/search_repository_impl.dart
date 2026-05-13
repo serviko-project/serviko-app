@@ -19,6 +19,11 @@ class SearchRepositoryImpl implements SearchRepository {
   Future<Either<Failure, List<ServiceEntity>>> searchServices(
     String query, {
     String? categoryId,
+    double? minPrice,
+    double? maxPrice,
+    double? minRating,
+    int? minExperience,
+    int? maxExperience,
     int page = 1,
     int limit = 20,
   }) async {
@@ -26,6 +31,11 @@ class SearchRepositoryImpl implements SearchRepository {
       final remoteServices = await remoteDataSource.searchServices(
         query,
         categoryId: categoryId,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        minRating: minRating,
+        minExperience: minExperience,
+        maxExperience: maxExperience,
         page: page,
         limit: limit,
       );

@@ -7,6 +7,11 @@ abstract class SearchRemoteDataSource {
   Future<List<ServiceModel>> searchServices(
     String query, {
     String? categoryId,
+    double? minPrice,
+    double? maxPrice,
+    double? minRating,
+    int? minExperience,
+    int? maxExperience,
     int page = 1,
     int limit = 20,
   });
@@ -21,6 +26,11 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
   Future<List<ServiceModel>> searchServices(
     String query, {
     String? categoryId,
+    double? minPrice,
+    double? maxPrice,
+    double? minRating,
+    int? minExperience,
+    int? maxExperience,
     int page = 1,
     int limit = 20,
   }) async {
@@ -33,6 +43,12 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
     if (categoryId != null && categoryId.trim().isNotEmpty) {
       queryParams['category_id'] = categoryId;
     }
+
+    if (minPrice != null) queryParams['min_price'] = minPrice;
+    if (maxPrice != null) queryParams['max_price'] = maxPrice;
+    if (minRating != null) queryParams['min_rating'] = minRating;
+    if (minExperience != null) queryParams['min_experience'] = minExperience;
+    if (maxExperience != null) queryParams['max_experience'] = maxExperience;
 
     try {
       await apiClient.setFirebaseAuthToken();

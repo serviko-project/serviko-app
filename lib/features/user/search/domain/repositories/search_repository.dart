@@ -6,6 +6,11 @@ abstract class SearchRepository {
   Future<Either<Failure, List<ServiceEntity>>> searchServices(
     String query, {
     String? categoryId,
+    double? minPrice,
+    double? maxPrice,
+    double? minRating,
+    int? minExperience,
+    int? maxExperience,
     int page = 1,
     int limit = 20,
   });

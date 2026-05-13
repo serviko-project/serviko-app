@@ -9,10 +9,32 @@ class SearchCubit extends Cubit<SearchState> {
 
   final List<String> _recents = [];
 
-  Future<void> search(String query, {String? categoryId}) async {
+  Future<void> search(
+    String query, {
+    String? categoryId,
+    double? minPrice,
+    double? maxPrice,
+    double? minRating,
+    int? minExperience,
+    int? maxExperience,
+  }) async {
     final trimmedQuery = query.trim();
 
-    if (trimmedQuery.isEmpty && categoryId == null) {
+    // Check if any filter is applied
+    final isDefaultPrice =
+        (minPrice == null || minPrice == 0) &&
+        (maxPrice == null || maxPrice == 500);
+    final isDefaultRating = minRating == null;
+    final isDefaultExperience = minExperience == null && maxExperience == null;
+
+    final isInitialState =
+        trimmedQuery.isEmpty &&
+        categoryId == null &&
+        isDefaultPrice &&
+        isDefaultRating &&
+        isDefaultExperience;
+
+    if (isInitialState) {
       emit(SearchInitial(List.from(_recents)));
       return;
     }
@@ -24,7 +46,15 @@ class SearchCubit extends Cubit<SearchState> {
     }
 
     final result = await searchServicesUseCase(
-      SearchParams(query: trimmedQuery, categoryId: categoryId),
+      SearchParams(
+        query: trimmedQuery,
+        categoryId: categoryId,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        minRating: minRating,
+        minExperience: minExperience,
+        maxExperience: maxExperience,
+      ),
     );
 
     result.fold((failure) => emit(SearchError(failure.message)), (services) {

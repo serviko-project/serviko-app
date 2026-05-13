@@ -16,6 +16,11 @@ class SearchServicesUseCase
     return await repository.searchServices(
       params.query,
       categoryId: params.categoryId,
+      minPrice: params.minPrice,
+      maxPrice: params.maxPrice,
+      minRating: params.minRating,
+      minExperience: params.minExperience,
+      maxExperience: params.maxExperience,
       page: params.page,
       limit: params.limit,
     );
@@ -25,16 +30,36 @@ class SearchServicesUseCase
 class SearchParams extends Equatable {
   final String query;
   final String? categoryId;
+  final double? minPrice;
+  final double? maxPrice;
+  final double? minRating;
+  final int? minExperience;
+  final int? maxExperience;
   final int page;
   final int limit;
 
   const SearchParams({
     required this.query,
     this.categoryId,
+    this.minPrice,
+    this.maxPrice,
+    this.minRating,
+    this.minExperience,
+    this.maxExperience,
     this.page = 1,
     this.limit = 20,
   });
 
   @override
-  List<Object?> get props => [query, categoryId, page, limit];
+  List<Object?> get props => [
+    query,
+    categoryId,
+    minPrice,
+    maxPrice,
+    minRating,
+    minExperience,
+    maxExperience,
+    page,
+    limit,
+  ];
 }

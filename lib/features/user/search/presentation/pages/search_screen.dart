@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/features/user/search/presentation/widgets/filter_indicator_widget.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:serviko_app/core/widgets/back_button_widget.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
@@ -69,18 +70,28 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
   }
 
   void _onSearchChanged(String value) {
-    _searchController.text = value;
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      final categoryId = context.read<FilterCubit>().state.categoryId;
-      context.read<SearchCubit>().search(value, categoryId: categoryId);
+      _performSearch(value);
     });
   }
 
   void _onSearchSubmit(String value) {
     _searchController.text = value;
-    final categoryId = context.read<FilterCubit>().state.categoryId;
-    context.read<SearchCubit>().search(value, categoryId: categoryId);
+    _performSearch(value);
+  }
+
+  void _performSearch(String query) {
+    final filterState = context.read<FilterCubit>().state;
+    context.read<SearchCubit>().search(
+      query,
+      categoryId: filterState.categoryId,
+      minPrice: filterState.priceRange.start,
+      maxPrice: filterState.priceRange.end,
+      minRating: filterState.rating.minRating?.toDouble(),
+      minExperience: filterState.experience.minYears,
+      maxExperience: filterState.experience.maxYears,
+    );
   }
 
   void _showFilterBottomSheet() async {
@@ -96,9 +107,7 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
     );
 
     if (mounted) {
-      final query = _searchController.text;
-      final categoryId = context.read<FilterCubit>().state.categoryId;
-      context.read<SearchCubit>().search(query, categoryId: categoryId);
+      _performSearch(_searchController.text);
     }
   }
 
@@ -154,7 +163,14 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
                 ],
               ),
             ),
-            const SizedBox(height: AppSizes.lg),
+            const SizedBox(height: AppSizes.md),
+
+            // Indicator for active filters
+            FilterIndicatorWidget(
+              query: _searchController.text,
+              performSearch: _performSearch,
+            ),
+            SizedBox(height: AppSizes.md),
 
             // Content Area
             Expanded(
@@ -176,12 +192,7 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
                       message: state.message,
                       isFullPage: true,
                       onRetry: () {
-                        final cubit = context.read<FilterCubit>();
-                        final categoryId = cubit.state.categoryId;
-                        context.read<SearchCubit>().search(
-                          _searchController.text,
-                          categoryId: categoryId,
-                        );
+                        _performSearch(_searchController.text);
                       },
                     );
                   }
