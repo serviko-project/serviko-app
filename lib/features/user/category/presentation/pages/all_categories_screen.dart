@@ -15,47 +15,51 @@ class AllCategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'All Categories'),
-      body: BlocBuilder<CategoryCubit, CategoryState>(
-        builder: (context, state) {
-          if (state is CategoryLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: RefreshIndicator(
+        onRefresh: () => context.read<CategoryCubit>().fetchCategories(),
+        child: BlocBuilder<CategoryCubit, CategoryState>(
+          builder: (context, state) {
+            if (state is CategoryLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state is CategoryError) {
-            return CustomErrorWidget(
-              message: state.message,
-              isFullPage: true,
-              onRetry: () => context.read<CategoryCubit>().fetchCategories(),
-            );
-          }
+            if (state is CategoryError) {
+              return CustomErrorWidget(
+                message: state.message,
+                isFullPage: true,
+                onRetry: () => context.read<CategoryCubit>().fetchCategories(),
+              );
+            }
 
-          if (state is CategoryLoaded) {
-            return GridView.builder(
-              padding: const EdgeInsets.all(AppSizes.lg),
-              itemCount: state.categories.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 0.75,
-                crossAxisSpacing: AppSizes.sm,
-                mainAxisSpacing: AppSizes.md,
-              ),
-              itemBuilder: (context, index) {
-                final category = state.categories[index];
-                return CategoryItemWidget(
-                  index: index,
-                  title: category.title,
-                  icon: category.icon,
-                  onTap: () => context.pushNamed(
-                    RouteNames.categoryDetails,
-                    extra: {'id': category.id, 'name': category.title},
-                  ),
-                );
-              },
-            );
-          }
+            if (state is CategoryLoaded) {
+              return GridView.builder(
+                padding: const EdgeInsets.all(AppSizes.lg),
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: state.categories.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: 0.75,
+                  crossAxisSpacing: AppSizes.sm,
+                  mainAxisSpacing: AppSizes.md,
+                ),
+                itemBuilder: (context, index) {
+                  final category = state.categories[index];
+                  return CategoryItemWidget(
+                    index: index,
+                    title: category.title,
+                    icon: category.icon,
+                    onTap: () => context.pushNamed(
+                      RouteNames.categoryDetails,
+                      extra: {'id': category.id, 'name': category.title},
+                    ),
+                  );
+                },
+              );
+            }
 
-          return const SizedBox.shrink();
-        },
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
