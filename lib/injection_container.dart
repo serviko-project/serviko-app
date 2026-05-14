@@ -56,6 +56,14 @@ import 'package:serviko_app/features/user/search/data/repositories/search_reposi
 import 'package:serviko_app/features/user/search/domain/repositories/search_repository.dart';
 import 'package:serviko_app/features/user/search/domain/usecases/search_services_usecase.dart';
 
+import 'package:serviko_app/features/user/booking/data/datasources/booking_remote_data_source.dart';
+import 'package:serviko_app/features/user/booking/data/repositories/booking_repository_impl.dart';
+import 'package:serviko_app/features/user/booking/domain/repositories/booking_repository.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/create_booking_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_available_slots_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_bookings_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/review_booking_usecase.dart';
+
 class InjectionContainer {
   InjectionContainer._();
 
@@ -122,6 +130,14 @@ class InjectionContainer {
   late final SearchRemoteDataSource searchRemoteDataSource;
   late final SearchRepository searchRepository;
   late final SearchServicesUseCase searchServicesUseCase;
+
+  // Booking
+  late final BookingRemoteDataSource bookingRemoteDataSource;
+  late final BookingRepository bookingRepository;
+  late final GetAvailableSlotsUseCase getAvailableSlotsUseCase;
+  late final CreateBookingUseCase createBookingUseCase;
+  late final GetProviderBookingsUseCase getProviderBookingsUseCase;
+  late final ReviewBookingUseCase reviewBookingUseCase;
 
   // Initialise
   Future<void> init() async {
@@ -231,5 +247,16 @@ class InjectionContainer {
       networkInfo: networkInfo,
     );
     searchServicesUseCase = SearchServicesUseCase(searchRepository);
+
+    // Booking
+    bookingRemoteDataSource = BookingRemoteDataSourceImpl(apiClient: apiClient);
+    bookingRepository = BookingRepositoryImpl(
+      remoteDataSource: bookingRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getAvailableSlotsUseCase = GetAvailableSlotsUseCase(bookingRepository);
+    createBookingUseCase = CreateBookingUseCase(bookingRepository);
+    getProviderBookingsUseCase = GetProviderBookingsUseCase(bookingRepository);
+    reviewBookingUseCase = ReviewBookingUseCase(bookingRepository);
   }
 }

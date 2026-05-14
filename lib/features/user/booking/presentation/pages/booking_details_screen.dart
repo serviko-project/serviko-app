@@ -10,28 +10,29 @@ import 'package:serviko_app/features/user/booking/presentation/widgets/booking_c
 import 'package:serviko_app/features/user/booking/presentation/widgets/booking_bottom_bar.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/promo_code_widget.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/start_time_slots_widget.dart';
+import 'package:serviko_app/features/user/booking/presentation/widgets/time_slots_error_widget.dart';
+import 'package:serviko_app/features/user/booking/presentation/widgets/time_slots_warning_widget.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/working_hours_widget.dart';
+import 'package:serviko_app/features/user/booking/domain/entities/booking_request_payload.dart';
 import 'package:serviko_app/core/router/route_constants.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serviko_app/features/user/booking/domain/entities/booking_init_data.dart';
+import 'package:serviko_app/injection_container.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
-  const BookingDetailsScreen({super.key});
-
-  static const List<String> _timeSlots = [
-    '09:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '01:00 PM',
-    '02:00 PM',
-    '03:00 PM',
-    '04:00 PM',
-  ];
+  final BookingInitData initData;
+  const BookingDetailsScreen({super.key, required this.initData});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BookingDetailsCubit(initialBasePrice: 100),
+      create: (context) => BookingDetailsCubit(
+        getAvailableSlotsUseCase:
+            InjectionContainer.instance.getAvailableSlotsUseCase,
+        providerId: initData.providerId,
+        initialBasePrice: initData.basePricePerHour,
+      ),
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: CustomAppBar(title: "Booking Details"),
@@ -62,16 +63,47 @@ class BookingDetailsScreen extends StatelessWidget {
                     onDecrement: () =>
                         context.read<BookingDetailsCubit>().decrementHours(),
                   ),
+                  if (state.selectedStartTime.isNotEmpty) ...[
+                    const SizedBox(height: AppSizes.xs),
+                    // Time Slot Conflict Warning
+                    Text(
+                      'Max duration for this slot: ${state.maxBookableHours} hours',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: state.hasConflict
+                            ? AppColors.error
+                            : AppColors.textPrimary,
+                        fontWeight: state.hasConflict ? FontWeight.bold : null,
+                      ),
+                    ),
+                  ],
+                  if (state.hasConflict) ...[
+                    const SizedBox(height: AppSizes.sm),
+                    TimeSlotsErrorWidget(),
+                  ],
                   const SizedBox(height: AppSizes.xl),
 
                   // Start Time Slots
-                  StartTimeSlotsWidget(
-                    timeSlots: _timeSlots,
-                    selectedTime: state.selectedStartTime,
-                    onTimeSelected: (time) {
-                      context.read<BookingDetailsCubit>().selectStartTime(time);
-                    },
-                  ),
+                  if (state.status == BookingDetailsStatus.loading)
+                    Skeletonizer(child: StartTimeSlotsWidget.shimmer())
+                  else if (state.status == BookingDetailsStatus.failure)
+                    Center(
+                      child: Text(
+                        state.errorMessage ?? 'Failed to load slots',
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    )
+                  else if (state.availableStartTimes.isEmpty)
+                    TimeSlotsWarningWidget()
+                  else
+                    StartTimeSlotsWidget(
+                      timeSlots: state.availableStartTimes,
+                      selectedTime: state.selectedStartTime,
+                      onTimeSelected: (time) {
+                        context.read<BookingDetailsCubit>().selectStartTime(
+                          time,
+                        );
+                      },
+                    ),
                   const SizedBox(height: AppSizes.xl),
 
                   // Promo Code Selector
@@ -100,8 +132,20 @@ class BookingDetailsScreen extends StatelessWidget {
               builder: (context, state) {
                 return BookingBottomBar(
                   price: state.totalPrice,
+                  isEnabled: state.canContinue,
                   onContinue: () {
-                    context.pushNamed(RouteNames.bookingLocation);
+                    final payload = BookingRequestPayload(
+                      initData: initData,
+                      selectedDate: state.selectedDate,
+                      workingHours: state.workingHours,
+                      selectedStartTime: state.selectedStartTime,
+                      promoCode: state.promoCode,
+                      totalPrice: state.totalPrice,
+                    );
+                    context.pushNamed(
+                      RouteNames.bookingLocation,
+                      extra: payload,
+                    );
                   },
                 );
               },

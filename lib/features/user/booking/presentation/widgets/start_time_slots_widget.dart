@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:serviko_app/core/utils/date_time_utils.dart';
 
 class StartTimeSlotsWidget extends StatelessWidget {
   final List<String> timeSlots;
@@ -28,7 +29,7 @@ class StartTimeSlotsWidget extends StatelessWidget {
             children: timeSlots.map((time) {
               final isSelected = time == selectedTime;
               return Padding(
-                padding: const EdgeInsets.only(right: AppSizes.md),
+                padding: const EdgeInsets.only(right: AppSizes.sm),
                 child: InkWell(
                   onTap: () => onTimeSelected(time),
                   borderRadius: BorderRadius.circular(AppSizes.radiusFull),
@@ -45,7 +46,7 @@ class StartTimeSlotsWidget extends StatelessWidget {
                       border: Border.all(color: AppColors.primary, width: 1.5),
                     ),
                     child: Text(
-                      time,
+                      DateTimeUtils.formatTo12Hour(time),
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: isSelected
                             ? Colors.white
@@ -60,6 +61,14 @@ class StartTimeSlotsWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  static Widget shimmer() {
+    return StartTimeSlotsWidget(
+      timeSlots: List.generate(5, (index) => '09:00'),
+      selectedTime: '',
+      onTimeSelected: (_) {},
     );
   }
 }
