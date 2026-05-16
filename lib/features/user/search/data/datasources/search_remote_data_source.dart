@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:serviko_app/core/errors/exceptions.dart';
 import 'package:serviko_app/core/network/api_client.dart';
 import 'package:serviko_app/features/user/service/data/models/service_model.dart';
 
@@ -33,7 +31,7 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
     int? maxExperience,
     int page = 1,
     int limit = 20,
-  }) async {
+  }) {
     final Map<String, dynamic> queryParams = {
       'page': page,
       'limit': limit,
@@ -50,41 +48,23 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
     if (minExperience != null) queryParams['min_experience'] = minExperience;
     if (maxExperience != null) queryParams['max_experience'] = maxExperience;
 
-    try {
-      await apiClient.setFirebaseAuthToken();
-      final response = await apiClient.dio.get(
-        '/api/v1/services',
-        queryParameters: queryParams,
-      );
+    return apiClient.request(
+      call: () =>
+          apiClient.dio.get('/api/v1/services', queryParameters: queryParams),
+      parser: (dataField) {
+        List<dynamic> servicesList;
 
-      if (response.statusCode == 200) {
-        final data = response.data;
-        if (data is Map<String, dynamic> && data.containsKey('data')) {
-          final dynamic dataField = data['data'];
-          List<dynamic> servicesList;
-
-          if (dataField is List) {
-            servicesList = dataField;
-          } else if (dataField is Map && dataField.containsKey('items')) {
-            servicesList = dataField['items'] as List<dynamic>;
-          } else {
-            servicesList = [];
-          }
-          return servicesList.map((json) {
-            return ServiceModel.fromJson(json as Map<String, dynamic>);
-          }).toList();
+        if (dataField is List) {
+          servicesList = dataField;
+        } else if (dataField is Map && dataField.containsKey('items')) {
+          servicesList = dataField['items'] as List<dynamic>;
         } else {
-          throw ServerException('Invalid response format');
+          servicesList = [];
         }
-      } else {
-        throw ServerException('Failed to load search results');
-      }
-    } on DioException catch (e) {
-      throw ServerException(
-        e.response?.data?['message'] ?? e.message ?? 'Unknown error',
-      );
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
+        return servicesList.map((json) {
+          return ServiceModel.fromJson(json as Map<String, dynamic>);
+        }).toList();
+      },
+    );
   }
 }
