@@ -11,6 +11,7 @@ class LocationMapPicker extends StatefulWidget {
   final double radiusKm;
   final bool isDraggable;
   final ValueChanged<LatLng>? onLocationChanged;
+  final double? height;
 
   const LocationMapPicker({
     super.key,
@@ -18,6 +19,7 @@ class LocationMapPicker extends StatefulWidget {
     this.radiusKm = 15.0,
     this.isDraggable = true,
     this.onLocationChanged,
+    this.height = 220,
   });
 
   @override
@@ -68,7 +70,7 @@ class _LocationMapPickerState extends State<LocationMapPicker> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: SizedBox(
-          height: 220,
+          height: widget.height,
           width: double.infinity,
           child: BlocBuilder<LocationMapCubit, LatLng>(
             builder: (context, currentPin) {

@@ -1,66 +1,67 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/search_services_usecase.dart';
 import 'search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
-  SearchCubit()
-    : super(
-        SearchInitial([
-          'Category 1',
-          'Category 2',
-          'Category 3',
-          'Category 4',
-          'Category 5',
-          'Category 6',
-          'Category 7',
-          'Category 8',
-        ]),
-      );
+  final SearchServicesUseCase searchServicesUseCase;
 
-  final List<String> _recents = [
-    'Category 1',
-    'Category 2',
-    'Category 3',
-    'Category 4',
-    'Category 5',
-    'Category 6',
-    'Category 7',
-    'Category 8',
-  ];
+  SearchCubit({required this.searchServicesUseCase}) : super(SearchInitial([]));
 
-  void search(String query) {
-    if (query.isEmpty) {
+  final List<String> _recents = [];
+
+  Future<void> search(
+    String query, {
+    String? categoryId,
+    double? minPrice,
+    double? maxPrice,
+    double? minRating,
+    int? minExperience,
+    int? maxExperience,
+  }) async {
+    final trimmedQuery = query.trim();
+
+    // Check if any filter is applied
+    final isDefaultPrice =
+        (minPrice == null || minPrice == 0) &&
+        (maxPrice == null || maxPrice == 500);
+    final isDefaultRating = minRating == null;
+    final isDefaultExperience = minExperience == null && maxExperience == null;
+
+    final isInitialState =
+        trimmedQuery.isEmpty &&
+        categoryId == null &&
+        isDefaultPrice &&
+        isDefaultRating &&
+        isDefaultExperience;
+
+    if (isInitialState) {
       emit(SearchInitial(List.from(_recents)));
       return;
     }
 
     emit(SearchLoading());
 
-    Future.delayed(const Duration(seconds: 1), () {
-      if (query.toLowerCase() == 'nothing') {
-        emit(SearchEmpty(query));
-      } else {
-        if (!_recents.contains(query)) {
-          _recents.insert(0, query);
-        }
+    if (trimmedQuery.isNotEmpty && !_recents.contains(trimmedQuery)) {
+      _recents.insert(0, trimmedQuery);
+    }
 
-        emit(
-          SearchLoaded(
-            query,
-            15,
-            List.generate(
-              15,
-              (index) => {
-                'name': 'Provider Name ${index + 1}',
-                'service': 'Service Title ${index + 1}',
-                'price': 25.0 + (index * 2),
-                'rating': 4.0 + (index % 10) / 10,
-                'reviews': 100 + (index * 30),
-                'image':
-                    "https://imgs.search.brave.com/UveizRxweFrraMwnNtB7kFdENT_6dhwB5FpySUMnm3I/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wbHVz/LnVuc3BsYXNoLmNv/bS9wcmVtaXVtX3Bo/b3RvLTE2NjEzMzM0/NDU5NDEtOTUzMTcz/OWU1NGUwP2ZtPWpw/ZyZxPTYwJnc9MzAw/MCZhdXRvPWZvcm1h/dCZmaXQ9Y3JvcCZp/eGxpYj1yYi00LjEu/MCZpeGlkPU0zd3hN/akEzZkRCOE1IeHpa/V0Z5WTJoOE9YeDhj/bVZ3WVdseUpUSXdj/MlZ5ZG1salpYeGxi/bnd3Zkh3d2ZIeDhN/QT09",
-              },
-            ),
-          ),
-        );
+    final result = await searchServicesUseCase(
+      SearchParams(
+        query: trimmedQuery,
+        categoryId: categoryId,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        minRating: minRating,
+        minExperience: minExperience,
+        maxExperience: maxExperience,
+      ),
+    );
+
+    result.fold((failure) => emit(SearchError(failure.message)), (services) {
+      if (services.isEmpty) {
+        emit(SearchEmpty(trimmedQuery));
+      } else {
+        emit(SearchLoaded(trimmedQuery, services.length, services));
       }
     });
   }

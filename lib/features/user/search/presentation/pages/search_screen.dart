@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/features/user/search/presentation/widgets/filter_indicator_widget.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:serviko_app/core/widgets/back_button_widget.dart';
 import 'package:serviko_app/core/widgets/custom_text_field.dart';
+import 'package:serviko_app/core/widgets/custom_error_widget.dart';
 import '../bloc/search_cubit.dart';
 import '../bloc/search_state.dart';
 import '../widgets/filter_bottom_sheet.dart';
@@ -13,6 +16,7 @@ import '../widgets/recent_searches_view.dart';
 import '../widgets/search_results_view.dart';
 import '../widgets/search_empty_view.dart';
 import '../bloc/filter_cubit.dart';
+import 'package:serviko_app/injection_container.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key, this.openFilter = false});
@@ -23,7 +27,12 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => SearchCubit()),
+        BlocProvider(
+          create: (context) => SearchCubit(
+            searchServicesUseCase:
+                InjectionContainer.instance.searchServicesUseCase,
+          ),
+        ),
         BlocProvider(create: (context) => FilterCubit()),
       ],
       child: _SearchScreenView(openFilter: openFilter),
@@ -61,21 +70,33 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
   }
 
   void _onSearchChanged(String value) {
-    _searchController.text = value;
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      context.read<SearchCubit>().search(value);
+      _performSearch(value);
     });
   }
 
   void _onSearchSubmit(String value) {
     _searchController.text = value;
-    context.read<SearchCubit>().search(value);
+    _performSearch(value);
   }
 
-  void _showFilterBottomSheet() {
+  void _performSearch(String query) {
+    final filterState = context.read<FilterCubit>().state;
+    context.read<SearchCubit>().search(
+      query,
+      categoryId: filterState.categoryId,
+      minPrice: filterState.priceRange.start,
+      maxPrice: filterState.priceRange.end,
+      minRating: filterState.rating.minRating?.toDouble(),
+      minExperience: filterState.experience.minYears,
+      maxExperience: filterState.experience.maxYears,
+    );
+  }
+
+  void _showFilterBottomSheet() async {
     final filterCubit = context.read<FilterCubit>();
-    showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -84,6 +105,10 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
         child: const FilterBottomSheet(),
       ),
     );
+
+    if (mounted) {
+      _performSearch(_searchController.text);
+    }
   }
 
   @override
@@ -115,6 +140,7 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
                       child: CustomTextField(
                         controller: _searchController,
                         hintText: 'Search',
+                        autofocus: !widget.openFilter,
                         textInputAction: TextInputAction.search,
                         onChanged: _onSearchChanged,
                         onFieldSubmitted: _onSearchSubmit,
@@ -137,7 +163,14 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
                 ],
               ),
             ),
-            const SizedBox(height: AppSizes.lg),
+            const SizedBox(height: AppSizes.md),
+
+            // Indicator for active filters
+            FilterIndicatorWidget(
+              query: _searchController.text,
+              performSearch: _performSearch,
+            ),
+            SizedBox(height: AppSizes.md),
 
             // Content Area
             Expanded(
@@ -149,11 +182,19 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
                       onSearchSubmit: _onSearchSubmit,
                     );
                   } else if (state is SearchLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return _buildLoadingSkeleton();
                   } else if (state is SearchLoaded) {
                     return SearchResultsView(state: state);
                   } else if (state is SearchEmpty) {
                     return SearchEmptyView(state: state);
+                  } else if (state is SearchError) {
+                    return CustomErrorWidget(
+                      message: state.message,
+                      isFullPage: true,
+                      onRetry: () {
+                        _performSearch(_searchController.text);
+                      },
+                    );
                   }
                   return const SizedBox.shrink();
                 },
@@ -162,6 +203,13 @@ class _SearchScreenViewState extends State<_SearchScreenView> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLoadingSkeleton() {
+    return const Skeletonizer(
+      enabled: true,
+      child: SearchResultsView(isLoading: true),
     );
   }
 }

@@ -39,7 +39,7 @@ class SignUpCubit extends Cubit<SignUpState> {
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
-      (user) => emit(state.copyWith(isLoading: false, user: user)),
+      (user) => emit(state.copyWith(user: user)),
     );
   }
 

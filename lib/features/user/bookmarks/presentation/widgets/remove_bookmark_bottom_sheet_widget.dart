@@ -49,10 +49,10 @@ class RemoveBookmarkBottomSheetWidget extends StatelessWidget {
 
             // Service Card Preview
             ServiceCard(
-              imageUrl:
-                  "https://imgs.search.brave.com/UveizRxweFrraMwnNtB7kFdENT_6dhwB5FpySUMnm3I/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wbHVz/LnVuc3BsYXNoLmNv/bS9wcmVtaXVtX3Bo/b3RvLTE2NjEzMzM0/NDU5NDEtOTUzMTcz/OWU1NGUwP2ZtPWpw/ZyZxPTYwJnc9MzAw/MCZhdXRvPWZvcm1h/dCZmaXQ9Y3JvcCZp/eGxpYj1yYi00LjEu/MCZpeGlkPU0zd3hN/akEzZkRCOE1IeHpa/V0Z5WTJoOE9YeDhj/bVZ3WVdseUpUSXdj/MlZ5ZG1salpYeGxi/bnd3Zkh3d2ZIeDhN/QT09",
+              bannerImage: "",
+              categoryIcon: "category_rounded",
               providerName: 'Provider Name',
-              categories: const ['Category 1', 'Category 2'],
+              categoryName: 'Category 1',
               price: 100,
               rating: 4.5,
               reviews: 100,

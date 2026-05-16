@@ -9,8 +9,13 @@ class CustomButton extends StatelessWidget {
   final bool isOutlined;
   final bool isLoading;
   final double? width;
+  final double? height;
   final Color? backgroundColor;
   final Color? textColor;
+  final Color? borderColor;
+  final double? fontSize;
+  final EdgeInsetsGeometry? padding;
+  final double? borderRadius;
 
   const CustomButton({
     super.key,
@@ -18,32 +23,41 @@ class CustomButton extends StatelessWidget {
     this.onPressed,
     this.isOutlined = false,
     this.isLoading = false,
-    this.width,
+    this.width = double.infinity,
+    this.height = AppSizes.buttonHeight,
     this.backgroundColor,
     this.textColor,
+    this.borderColor,
+    this.fontSize,
+    this.padding,
+    this.borderRadius,
   });
 
   @override
   Widget build(BuildContext context) {
     if (isOutlined) {
       return SizedBox(
-        width: width ?? double.infinity,
-        height: AppSizes.buttonHeight,
+        width: width,
+        height: height,
         child: OutlinedButton(
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: AppColors.primary),
+            padding: padding,
+            side: BorderSide(color: borderColor ?? AppColors.primary),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSizes.radiusFull),
+              borderRadius: BorderRadius.circular(
+                borderRadius ?? AppSizes.radiusFull,
+              ),
             ),
           ),
           child: isLoading
               ? const _LoadingIndicator()
               : Text(
                   text,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: textColor ?? AppColors.primary,
-                    fontSize: 16,
+                    fontSize: fontSize ?? 14,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -52,15 +66,18 @@ class CustomButton extends StatelessWidget {
     }
 
     return SizedBox(
-      width: width ?? double.infinity,
-      height: AppSizes.buttonHeight,
+      width: width,
+      height: height,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
+          padding: padding,
           backgroundColor: backgroundColor ?? AppColors.primary,
           foregroundColor: textColor ?? Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusFull),
+            borderRadius: BorderRadius.circular(
+              borderRadius ?? AppSizes.radiusFull,
+            ),
           ),
           elevation: 0,
         ),
@@ -68,8 +85,9 @@ class CustomButton extends StatelessWidget {
             ? const _LoadingIndicator()
             : Text(
                 text,
-                style: const TextStyle(
-                  fontSize: 16,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: fontSize ?? 14,
                   fontWeight: FontWeight.w600,
                 ),
               ),

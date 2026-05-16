@@ -1,6 +1,7 @@
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:serviko_app/core/network/api_client.dart';
 import 'package:serviko_app/core/network/network_info.dart';
+import 'package:serviko_app/features/shared/location/data/services/location_service.dart';
 import 'package:serviko_app/features/provider/onboarding/data/datasources/provider_onboarding_remote_datasource.dart';
 import 'package:serviko_app/features/provider/onboarding/data/repositories/provider_onboarding_repository_impl.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/repositories/provider_onboarding_repository.dart';
@@ -38,6 +39,34 @@ import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile
 import 'package:serviko_app/features/user/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/upload_profile_image_usecase.dart';
 
+import 'package:serviko_app/features/user/category/data/datasources/category_remote_data_source.dart';
+import 'package:serviko_app/features/user/category/data/repositories/category_repository_impl.dart';
+import 'package:serviko_app/features/user/category/domain/repositories/category_repository.dart';
+import 'package:serviko_app/features/user/category/domain/usecases/get_categories_usecase.dart'
+    as user_category;
+
+import 'package:serviko_app/features/user/service/data/datasources/service_remote_data_source.dart';
+import 'package:serviko_app/features/user/service/data/repositories/service_repository_impl.dart';
+import 'package:serviko_app/features/user/service/domain/repositories/service_repository.dart';
+import 'package:serviko_app/features/user/service/domain/usecases/get_popular_services_usecase.dart';
+import 'package:serviko_app/features/user/service/domain/usecases/get_service_detail_usecase.dart';
+
+import 'package:serviko_app/features/user/search/data/datasources/search_remote_data_source.dart';
+import 'package:serviko_app/features/user/search/data/repositories/search_repository_impl.dart';
+import 'package:serviko_app/features/user/search/domain/repositories/search_repository.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/search_services_usecase.dart';
+
+import 'package:serviko_app/features/user/booking/data/datasources/booking_remote_data_source.dart';
+import 'package:serviko_app/features/user/booking/data/repositories/booking_repository_impl.dart';
+import 'package:serviko_app/features/user/booking/domain/repositories/booking_repository.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/create_booking_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_available_slots_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_bookings_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/review_booking_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_booking_detail_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/cancel_booking_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_customer_bookings_usecase.dart';
+
 class InjectionContainer {
   InjectionContainer._();
 
@@ -47,6 +76,7 @@ class InjectionContainer {
   // Core
   late final ApiClient apiClient;
   late final NetworkInfo networkInfo;
+  late final LocationService locationService;
 
   // Auth
   late final AuthLocalDataSource authLocalDataSource;
@@ -88,11 +118,39 @@ class InjectionContainer {
   late final UploadBannerImageUseCase uploadBannerImageUseCase;
   late final DeleteBannerImageUseCase deleteBannerImageUseCase;
 
+  // User Category
+  late final CategoryRemoteDataSource categoryRemoteDataSource;
+  late final CategoryRepository categoryRepository;
+  late final user_category.GetCategoriesUseCase userGetCategoriesUseCase;
+
+  // User Service
+  late final ServiceRemoteDataSource serviceRemoteDataSource;
+  late final ServiceRepository serviceRepository;
+  late final GetPopularServicesUseCase getPopularServicesUseCase;
+  late final GetServiceDetailUseCase getServiceDetailUseCase;
+
+  // Search
+  late final SearchRemoteDataSource searchRemoteDataSource;
+  late final SearchRepository searchRepository;
+  late final SearchServicesUseCase searchServicesUseCase;
+
+  // Booking
+  late final BookingRemoteDataSource bookingRemoteDataSource;
+  late final BookingRepository bookingRepository;
+  late final GetAvailableSlotsUseCase getAvailableSlotsUseCase;
+  late final CreateBookingUseCase createBookingUseCase;
+  late final GetProviderBookingsUseCase getProviderBookingsUseCase;
+  late final ReviewBookingUseCase reviewBookingUseCase;
+  late final GetBookingDetailUseCase getBookingDetailUseCase;
+  late final CancelBookingUseCase cancelBookingUseCase;
+  late final GetCustomerBookingsUseCase getCustomerBookingsUseCase;
+
   // Initialise
   Future<void> init() async {
     // Core
     apiClient = ApiClient();
     networkInfo = NetworkInfoImpl(InternetConnection());
+    locationService = LocationService();
 
     // Auth - Data
     authLocalDataSource = AuthLocalDataSourceImpl();
@@ -166,5 +224,48 @@ class InjectionContainer {
     deleteBannerImageUseCase = DeleteBannerImageUseCase(
       providerOnboardingRepository,
     );
+
+    // User Category
+    categoryRemoteDataSource = CategoryRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    categoryRepository = CategoryRepositoryImpl(
+      remoteDataSource: categoryRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    userGetCategoriesUseCase = user_category.GetCategoriesUseCase(
+      categoryRepository,
+    );
+
+    // User Service
+    serviceRemoteDataSource = ServiceRemoteDataSourceImpl(apiClient: apiClient);
+    serviceRepository = ServiceRepositoryImpl(
+      remoteDataSource: serviceRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getPopularServicesUseCase = GetPopularServicesUseCase(serviceRepository);
+    getServiceDetailUseCase = GetServiceDetailUseCase(serviceRepository);
+
+    // Search
+    searchRemoteDataSource = SearchRemoteDataSourceImpl(apiClient: apiClient);
+    searchRepository = SearchRepositoryImpl(
+      remoteDataSource: searchRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    searchServicesUseCase = SearchServicesUseCase(searchRepository);
+
+    // Booking
+    bookingRemoteDataSource = BookingRemoteDataSourceImpl(apiClient: apiClient);
+    bookingRepository = BookingRepositoryImpl(
+      remoteDataSource: bookingRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getAvailableSlotsUseCase = GetAvailableSlotsUseCase(bookingRepository);
+    createBookingUseCase = CreateBookingUseCase(bookingRepository);
+    getProviderBookingsUseCase = GetProviderBookingsUseCase(bookingRepository);
+    reviewBookingUseCase = ReviewBookingUseCase(bookingRepository);
+    getBookingDetailUseCase = GetBookingDetailUseCase(bookingRepository);
+    cancelBookingUseCase = CancelBookingUseCase(bookingRepository);
+    getCustomerBookingsUseCase = GetCustomerBookingsUseCase(bookingRepository);
   }
 }

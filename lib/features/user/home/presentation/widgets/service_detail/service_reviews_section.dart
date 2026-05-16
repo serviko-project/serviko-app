@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
-import 'package:serviko_app/features/user/home/presentation/cubit/service_detail_cubit.dart';
-import 'package:serviko_app/features/user/home/presentation/cubit/service_detail_state.dart';
+import 'package:serviko_app/features/user/service/presentation/cubit/service_detail_cubit.dart';
 import 'review_card.dart';
 
 // Reviews section with filter chips and review list
@@ -51,6 +50,7 @@ class ServiceReviewsSection extends StatelessWidget {
           // Filter chips
           BlocBuilder<ServiceDetailCubit, ServiceDetailState>(
             buildWhen: (prev, curr) =>
+                prev.runtimeType != curr.runtimeType ||
                 prev.selectedRating != curr.selectedRating,
             builder: (context, state) {
               return SizedBox(
@@ -62,27 +62,35 @@ class ServiceReviewsSection extends StatelessWidget {
                       const SizedBox(width: AppSizes.sm),
                   itemBuilder: (context, index) {
                     final rating = _ratingFilters[index];
-                    final isSelected = state.selectedRating == rating;
+                    final isSelected = state.selectedRating == (rating ?? 0);
                     final label = rating == null ? 'All' : '$rating';
 
                     return GestureDetector(
                       onTap: () => context
                           .read<ServiceDetailCubit>()
-                          .selectRating(rating),
+                          .selectRating(rating ?? 0),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSizes.md,
                           vertical: AppSizes.xs,
                         ),
                         decoration: BoxDecoration(
-                          color: isSelected
+                          color:
+                              (state is ServiceDetailLoading ||
+                                  state is ServiceDetailInitial)
+                              ? AppColors.shimmerBase
+                              : isSelected
                               ? AppColors.primary
                               : AppColors.background,
                           borderRadius: BorderRadius.circular(
                             AppSizes.radiusFull,
                           ),
                           border: Border.all(
-                            color: AppColors.primary,
+                            color:
+                                (state is ServiceDetailLoading ||
+                                    state is ServiceDetailInitial)
+                                ? AppColors.shimmerBase
+                                : AppColors.primary,
                             width: 1.5,
                           ),
                         ),

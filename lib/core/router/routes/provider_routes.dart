@@ -9,6 +9,8 @@ import '../route_constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../injection_container.dart';
 import '../../../features/provider/profile/presentation/pages/edit_provider_details_screen.dart';
+import '../../../features/provider/jobs/presentation/pages/provider_jobs_screen.dart';
+import '../../../features/provider/jobs/presentation/cubit/provider_jobs_cubit.dart';
 
 List<RouteBase> providerRoutes = [
   // ---- Provider Onboarding ----
@@ -57,7 +59,15 @@ List<RouteBase> providerRoutes = [
           GoRoute(
             name: RouteNames.providerJobs,
             path: RoutePaths.providerJobs,
-            builder: (context, state) => const PlaceholderScreen(title: 'Jobs'),
+            builder: (context, state) => BlocProvider(
+              create: (context) => ProviderJobsCubit(
+                getProviderBookingsUseCase:
+                    InjectionContainer.instance.getProviderBookingsUseCase,
+                reviewBookingUseCase:
+                    InjectionContainer.instance.reviewBookingUseCase,
+              ),
+              child: const ProviderJobsScreen(),
+            ),
           ),
         ],
       ),

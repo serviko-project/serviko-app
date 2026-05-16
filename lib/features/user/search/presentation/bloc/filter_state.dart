@@ -1,30 +1,39 @@
 import 'package:flutter/material.dart';
 import '../../domain/models/filter_enums.dart';
+import '../../../category/domain/entities/category_entity.dart';
 
 class FilterState {
-  final String category;
+  final String? categoryId;
   final RangeValues priceRange;
   final RatingFilter rating;
   final ExperienceFilter experience;
-  final List<String> availableCategories;
+  final List<CategoryEntity> availableCategories;
 
   const FilterState({
-    required this.category,
+    this.categoryId,
     required this.priceRange,
     required this.rating,
     required this.experience,
     required this.availableCategories,
   });
 
+  bool get isFiltered =>
+      categoryId != null ||
+      priceRange.start != 0 ||
+      priceRange.end != 500 ||
+      rating != RatingFilter.all ||
+      experience != ExperienceFilter.any;
+
   FilterState copyWith({
-    String? category,
+    String? categoryId,
+    bool clearCategory = false,
     RangeValues? priceRange,
     RatingFilter? rating,
     ExperienceFilter? experience,
-    List<String>? availableCategories,
+    List<CategoryEntity>? availableCategories,
   }) {
     return FilterState(
-      category: category ?? this.category,
+      categoryId: clearCategory ? null : (categoryId ?? this.categoryId),
       priceRange: priceRange ?? this.priceRange,
       rating: rating ?? this.rating,
       experience: experience ?? this.experience,

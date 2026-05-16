@@ -24,6 +24,12 @@ class RouteNames {
   static const String allCategories = 'allCategories';
   static const String categoryDetails = 'categoryDetails';
   static const String serviceDetails = 'serviceDetails';
+  static const String bookingDetails = 'bookingDetails';
+  static const String promoSelection = 'promoSelection';
+  static const String bookingLocation = 'bookingLocation';
+  static const String bookingSummary = 'bookingSummary';
+  static const String bookingSuccess = 'bookingSuccess';
+  static const String viewBooking = 'viewBooking';
 
   // Provider route names
   static const String providerOnboarding = 'providerOnboarding';
@@ -62,6 +68,12 @@ class RoutePaths {
   static const String allCategories = '/all-categories';
   static const String categoryDetails = '/category-details';
   static const String serviceDetails = '/service-details';
+  static const String bookingDetails = '/booking-details';
+  static const String promoSelection = '/promo-selection';
+  static const String bookingLocation = '/booking-location';
+  static const String bookingSummary = '/booking-summary';
+  static const String bookingSuccess = '/booking-success';
+  static const String viewBooking = '/view-booking/:id';
 
   // Provider paths
   static const String providerOnboarding = '/provider/onboarding';

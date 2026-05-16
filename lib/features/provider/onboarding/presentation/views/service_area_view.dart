@@ -46,8 +46,8 @@ class _ServiceAreaViewState extends State<ServiceAreaView> {
 
         // Default Value
         final center = LatLng(
-          state.latitude ?? 11.0168,
-          state.longitude ?? 76.0694,
+          state.latitude ?? 11.0515,
+          state.longitude ?? 75.9857,
         );
 
         return SingleChildScrollView(

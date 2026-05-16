@@ -5,10 +5,11 @@ import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
+import 'package:serviko_app/features/user/category/presentation/cubit/category_cubit.dart';
 import '../bloc/filter_cubit.dart';
 import '../bloc/filter_state.dart';
 import 'filter_choice_chip.dart';
-import '../../domain/models/filter_enums.dart';
+import 'rating_experience_sections.dart';
 
 class FilterBottomSheet extends StatelessWidget {
   const FilterBottomSheet({super.key});
@@ -46,9 +47,9 @@ class FilterBottomSheet extends StatelessWidget {
 
                   _buildPriceSection(context, state),
 
-                  _buildRatingSection(context, state),
+                  RatingSection(state: state),
 
-                  _buildExperienceSection(context, state),
+                  ExperienceSection(state: state),
 
                   _buildActionButtons(context),
                 ],
@@ -79,21 +80,54 @@ class FilterBottomSheet extends StatelessWidget {
       children: [
         Text('Category', style: AppTextStyles.h3),
         const SizedBox(height: AppSizes.sm),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: state.availableCategories.map((category) {
-              return FilterChoiceChip(
-                label: category,
-                isSelected: state.category == category,
-                onSelected: (selected) {
-                  if (selected) {
-                    context.read<FilterCubit>().setCategory(category);
-                  }
-                },
+        BlocBuilder<CategoryCubit, CategoryState>(
+          builder: (context, categoryState) {
+            if (categoryState is CategoryLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (categoryState is CategoryLoaded) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  context.read<FilterCubit>().setAvailableCategories(
+                    categoryState.categories,
+                  );
+                }
+              });
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    FilterChoiceChip(
+                      label: 'All',
+                      isSelected: state.categoryId == null,
+                      onSelected: (selected) {
+                        if (selected) {
+                          context.read<FilterCubit>().setCategoryId(null);
+                        }
+                      },
+                    ),
+                    ...categoryState.categories.map((category) {
+                      return FilterChoiceChip(
+                        label: category.title,
+                        isSelected: state.categoryId == category.id,
+                        onSelected: (selected) {
+                          if (selected) {
+                            context.read<FilterCubit>().setCategoryId(
+                              category.id,
+                            );
+                          }
+                        },
+                      );
+                    }),
+                  ],
+                ),
               );
-            }).toList(),
-          ),
+            }
+
+            return const Text('Failed to load categories');
+          },
         ),
       ],
     );
@@ -128,59 +162,6 @@ class FilterBottomSheet extends StatelessWidget {
           onChanged: (RangeValues values) {
             context.read<FilterCubit>().setPriceRange(values);
           },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRatingSection(BuildContext context, FilterState state) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Rating', style: AppTextStyles.h3),
-        const SizedBox(height: AppSizes.sm),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: RatingFilter.values.map((rating) {
-              return FilterChoiceChip(
-                label: rating.displayName,
-                isSelected: state.rating == rating,
-                showStar: true,
-                onSelected: (selected) {
-                  if (selected) {
-                    context.read<FilterCubit>().setRating(rating);
-                  }
-                },
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildExperienceSection(BuildContext context, FilterState state) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Years of Experience', style: AppTextStyles.h3),
-        const SizedBox(height: AppSizes.sm),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: ExperienceFilter.values.map((experience) {
-              return FilterChoiceChip(
-                label: experience.displayName,
-                isSelected: state.experience == experience,
-                onSelected: (selected) {
-                  if (selected) {
-                    context.read<FilterCubit>().setExperience(experience);
-                  }
-                },
-              );
-            }).toList(),
-          ),
         ),
       ],
     );

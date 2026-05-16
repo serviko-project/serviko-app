@@ -2,90 +2,189 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
-import 'package:serviko_app/features/user/home/presentation/cubit/service_detail_cubit.dart';
+import 'package:serviko_app/features/user/service/presentation/cubit/service_detail_cubit.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/service_cover_image.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/service_info_section.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/service_about_section.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/service_photos_section.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/service_reviews_section.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/service_bottom_bar.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:serviko_app/features/user/service/domain/entities/service_entity.dart';
+import 'package:serviko_app/core/widgets/custom_error_widget.dart';
+import 'package:go_router/go_router.dart';
+import 'package:serviko_app/core/router/route_constants.dart';
+
+import 'package:serviko_app/features/user/booking/domain/entities/booking_init_data.dart';
 
 // Service detail Screen
-class ServiceDetailScreen extends StatelessWidget {
-  const ServiceDetailScreen({super.key, required this.serviceIndex});
+class ServiceDetailScreen extends StatefulWidget {
+  final String serviceId;
 
-  final int serviceIndex;
+  const ServiceDetailScreen({super.key, required this.serviceId});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ServiceDetailCubit(),
-      child: _ServiceDetailView(serviceIndex: serviceIndex),
-    );
-  }
+  State<ServiceDetailScreen> createState() => _ServiceDetailScreenState();
 }
 
-class _ServiceDetailView extends StatelessWidget {
-  final int serviceIndex;
-
-  const _ServiceDetailView({required this.serviceIndex});
+class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ServiceDetailCubit>().fetchServiceDetail(widget.serviceId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Service Banner
-            ServiceCoverImage(serviceIndex: serviceIndex),
-
-            // Service info (provider name, categories, price, rating)
-            ServiceInfoSection(serviceIndex: serviceIndex),
-            const SizedBox(height: AppSizes.lg),
-
-            // Divider
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSizes.screenPadding),
-              child: Divider(),
+    return BlocBuilder<ServiceDetailCubit, ServiceDetailState>(
+      builder: (context, state) {
+        if (state is ServiceDetailError) {
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            body: CustomErrorWidget(
+              message: state.message,
+              isFullPage: true,
+              onRetry: () {
+                context.read<ServiceDetailCubit>().fetchServiceDetail(
+                  widget.serviceId,
+                );
+              },
             ),
-            const SizedBox(height: AppSizes.md),
+          );
+        }
 
-            // About Provider
-            const ServiceAboutSection(),
-            const SizedBox(height: AppSizes.lg),
+        final bool isLoading =
+            state is ServiceDetailLoading || state is ServiceDetailInitial;
 
-            // Divider
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSizes.screenPadding),
-              child: Divider(),
+        final ServiceEntity service = state is ServiceDetailLoaded
+            ? state.service
+            : const ServiceEntity(
+                id: '',
+                categoryId: '',
+                categoryName: 'Category',
+                categoryIcon: 'category_rounded',
+                providerId: '',
+                providerName: 'Provider Name',
+                basePricePerHour: 0,
+                rating: 0,
+                reviewsCount: 0,
+                professionalTitle: 'Professional Title',
+                galleryImages: [],
+                latitude: 9.9312,
+                longitude: 76.2673,
+              );
+
+        final List<ProviderServiceEntity> categories =
+            service.allCategories.isEmpty
+            ? [
+                ProviderServiceEntity(
+                  categoryId: service.categoryId,
+                  categoryName: service.categoryName,
+                  basePricePerHour: service.basePricePerHour,
+                ),
+              ]
+            : service.allCategories;
+
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          body: Skeletonizer(
+            enabled: isLoading,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Service Banner
+                  ServiceCoverImage(
+                    imageUrl: service.bannerImage,
+                    categoryIcon: service.categoryIcon,
+                    providerImage: service.providerImage,
+                    isLoading: isLoading,
+                  ),
+
+                  // Service info
+                  ServiceInfoSection(
+                    providerName: service.providerName,
+                    providerImage: service.providerImage,
+                    selectedCategoryId: state.selectedService?.categoryId,
+                    categories: categories,
+                    rating: service.rating,
+                    reviewsCount: service.reviewsCount,
+                    professionalTitle: service.professionalTitle,
+                    yearsOfExperience: service.yearsOfExperience,
+                    address: state.address,
+                    onServiceSelected: (selected) {
+                      context.read<ServiceDetailCubit>().selectService(
+                        selected,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: AppSizes.lg),
+
+                  // Divider
+                  _buildDivider(),
+                  const SizedBox(height: AppSizes.md),
+
+                  // About Provider
+                  ServiceAboutSection(about: service.about),
+                  const SizedBox(height: AppSizes.lg),
+
+                  // Divider
+                  _buildDivider(),
+                  const SizedBox(height: AppSizes.lg),
+
+                  // Photos & Videos
+                  ServicePhotosSection(images: service.galleryImages),
+                  const SizedBox(height: AppSizes.lg),
+
+                  // Divider
+                  _buildDivider(),
+                  const SizedBox(height: AppSizes.md),
+
+                  // Reviews
+                  const ServiceReviewsSection(),
+                  const SizedBox(height: AppSizes.lg),
+                ],
+              ),
             ),
-            const SizedBox(height: AppSizes.lg),
+          ),
+          // Bottom bar with Price, Message and Book Now buttons
+          bottomNavigationBar: isLoading
+              ? null
+              : ServiceBottomBar(
+                  serviceName:
+                      state.selectedService?.categoryName ??
+                      service.categoryName,
+                  price:
+                      state.selectedService?.basePricePerHour ??
+                      service.basePricePerHour,
+                  onMessageTap: () {},
+                  onBookNowTap: () {
+                    final selectedService =
+                        state.selectedService ?? categories.first;
+                    context.pushNamed(
+                      RouteNames.bookingDetails,
+                      extra: BookingInitData(
+                        serviceId: service.id,
+                        providerId: service.providerId,
+                        categoryId: selectedService.categoryId,
+                        categoryName: selectedService.categoryName,
+                        providerName: service.providerName,
+                        providerImage: service.providerImage,
+                        basePricePerHour: selectedService.basePricePerHour,
+                      ),
+                    );
+                  },
+                ),
+        );
+      },
+    );
+  }
 
-            // Photos & Videos
-            const ServicePhotosSection(),
-            const SizedBox(height: AppSizes.lg),
-
-            // Divider
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSizes.screenPadding),
-              child: Divider(),
-            ),
-            const SizedBox(height: AppSizes.md),
-
-            // Reviews
-            const ServiceReviewsSection(),
-            const SizedBox(height: AppSizes.lg),
-          ],
-        ),
-      ),
-
-      // Bottom bar with Message and Book Now buttons
-      bottomNavigationBar: ServiceBottomBar(
-        onMessageTap: () {},
-        onBookNowTap: () {},
-      ),
+  // Divider builder
+  Padding _buildDivider() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.screenPadding),
+      child: Divider(),
     );
   }
 }

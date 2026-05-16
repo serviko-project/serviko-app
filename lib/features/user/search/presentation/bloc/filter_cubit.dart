@@ -2,30 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'filter_state.dart';
 import '../../domain/models/filter_enums.dart';
+import '../../../category/domain/entities/category_entity.dart';
 
 class FilterCubit extends Cubit<FilterState> {
-  static const List<String> _categories = [
-    'All',
-    'Category 1',
-    'Category 2',
-    'Category 3',
-    'Category 4',
-    'Category 5',
-  ];
-
   FilterCubit()
     : super(
         const FilterState(
-          category: 'All',
+          categoryId: null,
           priceRange: RangeValues(0, 500),
           rating: RatingFilter.all,
           experience: ExperienceFilter.any,
-          availableCategories: _categories,
+          availableCategories: [],
         ),
       );
 
-  void setCategory(String category) {
-    emit(state.copyWith(category: category));
+  void setCategoryId(String? categoryId) {
+    emit(
+      state.copyWith(categoryId: categoryId, clearCategory: categoryId == null),
+    );
+  }
+
+  void setAvailableCategories(List<CategoryEntity> categories) {
+    emit(state.copyWith(availableCategories: categories));
   }
 
   void setPriceRange(RangeValues priceRange) {
@@ -43,7 +41,7 @@ class FilterCubit extends Cubit<FilterState> {
   void reset() {
     emit(
       FilterState(
-        category: 'All',
+        categoryId: null,
         priceRange: const RangeValues(0, 500),
         rating: RatingFilter.all,
         experience: ExperienceFilter.any,

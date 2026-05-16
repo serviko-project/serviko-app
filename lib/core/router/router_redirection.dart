@@ -61,10 +61,14 @@ class RouterRedirection {
       return null;
     }
 
-    // Existing user
+    // Existing user on auth/setup/splash pages,then redirect to home
     if (isOnAuthPage ||
         isOnProfileSetupPage ||
         currentPath == RoutePaths.splash) {
+      final roleState = roleCubit.state;
+      if (roleState.isProvider) {
+        return RoutePaths.providerDashboard;
+      }
       return RoutePaths.home;
     }
 

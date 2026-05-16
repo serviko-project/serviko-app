@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serviko_app/core/constants/app_colors.dart';
+import 'package:serviko_app/features/user/home/presentation/widgets/popular_services_filter_widget.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
-import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/features/user/home/presentation/cubit/popular_services_filter_cubit.dart';
 import 'package:serviko_app/core/widgets/section_header.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
+import 'package:serviko_app/features/user/service/presentation/cubit/popular_services_cubit.dart';
+import 'package:serviko_app/core/widgets/custom_error_widget.dart';
 
 class PopularServicesSection extends StatelessWidget {
   const PopularServicesSection({super.key});
@@ -36,87 +38,93 @@ class _PopularServicesView extends StatelessWidget {
               const SizedBox(height: AppSizes.md),
 
               // Filters
-              SizedBox(
-                height: 50,
-                child: BlocBuilder<PopularServicesFilterCubit, String>(
-                  builder: (context, selectedFilter) {
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSizes.md,
-                      ),
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        final filter = index == 0 ? 'All' : 'Category $index';
-                        final isSelected = filter == selectedFilter;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: AppSizes.sm),
-                          child: ChoiceChip(
-                            label: Text(filter),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              if (selected) {
-                                final controller = context
-                                    .read<PopularServicesFilterCubit>();
-                                controller.updateFilter(filter);
-                              }
-                            },
-                            labelStyle: AppTextStyles.labelMedium.copyWith(
-                              fontSize: 13,
-                              letterSpacing: 0.5,
-                              color: isSelected
-                                  ? AppColors.textOnPrimary
-                                  : AppColors.textPrimary,
-                            ),
-                            backgroundColor: AppColors.background,
-                            selectedColor: AppColors.primary,
-                            side: const BorderSide(
-                              color: AppColors.primary,
-                              width: 1.5,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                AppSizes.radiusXl,
-                              ),
-                            ),
-                            showCheckmark: false,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSizes.md,
-                              vertical: 10,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
+              PopularServicesFilterWidget(),
               const SizedBox(height: AppSizes.lg),
             ],
           ),
         ),
 
         // Service Cards List
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-          sliver: SliverList.builder(
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return ServiceCard(
-                imageUrl:
-                    "https://imgs.search.brave.com/UveizRxweFrraMwnNtB7kFdENT_6dhwB5FpySUMnm3I/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wbHVz/LnVuc3BsYXNoLmNv/bS9wcmVtaXVtX3Bo/b3RvLTE2NjEzMzM0/NDU5NDEtOTUzMTcz/OWU1NGUwP2ZtPWpw/ZyZxPTYwJnc9MzAw/MCZhdXRvPWZvcm1h/dCZmaXQ9Y3JvcCZp/eGxpYj1yYi00LjEu/MCZpeGlkPU0zd3hN/akEzZkRCOE1IeHpa/V0Z5WTJoOE9YeDhj/bVZ3WVdseUpUSXdj/MlZ5ZG1salpYeGxi/bnd3Zkh3d2ZIeDhN/QT09",
-                providerName: 'Provider ${index + 1}',
-                categories: const ['Category 1', 'Category 2'],
-                price: 400 + (index * 50),
-                rating: 4.5 + (index * 0.05),
-                reviews: 100 + (index * 30),
-                onBookmarkTap: () {},
-                onTap: () {
-                  context.pushNamed(AppRouter.serviceDetails, extra: index);
-                },
+        BlocBuilder<PopularServicesCubit, PopularServicesState>(
+          builder: (context, state) {
+            if (state is PopularServicesLoading) {
+              return SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                sliver: Skeletonizer.sliver(
+                  enabled: true,
+                  child: SliverList.builder(
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return ServiceCard(
+                        isLoading: true,
+                        bannerImage: null,
+                        categoryIcon: 'category_rounded',
+                        providerName: 'Provider Name',
+                        categoryName: 'Category',
+                        price: 0.0,
+                        rating: 0.0,
+                        reviews: 0,
+                        onBookmarkTap: () {},
+                        onTap: () {},
+                      );
+                    },
+                  ),
+                ),
               );
-            },
-          ),
+            } else if (state is PopularServicesError) {
+              return SliverToBoxAdapter(
+                child: CustomErrorWidget(
+                  message: state.message,
+                  onRetry: () {
+                    final categoryId = context
+                        .read<PopularServicesFilterCubit>()
+                        .state;
+                    context.read<PopularServicesCubit>().fetchPopularServices(
+                      categoryId: categoryId,
+                    );
+                  },
+                ),
+              );
+            } else if (state is PopularServicesLoaded) {
+              final services = state.services;
+              if (services.isEmpty) {
+                return const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: AppSizes.cardMinHeight,
+                    ),
+                    child: Center(child: Text('No popular services found')),
+                  ),
+                );
+              }
+              return SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                sliver: SliverList.builder(
+                  itemCount: services.length,
+                  itemBuilder: (context, index) {
+                    final service = services[index];
+                    return ServiceCard(
+                      bannerImage: service.bannerImage,
+                      categoryIcon: service.categoryIcon,
+                      providerName: service.providerName,
+                      categoryName: service.categoryName,
+                      price: service.basePricePerHour,
+                      rating: service.rating,
+                      reviews: service.reviewsCount,
+                      onBookmarkTap: () {},
+                      onTap: () {
+                        context.pushNamed(
+                          AppRouter.serviceDetails,
+                          extra: service.id,
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            }
+            return const SliverToBoxAdapter(child: SizedBox.shrink());
+          },
         ),
       ],
     );
