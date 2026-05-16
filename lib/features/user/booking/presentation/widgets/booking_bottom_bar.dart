@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/core/widgets/custom_button.dart';
 
 class BookingBottomBar extends StatelessWidget {
   final double price;
@@ -29,28 +30,10 @@ class BookingBottomBar extends StatelessWidget {
         ],
       ),
       child: SafeArea(
-        child: ElevatedButton(
+        child: CustomButton(
+          text: 'Continue - ₹${price.toStringAsFixed(0)}',
           onPressed: isEnabled ? onContinue : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: isEnabled ? AppColors.primary : AppColors.divider,
-            foregroundColor: isEnabled
-                ? AppColors.textOnPrimary
-                : AppColors.textSecondary,
-            elevation: isEnabled ? 2 : 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSizes.radiusFull),
-            ),
-          ),
-          child: Text(
-            'Continue - ₹${price.toStringAsFixed(0)}',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: isEnabled
-                  ? AppColors.textOnPrimary
-                  : AppColors.textSecondary,
-            ),
-          ),
+          borderRadius: AppSizes.radiusFull,
         ),
       ),
     );

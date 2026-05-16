@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:serviko_app/core/utils/date_time_utils.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_entity.dart';
 
 class JobCardDetails extends StatelessWidget {
@@ -10,20 +12,18 @@ class JobCardDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 10,
+      spacing: AppSizes.sm,
       children: [
         // Date
         _InfoRow(
           icon: Icons.calendar_today_outlined,
-          label: DateFormat(
-            'EEE, MMM d, yyyy',
-          ).format(DateTime.parse(booking.scheduledDate)),
+          label: DateTimeUtils.formatToReadableDate(booking.scheduledDate),
         ),
         // Time & Duration
         _InfoRow(
           icon: Icons.access_time,
           label:
-              '${booking.startTime} - ${booking.endTime} (${booking.durationHours} hrs)',
+              '${DateTimeUtils.formatTo12Hour(booking.startTime)} - ${DateTimeUtils.formatTo12Hour(booking.endTime)} (${booking.durationHours} hrs)',
         ),
         // Location
         _InfoRow(
@@ -46,13 +46,13 @@ class _InfoRow extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(icon, size: 16, color: theme.hintColor),
-        const SizedBox(width: 8),
+        Icon(icon, size: AppSizes.iconSm, color: theme.hintColor),
+        const SizedBox(width: AppSizes.sm),
         Expanded(
           child: Text(
             label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppTextStyles.bodyMedium.color?.withValues(alpha: 0.8),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:serviko_app/features/user/booking/domain/enums/booking_status.dart';
 
 class BookingEntity extends Equatable {
   final String id;
@@ -11,7 +12,7 @@ class BookingEntity extends Equatable {
   final int durationHours;
   final double basePricePerHour;
   final double totalPrice;
-  final String status;
+  final BookingStatus status;
   final double? customerLatitude;
   final double? customerLongitude;
   final String? customerAddress;

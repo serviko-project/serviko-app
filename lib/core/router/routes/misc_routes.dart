@@ -18,6 +18,7 @@ import '../../../features/user/booking/presentation/pages/booking_location_scree
 import '../../../features/user/booking/presentation/pages/promo_selection_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_summary_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_success_screen.dart';
+import '../../../features/user/booking/presentation/pages/view_booking_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -143,5 +144,13 @@ List<RouteBase> miscRoutes = [
     name: RouteNames.bookingSuccess,
     path: RoutePaths.bookingSuccess,
     builder: (context, state) => BookingSuccessScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.viewBooking,
+    path: RoutePaths.viewBooking,
+    builder: (context, state) {
+      final bookingId = state.pathParameters['id'] ?? '';
+      return ViewBookingScreen(bookingId: bookingId);
+    },
   ),
 ];

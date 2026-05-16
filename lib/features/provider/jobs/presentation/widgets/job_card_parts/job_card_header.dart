@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
-import 'package:serviko_app/core/utils/status_utils.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_entity.dart';
+import 'package:serviko_app/features/user/booking/domain/enums/booking_status.dart';
 
 class JobCardHeader extends StatelessWidget {
   final BookingEntity booking;
-  final String status;
+  final BookingStatus status;
 
   const JobCardHeader({super.key, required this.booking, required this.status});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final statusColor = StatusUtils.getBookingStatusColor(status);
 
     return Row(
       children: [
@@ -44,13 +43,13 @@ class JobCardHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: statusColor.withValues(alpha: 0.1),
+            color: status.color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            status.toUpperCase(),
+            status.displayLabel.toUpperCase(),
             style: theme.textTheme.labelSmall?.copyWith(
-              color: statusColor,
+              color: status.color,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,
             ),

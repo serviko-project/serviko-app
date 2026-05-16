@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import '../../../features/user/home/presentation/pages/home_screen.dart';
 import '../../../features/user/main/presentation/pages/main_screen.dart';
 import '../../../features/user/profile/presentation/pages/profile_screen.dart';
+import '../../../features/user/booking/presentation/pages/my_bookings_screen.dart';
 import '../../widgets/placeholder_screen.dart';
 import '../route_constants.dart';
 
@@ -24,8 +25,7 @@ RouteBase customerRoutes = StatefulShellRoute.indexedStack(
         GoRoute(
           name: RouteNames.booking,
           path: RoutePaths.booking,
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Bookings'),
+          builder: (context, state) => const MyBookingsScreen(),
         ),
       ],
     ),

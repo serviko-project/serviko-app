@@ -1,4 +1,5 @@
 import '../../domain/entities/booking_entity.dart';
+import '../../domain/enums/booking_status.dart';
 
 class BookingModel extends BookingEntity {
   const BookingModel({
@@ -42,7 +43,7 @@ class BookingModel extends BookingEntity {
       basePricePerHour:
           (json['base_price_per_hour'] as num?)?.toDouble() ?? 0.0,
       totalPrice: (json['total_price'] as num?)?.toDouble() ?? 0.0,
-      status: (json['status'] as String?) ?? '',
+      status: BookingStatus.fromString((json['status'] as String?) ?? ''),
       customerLatitude: json['customer_latitude'] != null
           ? (json['customer_latitude'] as num).toDouble()
           : null,

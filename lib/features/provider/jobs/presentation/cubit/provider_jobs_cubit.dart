@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:serviko_app/features/user/booking/domain/entities/booking_entity.dart';
 import '../../../../user/booking/domain/usecases/get_provider_bookings_usecase.dart';
 import '../../../../user/booking/domain/usecases/review_booking_usecase.dart';
 import 'provider_jobs_state.dart';
@@ -18,12 +17,7 @@ class ProviderJobsCubit extends Cubit<ProviderJobsState> {
   Future<void> getBookings({bool refresh = false}) async {
     if (refresh) {
       _currentPage = 1;
-      final currentBookings = state is ProviderJobsLoaded
-          ? (state as ProviderJobsLoaded).bookings
-          : (state is ProviderJobsLoading
-                ? (state as ProviderJobsLoading).bookings
-                : <BookingEntity>[]);
-      emit(ProviderJobsLoading(bookings: currentBookings));
+      emit(ProviderJobsLoading(bookings: state.bookings));
     } else if (state is ProviderJobsInitial) {
       emit(const ProviderJobsLoading());
     } else if (state is ProviderJobsLoaded &&
@@ -32,16 +26,12 @@ class ProviderJobsCubit extends Cubit<ProviderJobsState> {
     }
 
     final result = await getProviderBookingsUseCase(
-      GetProviderBookingsParams(page: _currentPage),
+      GetProviderBookingsParams(page: _currentPage, limit: 20),
     );
 
     result.fold(
       (failure) {
-        List<BookingEntity>? currentBookings;
-        if (state is ProviderJobsLoaded) {
-          currentBookings = (state as ProviderJobsLoaded).bookings;
-        }
-        emit(ProviderJobsError(failure.message, bookings: currentBookings));
+        emit(ProviderJobsError(failure.message, bookings: state.bookings));
       },
       (bookings) {
         if (refresh || state is! ProviderJobsLoaded) {
@@ -52,11 +42,10 @@ class ProviderJobsCubit extends Cubit<ProviderJobsState> {
             ),
           );
         } else {
-          final currentBookings = (state as ProviderJobsLoaded).bookings;
           emit(
             ProviderJobsLoaded(
-              bookings: currentBookings + bookings,
-              hasReachedMax: bookings.isEmpty,
+              bookings: (state.bookings ?? []) + bookings,
+              hasReachedMax: bookings.length < 20,
             ),
           );
         }
@@ -71,11 +60,7 @@ class ProviderJobsCubit extends Cubit<ProviderJobsState> {
     String? rejectionReason,
   }) async {
     final currentState = state;
-    if (currentState is ProviderJobsLoaded) {
-      emit(ProviderJobUpdating(bookingId, currentState.bookings));
-    } else {
-      emit(ProviderJobUpdating(bookingId, const []));
-    }
+    emit(ProviderJobUpdating(bookingId, state.bookings ?? []));
 
     final result = await reviewBookingUseCase(
       ReviewBookingParams(
@@ -87,31 +72,29 @@ class ProviderJobsCubit extends Cubit<ProviderJobsState> {
 
     result.fold(
       (failure) {
-        List<BookingEntity>? currentBookings;
-        if (currentState is ProviderJobsLoaded) {
-          currentBookings = currentState.bookings;
-        }
-        emit(ProviderJobsError(failure.message, bookings: currentBookings));
+        emit(
+          ProviderJobsError(failure.message, bookings: currentState.bookings),
+        );
         // Restore previous list if possible
         if (currentState is ProviderJobsLoaded) {
           emit(currentState);
         }
       },
       (updatedBooking) {
-        if (currentState is ProviderJobsLoaded) {
-          final updatedList = currentState.bookings.map((b) {
-            return b.id == updatedBooking.id ? updatedBooking : b;
-          }).toList();
-          emit(ProviderJobUpdated(updatedBooking, updatedList));
-          emit(
-            ProviderJobsLoaded(
-              bookings: updatedList,
-              hasReachedMax: currentState.hasReachedMax,
-            ),
-          );
-        } else {
-          emit(ProviderJobUpdated(updatedBooking, const []));
-        }
+        final currentBookings = currentState.bookings ?? [];
+        final updatedList = currentBookings.map((b) {
+          return b.id == updatedBooking.id ? updatedBooking : b;
+        }).toList();
+        final hasReachedMax = currentState is ProviderJobsLoaded
+            ? currentState.hasReachedMax
+            : false;
+        emit(ProviderJobUpdated(updatedBooking, updatedList));
+        emit(
+          ProviderJobsLoaded(
+            bookings: updatedList,
+            hasReachedMax: hasReachedMax,
+          ),
+        );
       },
     );
   }

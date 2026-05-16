@@ -116,4 +116,65 @@ class BookingRepositoryImpl implements BookingRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, BookingEntity>> getBookingDetail({
+    required String bookingId,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.getBookingDetail(
+        bookingId: bookingId,
+      );
+      return Right(remoteData);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, BookingEntity>> cancelBooking({
+    required String bookingId,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.cancelBooking(
+        bookingId: bookingId,
+      );
+      return Right(remoteData);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookingEntity>>> getCustomerBookings({
+    String? status,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.getCustomerBookings(
+        status: status,
+        page: page,
+        limit: limit,
+      );
+      return Right(remoteData);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

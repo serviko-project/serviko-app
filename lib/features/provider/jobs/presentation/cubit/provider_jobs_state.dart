@@ -2,29 +2,27 @@ import 'package:equatable/equatable.dart';
 import '../../../../user/booking/domain/entities/booking_entity.dart';
 
 abstract class ProviderJobsState extends Equatable {
-  const ProviderJobsState();
+  final List<BookingEntity>? bookings;
 
-  @override
-  List<Object?> get props => [];
-}
-
-class ProviderJobsInitial extends ProviderJobsState {}
-
-class ProviderJobsLoading extends ProviderJobsState {
-  final List<BookingEntity> bookings;
-
-  const ProviderJobsLoading({this.bookings = const []});
+  const ProviderJobsState({this.bookings});
 
   @override
   List<Object?> get props => [bookings];
 }
 
+class ProviderJobsInitial extends ProviderJobsState {
+  const ProviderJobsInitial() : super(bookings: const []);
+}
+
+class ProviderJobsLoading extends ProviderJobsState {
+  const ProviderJobsLoading({super.bookings = const []});
+}
+
 class ProviderJobsLoaded extends ProviderJobsState {
-  final List<BookingEntity> bookings;
   final bool hasReachedMax;
 
   const ProviderJobsLoaded({
-    required this.bookings,
+    required super.bookings,
     this.hasReachedMax = false,
   });
 
@@ -34,9 +32,8 @@ class ProviderJobsLoaded extends ProviderJobsState {
 
 class ProviderJobsError extends ProviderJobsState {
   final String message;
-  final List<BookingEntity>? bookings;
 
-  const ProviderJobsError(this.message, {this.bookings});
+  const ProviderJobsError(this.message, {super.bookings});
 
   @override
   List<Object?> get props => [message, bookings];
@@ -44,9 +41,9 @@ class ProviderJobsError extends ProviderJobsState {
 
 class ProviderJobUpdating extends ProviderJobsState {
   final String bookingId;
-  final List<BookingEntity> bookings;
 
-  const ProviderJobUpdating(this.bookingId, this.bookings);
+  const ProviderJobUpdating(this.bookingId, List<BookingEntity> bookings)
+    : super(bookings: bookings);
 
   @override
   List<Object?> get props => [bookingId, bookings];
@@ -54,9 +51,9 @@ class ProviderJobUpdating extends ProviderJobsState {
 
 class ProviderJobUpdated extends ProviderJobsState {
   final BookingEntity booking;
-  final List<BookingEntity> bookings;
 
-  const ProviderJobUpdated(this.booking, this.bookings);
+  const ProviderJobUpdated(this.booking, List<BookingEntity> bookings)
+    : super(bookings: bookings);
 
   @override
   List<Object?> get props => [booking, bookings];

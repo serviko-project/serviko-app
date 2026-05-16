@@ -31,4 +31,18 @@ abstract class BookingRepository {
     required String action,
     String? rejectionReason,
   });
+
+  Future<Either<Failure, BookingEntity>> getBookingDetail({
+    required String bookingId,
+  });
+
+  Future<Either<Failure, BookingEntity>> cancelBooking({
+    required String bookingId,
+  });
+
+  Future<Either<Failure, List<BookingEntity>>> getCustomerBookings({
+    String? status,
+    int page = 1,
+    int limit = 20,
+  });
 }

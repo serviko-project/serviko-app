@@ -28,7 +28,7 @@ class JobCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isPending = booking.status == BookingStatus.pending.value;
+    final isPending = booking.status == BookingStatus.pending;
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSizes.md),
@@ -97,7 +97,7 @@ class _StaticJobCardContent extends StatelessWidget {
         JobCardPrice(booking: booking),
 
         // Rejection Reason
-        if (booking.status == BookingStatus.rejected.value) ...[
+        if (booking.status == BookingStatus.rejected) ...[
           const SizedBox(height: AppSizes.sm + 4),
           JobCardRejectionFooter(
             reason: booking.rejectionReason ?? 'No reason provided',
@@ -142,7 +142,7 @@ class _PendingJobCardContent extends StatelessWidget {
       builder: (context, _) {
         final timeLeft = _computeRemaining();
         final isExpired = timeLeft == Duration.zero;
-        final status = isExpired ? BookingStatus.expired.value : booking.status;
+        final status = isExpired ? BookingStatus.expired : booking.status;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

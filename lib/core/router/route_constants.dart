@@ -29,6 +29,7 @@ class RouteNames {
   static const String bookingLocation = 'bookingLocation';
   static const String bookingSummary = 'bookingSummary';
   static const String bookingSuccess = 'bookingSuccess';
+  static const String viewBooking = 'viewBooking';
 
   // Provider route names
   static const String providerOnboarding = 'providerOnboarding';
@@ -72,6 +73,7 @@ class RoutePaths {
   static const String bookingLocation = '/booking-location';
   static const String bookingSummary = '/booking-summary';
   static const String bookingSuccess = '/booking-success';
+  static const String viewBooking = '/view-booking/:id';
 
   // Provider paths
   static const String providerOnboarding = '/provider/onboarding';

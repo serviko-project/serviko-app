@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:serviko_app/core/utils/date_time_utils.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_state.dart';
 
 class DayAvailabilityRow extends StatelessWidget {
@@ -53,7 +54,9 @@ class DayAvailabilityRow extends StatelessWidget {
             children: [
               Expanded(
                 child: _TimePickerContainer(
-                  time: availability.startTime.format(context),
+                  time: DateTimeUtils.formatTimeOfDayTo12Hour(
+                    availability.startTime,
+                  ),
                   onTap: onStartTimeTap,
                 ),
               ),
@@ -67,7 +70,9 @@ class DayAvailabilityRow extends StatelessWidget {
               ),
               Expanded(
                 child: _TimePickerContainer(
-                  time: availability.endTime.format(context),
+                  time: DateTimeUtils.formatTimeOfDayTo12Hour(
+                    availability.endTime,
+                  ),
                   onTap: onEndTimeTap,
                 ),
               ),

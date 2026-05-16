@@ -16,7 +16,7 @@ class ProviderJobsTabPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProviderJobsCubit, ProviderJobsState>(
       builder: (context, state) {
-        if (state is ProviderJobsLoading && state.bookings.isEmpty) {
+        if (state is ProviderJobsLoading && (state.bookings?.isEmpty ?? true)) {
           return const Center(child: CircularProgressIndicator());
         }
         if (state is ProviderJobsError && state.bookings == null) {
@@ -27,7 +27,7 @@ class ProviderJobsTabPage extends StatelessWidget {
           );
         }
 
-        final allBookings = _getBookingsFromState(state);
+        final allBookings = state.bookings ?? [];
         final bookings = _filterByStatus(allBookings);
 
         if (bookings.isEmpty && state is ProviderJobsLoaded) {
@@ -45,17 +45,6 @@ class ProviderJobsTabPage extends StatelessWidget {
 
   List<BookingEntity> _filterByStatus(List<BookingEntity> bookings) {
     if (statusFilter == null) return bookings;
-    return bookings.where((b) => b.status == statusFilter).toList();
-  }
-
-  List<BookingEntity> _getBookingsFromState(ProviderJobsState state) {
-    if (state is ProviderJobsLoaded) return state.bookings;
-    if (state is ProviderJobUpdating) return state.bookings;
-    if (state is ProviderJobsError && state.bookings != null) {
-      return state.bookings!;
-    }
-    if (state is ProviderJobUpdated) return state.bookings;
-    if (state is ProviderJobsLoading) return state.bookings;
-    return [];
+    return bookings.where((b) => b.status.value == statusFilter).toList();
   }
 }

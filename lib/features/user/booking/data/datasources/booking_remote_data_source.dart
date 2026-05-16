@@ -32,6 +32,16 @@ abstract class BookingRemoteDataSource {
     required String action,
     String? rejectionReason,
   });
+
+  Future<BookingModel> getBookingDetail({required String bookingId});
+
+  Future<BookingModel> cancelBooking({required String bookingId});
+
+  Future<List<BookingModel>> getCustomerBookings({
+    String? status,
+    int page = 1,
+    int limit = 20,
+  });
 }
 
 class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
@@ -184,6 +194,94 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
         }
       } else {
         throw ServerException('Failed to review booking');
+      }
+    } on DioException catch (e) {
+      throw ServerException(
+        e.response?.data?['detail'] ?? e.message ?? 'Unknown error',
+      );
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<BookingModel> getBookingDetail({required String bookingId}) async {
+    try {
+      await apiClient.setFirebaseAuthToken();
+      final response = await apiClient.dio.get('/api/v1/bookings/$bookingId');
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic> && data.containsKey('data')) {
+          return BookingModel.fromJson(data['data'] as Map<String, dynamic>);
+        } else {
+          throw ServerException('Invalid response format');
+        }
+      } else {
+        throw ServerException('Failed to fetch booking details');
+      }
+    } on DioException catch (e) {
+      throw ServerException(
+        e.response?.data?['detail'] ?? e.message ?? 'Unknown error',
+      );
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<BookingModel> cancelBooking({required String bookingId}) async {
+    try {
+      await apiClient.setFirebaseAuthToken();
+      final response = await apiClient.dio.patch(
+        '/api/v1/bookings/$bookingId/cancel',
+      );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic> && data.containsKey('data')) {
+          return BookingModel.fromJson(data['data'] as Map<String, dynamic>);
+        } else {
+          throw ServerException('Invalid response format');
+        }
+      } else {
+        throw ServerException('Failed to cancel booking');
+      }
+    } on DioException catch (e) {
+      throw ServerException(
+        e.response?.data?['detail'] ?? e.message ?? 'Unknown error',
+      );
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<List<BookingModel>> getCustomerBookings({
+    String? status,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      await apiClient.setFirebaseAuthToken();
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
+      if (status != null) queryParams['status'] = status;
+
+      final response = await apiClient.dio.get(
+        '/api/v1/bookings',
+        queryParameters: queryParams,
+      );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic> && data.containsKey('data')) {
+          final List list = data['data'];
+          return list.map((e) => BookingModel.fromJson(e)).toList();
+        } else {
+          throw ServerException('Invalid response format');
+        }
+      } else {
+        throw ServerException('Failed to load customer bookings');
       }
     } on DioException catch (e) {
       throw ServerException(

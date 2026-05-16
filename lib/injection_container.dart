@@ -63,6 +63,9 @@ import 'package:serviko_app/features/user/booking/domain/usecases/create_booking
 import 'package:serviko_app/features/user/booking/domain/usecases/get_available_slots_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_bookings_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/review_booking_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_booking_detail_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/cancel_booking_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_customer_bookings_usecase.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -138,6 +141,9 @@ class InjectionContainer {
   late final CreateBookingUseCase createBookingUseCase;
   late final GetProviderBookingsUseCase getProviderBookingsUseCase;
   late final ReviewBookingUseCase reviewBookingUseCase;
+  late final GetBookingDetailUseCase getBookingDetailUseCase;
+  late final CancelBookingUseCase cancelBookingUseCase;
+  late final GetCustomerBookingsUseCase getCustomerBookingsUseCase;
 
   // Initialise
   Future<void> init() async {
@@ -258,5 +264,8 @@ class InjectionContainer {
     createBookingUseCase = CreateBookingUseCase(bookingRepository);
     getProviderBookingsUseCase = GetProviderBookingsUseCase(bookingRepository);
     reviewBookingUseCase = ReviewBookingUseCase(bookingRepository);
+    getBookingDetailUseCase = GetBookingDetailUseCase(bookingRepository);
+    cancelBookingUseCase = CancelBookingUseCase(bookingRepository);
+    getCustomerBookingsUseCase = GetCustomerBookingsUseCase(bookingRepository);
   }
 }

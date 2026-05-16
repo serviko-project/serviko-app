@@ -56,9 +56,10 @@ class _ProviderJobsScreenState extends State<ProviderJobsScreen>
         if (state is ProviderJobUpdated) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Booking ${state.booking.status} successfully!'),
-              backgroundColor:
-                  state.booking.status == BookingStatus.confirmed.value
+              content: Text(
+                'Booking ${state.booking.status.displayLabel} successfully!',
+              ),
+              backgroundColor: state.booking.status == BookingStatus.confirmed
                   ? AppColors.success
                   : AppColors.warning,
             ),
