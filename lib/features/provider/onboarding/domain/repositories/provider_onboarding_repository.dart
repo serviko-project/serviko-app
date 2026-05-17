@@ -26,4 +26,17 @@ abstract class ProviderOnboardingRepository {
   );
 
   Future<Either<Failure, List<CategoryEntity>>> getCategories();
+
+  // Profile Management Editing
+  Future<Either<Failure, ProviderProfileEntity>> updateProviderDetails(
+    Map<String, dynamic> data,
+  );
+
+  Future<Either<Failure, ProviderProfileEntity>> uploadBannerImage(File file);
+
+  Future<Either<Failure, ProviderProfileEntity>> deleteBannerImage();
+
+  Future<Either<Failure, void>> submitCategoryRequest(
+    Map<String, dynamic> data,
+  );
 }

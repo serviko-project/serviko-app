@@ -13,6 +13,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
+  final void Function(String)? onFieldSubmitted;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool readOnly;
@@ -22,6 +23,7 @@ class CustomTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextInputAction? textInputAction;
   final AutovalidateMode? autovalidateMode;
+  final bool autofocus;
 
   const CustomTextField({
     super.key,
@@ -32,6 +34,7 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.validator,
     this.onChanged,
+    this.onFieldSubmitted,
     this.prefixIcon,
     this.suffixIcon,
     this.readOnly = false,
@@ -41,6 +44,7 @@ class CustomTextField extends StatefulWidget {
     this.inputFormatters,
     this.textInputAction,
     this.autovalidateMode,
+    this.autofocus = false,
   });
 
   @override
@@ -78,6 +82,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         TextFormField(
           controller: widget.controller,
           focusNode: widget.focusNode,
+          autofocus: widget.autofocus,
           obscureText: widget.isPassword ? _obscureText : false,
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
@@ -86,6 +91,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
           validator: widget.validator,
           onChanged: widget.onChanged,
+          onFieldSubmitted: widget.onFieldSubmitted,
           readOnly: widget.readOnly,
           onTap: widget.onTap,
           maxLines: widget.isPassword ? 1 : widget.maxLines,

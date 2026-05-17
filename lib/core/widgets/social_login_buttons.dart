@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/constants/app_assets.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
-import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/features/user/auth/presentation/cubit/google_sign_in_cubit.dart';
 import 'package:serviko_app/injection_container.dart';
 
@@ -42,11 +40,6 @@ class _SocialLoginView extends StatelessWidget {
               ),
             );
           context.read<GoogleSignInCubit>().clearError();
-        }
-
-        // Google sign-in success
-        if (state.user != null) {
-          context.goNamed(AppRouter.fillProfile);
         }
       },
       child: BlocBuilder<GoogleSignInCubit, GoogleSignInState>(

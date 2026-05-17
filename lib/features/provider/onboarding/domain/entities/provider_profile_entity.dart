@@ -16,6 +16,7 @@ class ProviderProfileEntity extends Equatable {
   final double? latitude;
   final double? longitude;
   final double? coverageRadiusKm;
+  final String? bannerImageUrl;
   final List<ProviderServiceEntity> services;
   final List<ProviderAvailabilityEntity> availability;
   final List<ProviderDocumentEntity> documents;
@@ -37,6 +38,7 @@ class ProviderProfileEntity extends Equatable {
     this.latitude,
     this.longitude,
     this.coverageRadiusKm,
+    this.bannerImageUrl,
     this.services = const [],
     this.availability = const [],
     this.documents = const [],
@@ -60,6 +62,7 @@ class ProviderProfileEntity extends Equatable {
     latitude,
     longitude,
     coverageRadiusKm,
+    bannerImageUrl,
     services,
     availability,
     documents,
@@ -74,16 +77,24 @@ class ProviderServiceEntity extends Equatable {
   final String categoryId;
   final String categoryTitle;
   final String categoryIcon;
+  final double? basePricePerHour;
 
   const ProviderServiceEntity({
     required this.id,
     required this.categoryId,
     required this.categoryTitle,
     required this.categoryIcon,
+    this.basePricePerHour,
   });
 
   @override
-  List<Object?> get props => [id, categoryId, categoryTitle, categoryIcon];
+  List<Object?> get props => [
+    id,
+    categoryId,
+    categoryTitle,
+    categoryIcon,
+    basePricePerHour,
+  ];
 }
 
 // Availability slot for a day

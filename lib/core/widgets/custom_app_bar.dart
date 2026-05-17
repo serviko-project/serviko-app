@@ -24,7 +24,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading ?? BackButtonWidget(),
       title: Text(
         title,
-        style: AppTextStyles.h3.copyWith(color: AppColors.textPrimary),
+        style: AppTextStyles.h2.copyWith(
+          color: AppColors.textPrimary,
+          letterSpacing: 0.5,
+        ),
       ),
       centerTitle: true,
       actions: actions,

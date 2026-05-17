@@ -6,22 +6,26 @@ import 'package:image_picker/image_picker.dart';
 import 'package:serviko_app/features/user/profile/domain/entities/profile_entity.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/create_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/delete_profile_image_usecase.dart';
+import 'package:serviko_app/features/user/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/upload_profile_image_usecase.dart';
 part 'fill_profile_state.dart';
 
 // Cubit for managing fill profile form state and submission
 class FillProfileCubit extends Cubit<FillProfileState> {
   final CreateUserProfileUseCase _createUserProfileUseCase;
+  final UpdateProfileUseCase _updateUserProfileUseCase;
   final UploadProfileImageUseCase _uploadProfileImageUseCase;
   final DeleteProfileImageUseCase _deleteProfileImageUseCase;
   final ImagePicker _imagePicker;
 
   FillProfileCubit({
     required CreateUserProfileUseCase createUserProfileUseCase,
+    required UpdateProfileUseCase updateUserProfileUseCase,
     required UploadProfileImageUseCase uploadProfileImageUseCase,
     required DeleteProfileImageUseCase deleteProfileImageUseCase,
     ImagePicker? imagePicker,
   }) : _createUserProfileUseCase = createUserProfileUseCase,
+       _updateUserProfileUseCase = updateUserProfileUseCase,
        _uploadProfileImageUseCase = uploadProfileImageUseCase,
        _deleteProfileImageUseCase = deleteProfileImageUseCase,
        _imagePicker = imagePicker ?? ImagePicker(),
@@ -111,18 +115,29 @@ class FillProfileCubit extends Cubit<FillProfileState> {
 
     emit(state.copyWith(status: FillProfileStatus.submitting));
 
-    final result = await _createUserProfileUseCase(
-      CreateProfileParams(
-        fullName: fullNameController.text.trim(),
-        phoneNumber: phoneController.text.trim().isEmpty
-            ? null
-            : phoneController.text.trim(),
-        dateOfBirth: _selectedDob,
-        gender: state.gender,
-      ),
-    );
+    final requestResult = state.profile != null
+        ? await _updateUserProfileUseCase(
+            UpdateProfileParams(
+              fullName: fullNameController.text.trim(),
+              phoneNumber: phoneController.text.trim().isEmpty
+                  ? null
+                  : phoneController.text.trim(),
+              dateOfBirth: _selectedDob,
+              gender: state.gender,
+            ),
+          )
+        : await _createUserProfileUseCase(
+            CreateProfileParams(
+              fullName: fullNameController.text.trim(),
+              phoneNumber: phoneController.text.trim().isEmpty
+                  ? null
+                  : phoneController.text.trim(),
+              dateOfBirth: _selectedDob,
+              gender: state.gender,
+            ),
+          );
 
-    await result.fold(
+    await requestResult.fold(
       (failure) async {
         emit(
           state.copyWith(
@@ -132,7 +147,7 @@ class FillProfileCubit extends Cubit<FillProfileState> {
         );
       },
       (profile) async {
-        // If profile created successfully, upload image if selected
+        // If profile updated/created successfully, upload image if selected
         if (state.selectedImage != null) {
           final uploadResult = await _uploadProfileImageUseCase(
             state.selectedImage!,
@@ -140,7 +155,7 @@ class FillProfileCubit extends Cubit<FillProfileState> {
 
           uploadResult.fold(
             (failure) {
-              // Image upload failed but profile was created
+              // Image upload failed but profile was created/updated
               emit(
                 state.copyWith(
                   status: FillProfileStatus.success,

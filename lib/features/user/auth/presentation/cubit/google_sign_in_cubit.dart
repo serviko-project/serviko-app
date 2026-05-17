@@ -24,7 +24,7 @@ class GoogleSignInCubit extends Cubit<GoogleSignInState> {
       } else {
         emit(state.copyWith(isLoading: false, error: failure.message));
       }
-    }, (user) => emit(state.copyWith(isLoading: false, user: user)));
+    }, (user) => emit(state.copyWith(user: user)));
   }
 
   void clearError() => emit(state.copyWith(error: null));

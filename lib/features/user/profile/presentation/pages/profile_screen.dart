@@ -3,14 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
+import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
-import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/core/widgets/custom_app_bar.dart';
 import 'package:serviko_app/core/widgets/role_switch_tile.dart';
 import 'package:serviko_app/features/user/auth/presentation/bloc/auth_bloc.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_cubit.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_state.dart';
 import 'package:serviko_app/features/user/profile/presentation/widgets/logout_tile.dart';
+import 'package:serviko_app/features/user/profile/presentation/widgets/policy_and_help_card_widget.dart';
+import 'package:serviko_app/features/user/profile/presentation/widgets/profile_info_header.dart';
 import 'package:serviko_app/features/user/profile/presentation/widgets/profile_menu_tile.dart';
 
 // Profile Screen of User
@@ -54,7 +56,6 @@ class ProfileScreen extends StatelessWidget {
                   } else if (authState is AuthAuthenticated) {
                     displayName = authState.user.displayName ?? 'User';
                     email = authState.user.email ?? '';
-                    photoUrl = authState.user.photoUrl;
                   }
 
                   return SingleChildScrollView(
@@ -65,43 +66,11 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         const SizedBox(height: 16),
 
-                        // Avatar Section
-                        Center(
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundColor: AppColors.surface,
-                            backgroundImage:
-                                photoUrl != null && photoUrl.isNotEmpty
-                                ? NetworkImage(photoUrl)
-                                : null,
-                            child: (photoUrl == null || photoUrl.isEmpty)
-                                ? const HugeIcon(
-                                    icon: HugeIcons.strokeRoundedUser03,
-                                    color: AppColors.textSecondary,
-                                    size: 40,
-                                  )
-                                : null,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // User Info Section
-                        Center(
-                          child: Text(
-                            displayName,
-                            style: AppTextStyles.h3.copyWith(
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Center(
-                          child: Text(
-                            email,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
+                        // Profile Info Header
+                        ProfileInfoHeader(
+                          displayName: displayName,
+                          email: email,
+                          photoUrl: photoUrl,
                         ),
 
                         const SizedBox(height: 32),
@@ -124,12 +93,7 @@ class ProfileScreen extends StatelessWidget {
                                 onTap: () =>
                                     context.pushNamed(AppRouter.editProfile),
                               ),
-                              const Divider(
-                                height: 1,
-                                indent: 46,
-                                endIndent: 16,
-                                color: AppColors.border,
-                              ),
+                              const ProfileMenuDivider(),
                               const ProfileMenuTile(
                                 title: 'Notification',
                                 icon: HugeIcons.strokeRoundedNotification03,
@@ -139,51 +103,22 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(height: 18),
+                        const SizedBox(height: AppSizes.md),
 
-                        // Support / Info Card
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: AppColors.border,
-                              width: 1,
-                            ),
-                          ),
-                          child: const Column(
-                            children: [
-                              ProfileMenuTile(
-                                title: 'Privacy Policy',
-                                icon: HugeIcons.strokeRoundedShield01,
-                                onTap: null,
-                              ),
-                              Divider(
-                                height: 1,
-                                indent: 46,
-                                endIndent: 16,
-                                color: AppColors.border,
-                              ),
-                              ProfileMenuTile(
-                                title: 'Help Center',
-                                icon: HugeIcons.strokeRoundedInformationCircle,
-                                onTap: null,
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Support & Policies Card
+                        PolicyAndHelpCardWidget(),
 
-                        const SizedBox(height: 18),
+                        const SizedBox(height: AppSizes.md),
 
                         // App's Role Switch Tile
                         const RoleSwitchTile(),
 
-                        const SizedBox(height: 30),
+                        const SizedBox(height: AppSizes.lg),
 
                         // Logout Tile
                         LogoutTile(),
 
-                        const SizedBox(height: 48),
+                        const SizedBox(height: AppSizes.xxl),
                       ],
                     ),
                   );

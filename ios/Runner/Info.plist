@@ -68,5 +68,7 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Serviko needs your location to set your service area and show you nearby providers.</string>
 	</dict>
 </plist>

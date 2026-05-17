@@ -17,6 +17,12 @@ abstract class ProviderOnboardingRemoteDataSource {
   Future<void> deleteDocument(String documentId);
   Future<ProviderProfileModel> reapply(Map<String, dynamic> data);
   Future<List<CategoryModel>> getCategories();
+
+  // Profile Management Editing
+  Future<ProviderProfileModel> updateProviderDetails(Map<String, dynamic> data);
+  Future<ProviderProfileModel> uploadBannerImage(File file);
+  Future<ProviderProfileModel> deleteBannerImage();
+  Future<void> submitCategoryRequest(Map<String, dynamic> data);
 }
 
 class ProviderOnboardingRemoteDataSourceImpl
@@ -114,6 +120,66 @@ class ProviderOnboardingRemoteDataSourceImpl
       return items
           .map((json) => CategoryModel.fromJson(json as Map<String, dynamic>))
           .toList();
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  @override
+  Future<ProviderProfileModel> updateProviderDetails(
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+      final response = await _apiClient.dio.patch(
+        '/api/v1/providers/me',
+        data: data,
+      );
+      return ProviderProfileModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  @override
+  Future<ProviderProfileModel> uploadBannerImage(File file) async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+
+      final fileName = file.path.split(Platform.pathSeparator).last;
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path, filename: fileName),
+      });
+
+      final response = await _apiClient.dio.post(
+        '/api/v1/providers/me/banner',
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      );
+      return ProviderProfileModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  @override
+  Future<ProviderProfileModel> deleteBannerImage() async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+      final response = await _apiClient.dio.delete(
+        '/api/v1/providers/me/banner',
+      );
+      return ProviderProfileModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  @override
+  Future<void> submitCategoryRequest(Map<String, dynamic> data) async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+      await _apiClient.dio.post('/api/v1/category-requests', data: data);
     } on DioException catch (e) {
       throw _mapDioError(e);
     }

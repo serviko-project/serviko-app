@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:serviko_app/core/router/app_router.dart';
+import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
+import 'package:serviko_app/features/user/service/domain/entities/service_entity.dart';
+
+class CategoryServicesList extends StatelessWidget {
+  const CategoryServicesList({
+    super.key,
+    required this.services,
+    this.isLoading = false,
+  });
+
+  final List<ServiceEntity> services;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppSizes.md),
+      itemCount: services.length,
+      itemBuilder: (context, index) {
+        final service = services[index];
+        return ServiceCard(
+          isLoading: isLoading,
+          bannerImage: service.bannerImage,
+          categoryIcon: service.categoryIcon,
+          providerName: service.providerName,
+          categoryName: service.categoryName,
+          price: service.basePricePerHour,
+          rating: service.rating,
+          reviews: service.reviewsCount,
+          onBookmarkTap: () {},
+          onTap: () =>
+              context.pushNamed(AppRouter.serviceDetails, extra: service.id),
+        );
+      },
+    );
+  }
+}

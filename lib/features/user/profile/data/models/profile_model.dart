@@ -10,7 +10,10 @@ class UserProfileModel extends UserProfileEntity {
     super.dateOfBirth,
     super.gender,
     super.profileImageUrl,
+    super.latitude,
+    super.longitude,
     required super.isActive,
+    super.providerStatus,
     required super.createdAt,
     required super.updatedAt,
   });
@@ -26,7 +29,14 @@ class UserProfileModel extends UserProfileEntity {
           : null,
       gender: json['gender'] as String?,
       profileImageUrl: json['profile_image_url'] as String?,
+      latitude: json['latitude'] != null
+          ? (json['latitude'] as num).toDouble()
+          : null,
+      longitude: json['longitude'] != null
+          ? (json['longitude'] as num).toDouble()
+          : null,
       isActive: json['is_active'] as bool,
+      providerStatus: json['provider_status'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -38,6 +48,8 @@ class UserProfileModel extends UserProfileEntity {
     DateTime? dateOfBirth,
     String? gender,
     String? profileImageUrl,
+    double? latitude,
+    double? longitude,
   }) {
     final json = <String, dynamic>{'full_name': fullName};
 
@@ -53,6 +65,12 @@ class UserProfileModel extends UserProfileEntity {
     if (profileImageUrl != null) {
       json['profile_image_url'] = profileImageUrl;
     }
+    if (latitude != null) {
+      json['latitude'] = latitude;
+    }
+    if (longitude != null) {
+      json['longitude'] = longitude;
+    }
 
     return json;
   }
@@ -63,6 +81,8 @@ class UserProfileModel extends UserProfileEntity {
     DateTime? dateOfBirth,
     String? gender,
     String? profileImageUrl,
+    double? latitude,
+    double? longitude,
   }) {
     final json = <String, dynamic>{};
 
@@ -71,6 +91,8 @@ class UserProfileModel extends UserProfileEntity {
     if (dateOfBirth != null) json['date_of_birth'] = _formatDate(dateOfBirth);
     if (gender != null) json['gender'] = gender.toLowerCase();
     if (profileImageUrl != null) json['profile_image_url'] = profileImageUrl;
+    if (latitude != null) json['latitude'] = latitude;
+    if (longitude != null) json['longitude'] = longitude;
 
     return json;
   }
@@ -84,7 +106,10 @@ class UserProfileModel extends UserProfileEntity {
       'date_of_birth': dateOfBirth?.toIso8601String(),
       'gender': gender,
       'profile_image_url': profileImageUrl,
+      'latitude': latitude,
+      'longitude': longitude,
       'is_active': isActive,
+      'provider_status': providerStatus,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };

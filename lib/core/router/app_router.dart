@@ -32,6 +32,8 @@ class AppRouter {
   static const String profile = RouteNames.profile;
   static const String editProfile = RouteNames.editProfile;
   static const String search = RouteNames.search;
+  static const String bookmarks = RouteNames.bookmarks;
+  static const String serviceDetails = RouteNames.serviceDetails;
 
   static const String providerOnboarding = RouteNames.providerOnboarding;
   static const String providerApplicationStatus =
@@ -46,7 +48,10 @@ class AppRouter {
   static GoRouter router(AuthBloc authBloc, RoleCubit roleCubit) => GoRouter(
     initialLocation: RoutePaths.splash,
     debugLogDiagnostics: true,
-    refreshListenable: GoRouterRefreshStream(authBloc.stream),
+    refreshListenable: GoRouterRefreshStream([
+      authBloc.stream,
+      roleCubit.stream,
+    ]),
     redirect: (context, state) =>
         RouterRedirection.handle(context, state, authBloc, roleCubit),
     routes: [...miscRoutes, ...authRoutes, customerRoutes, ...providerRoutes],

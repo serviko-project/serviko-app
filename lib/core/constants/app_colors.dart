@@ -37,4 +37,20 @@ abstract final class AppColors {
   static const Color overlay = Color(0x80000000);
   static const Color shimmerBase = Color(0xFFE0E0E0);
   static const Color shimmerHighlight = Color(0xFFF5F5F5);
+
+  // ---- For HomeScreen Categories ----
+  static const List<Color> categoryPalette = [
+    Color(0xFF9333EA),
+    Color(0xFFEA580C),
+    Color(0xFF0284C7),
+    Color(0xFFD97706),
+    Color(0xFFE11D48),
+    Color(0xFF16A34A),
+    Color(0xFF4F46E5),
+    Color(0xFF0D9488),
+    Color(0xFFDB2777),
+    Color(0xFF0891B2),
+    Color(0xFF65A30D),
+    Color(0xFF4B5563),
+  ];
 }

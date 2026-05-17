@@ -22,7 +22,7 @@ abstract final class AppSizes {
   static const double iconXl = 48.0;
 
   // ---- Component Heights ----
-  static const double buttonHeight = 52.0;
+  static const double buttonHeight = 48.0;
   static const double inputHeight = 52.0;
   static const double appBarHeight = 56.0;
   static const double bottomNavHeight = 72.0;
