@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
@@ -7,11 +7,15 @@ import 'package:serviko_app/core/constants/app_sizes.dart';
 class BookingCalendarWidget extends StatelessWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime> onDateSelected;
+  final List<dynamic> Function(DateTime)? eventLoader;
+  final DateTime? firstDay;
 
   const BookingCalendarWidget({
     super.key,
     required this.selectedDate,
     required this.onDateSelected,
+    this.eventLoader,
+    this.firstDay,
   });
 
   @override
@@ -23,8 +27,8 @@ class BookingCalendarWidget extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(AppSizes.sm),
       child: TableCalendar(
-        firstDay: DateTime.now(),
-        lastDay: DateTime.now().add(const Duration(days: 365)),
+        firstDay: firstDay ?? DateTime.now(),
+        lastDay: DateTime.now().add(const Duration(days: 365 * 5)),
         focusedDay: selectedDate,
         currentDay: selectedDate,
         selectedDayPredicate: (day) {
@@ -33,6 +37,7 @@ class BookingCalendarWidget extends StatelessWidget {
         onDaySelected: (selectedDay, focusedDay) {
           onDateSelected(selectedDay);
         },
+        eventLoader: eventLoader,
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: false,
@@ -44,50 +49,37 @@ class BookingCalendarWidget extends StatelessWidget {
             Icons.chevron_right,
             color: AppColors.primary,
           ),
-          titleTextStyle: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
+          titleTextStyle: AppTextStyles.h3,
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
-          weekdayStyle: GoogleFonts.poppins(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
-          weekendStyle: GoogleFonts.poppins(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
+          weekdayStyle: AppTextStyles.labelMedium,
+          weekendStyle: AppTextStyles.labelMedium,
         ),
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
-          defaultTextStyle: GoogleFonts.poppins(
-            fontSize: 14,
+          defaultTextStyle: AppTextStyles.bodyLarge.copyWith(
             color: AppColors.textSecondary,
           ),
-          weekendTextStyle: GoogleFonts.poppins(
-            fontSize: 14,
+          weekendTextStyle: AppTextStyles.bodyLarge.copyWith(
             color: AppColors.textSecondary,
           ),
           todayDecoration: const BoxDecoration(
             color: Colors.transparent,
             shape: BoxShape.circle,
           ),
-          todayTextStyle: GoogleFonts.poppins(
-            fontSize: 14,
+          todayTextStyle: AppTextStyles.bodyLarge.copyWith(
             color: AppColors.textSecondary,
           ),
           selectedDecoration: const BoxDecoration(
             color: AppColors.primary,
             shape: BoxShape.circle,
           ),
-          selectedTextStyle: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
+          selectedTextStyle: AppTextStyles.labelLarge.copyWith(
             color: AppColors.textOnPrimary,
+          ),
+          markerDecoration: const BoxDecoration(
+            color: AppColors.textHint,
+            shape: BoxShape.circle,
           ),
         ),
       ),
