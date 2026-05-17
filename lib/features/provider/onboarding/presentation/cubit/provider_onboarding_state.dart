@@ -28,6 +28,13 @@ class ProviderOnboardingState extends Equatable {
   final bool isCategoriesLoading;
   final bool showPriceValidation;
 
+  // Custom Category Request
+  final String? requestedCategoryTitle;
+  final String? requestedCategoryDescription;
+  final double? requestedCategoryPrice;
+  final bool isSubmittingCategoryRequest;
+  final bool categoryRequestSuccess;
+
   // Step 4: Availability
   final Map<int, DayAvailability> availability;
 
@@ -61,6 +68,11 @@ class ProviderOnboardingState extends Equatable {
     this.categoryPrices = const {},
     this.isCategoriesLoading = false,
     this.showPriceValidation = false,
+    this.requestedCategoryTitle,
+    this.requestedCategoryDescription,
+    this.requestedCategoryPrice,
+    this.isSubmittingCategoryRequest = false,
+    this.categoryRequestSuccess = false,
     this.availability = const {},
     this.governmentIdDoc,
     this.certificateDoc,
@@ -86,6 +98,11 @@ class ProviderOnboardingState extends Equatable {
     Map<String, double>? categoryPrices,
     bool? isCategoriesLoading,
     bool? showPriceValidation,
+    String? requestedCategoryTitle,
+    String? requestedCategoryDescription,
+    double? requestedCategoryPrice,
+    bool? isSubmittingCategoryRequest,
+    bool? categoryRequestSuccess,
     Map<int, DayAvailability>? availability,
     ProviderDocumentEntity? governmentIdDoc,
     ProviderDocumentEntity? certificateDoc,
@@ -113,6 +130,16 @@ class ProviderOnboardingState extends Equatable {
       categoryPrices: categoryPrices ?? this.categoryPrices,
       isCategoriesLoading: isCategoriesLoading ?? this.isCategoriesLoading,
       showPriceValidation: showPriceValidation ?? this.showPriceValidation,
+      requestedCategoryTitle:
+          requestedCategoryTitle ?? this.requestedCategoryTitle,
+      requestedCategoryDescription:
+          requestedCategoryDescription ?? this.requestedCategoryDescription,
+      requestedCategoryPrice:
+          requestedCategoryPrice ?? this.requestedCategoryPrice,
+      isSubmittingCategoryRequest:
+          isSubmittingCategoryRequest ?? this.isSubmittingCategoryRequest,
+      categoryRequestSuccess:
+          categoryRequestSuccess ?? this.categoryRequestSuccess,
       availability: availability ?? this.availability,
       governmentIdDoc: clearGovernmentIdDoc
           ? null
@@ -144,6 +171,11 @@ class ProviderOnboardingState extends Equatable {
     categoryPrices,
     isCategoriesLoading,
     showPriceValidation,
+    requestedCategoryTitle,
+    requestedCategoryDescription,
+    requestedCategoryPrice,
+    isSubmittingCategoryRequest,
+    categoryRequestSuccess,
     availability,
     governmentIdDoc,
     certificateDoc,

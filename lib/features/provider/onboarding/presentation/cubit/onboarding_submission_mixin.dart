@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:serviko_app/core/usecases/usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_application_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_category_request_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_cubit_base.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_state.dart';
 
@@ -135,5 +136,47 @@ mixin OnboardingSubmissionMixin on ProviderOnboardingCubitBase {
         emit(state.copyWith(status: ProviderOnboardingStatus.alreadySubmitted));
       }
     });
+  }
+
+  // Submit a category request
+  Future<void> submitCategoryRequest({
+    required String title,
+    required String description,
+    required double proposedBasePrice,
+  }) async {
+    emit(
+      state.copyWith(
+        isSubmittingCategoryRequest: true,
+        categoryRequestSuccess: false,
+        clearError: true,
+      ),
+    );
+
+    final params = SubmitCategoryRequestParams(
+      title: title,
+      description: description,
+      proposedBasePrice: proposedBasePrice,
+    );
+
+    final result = await submitCategoryRequestUseCase(params);
+
+    result.fold(
+      (failure) => emit(
+        state.copyWith(
+          isSubmittingCategoryRequest: false,
+          errorMessage: failure.message,
+        ),
+      ),
+      (_) => emit(
+        state.copyWith(
+          isSubmittingCategoryRequest: false,
+          categoryRequestSuccess: true,
+        ),
+      ),
+    );
+  }
+
+  void resetCategoryRequestSuccess() {
+    emit(state.copyWith(categoryRequestSuccess: false));
   }
 }

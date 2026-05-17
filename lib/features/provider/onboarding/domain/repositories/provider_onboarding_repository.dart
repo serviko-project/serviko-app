@@ -35,4 +35,8 @@ abstract class ProviderOnboardingRepository {
   Future<Either<Failure, ProviderProfileEntity>> uploadBannerImage(File file);
 
   Future<Either<Failure, ProviderProfileEntity>> deleteBannerImage();
+
+  Future<Either<Failure, void>> submitCategoryRequest(
+    Map<String, dynamic> data,
+  );
 }

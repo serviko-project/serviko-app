@@ -36,6 +36,7 @@ class ProviderOnboardingScreen extends StatelessWidget {
         getCategoriesUseCase: di.getCategoriesUseCase,
         getMyProfileUseCase: di.getMyProfileUseCase,
         isReapplication: isReapplication,
+        submitCategoryRequestUseCase: di.submitCategoryRequestUseCase,
       ),
       child: const _ProviderOnboardingView(),
     );

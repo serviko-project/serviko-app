@@ -162,4 +162,20 @@ class ProviderOnboardingRepositoryImpl implements ProviderOnboardingRepository {
       return Left(ServerFailure(e.message, statusCode: e.statusCode));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> submitCategoryRequest(
+    Map<String, dynamic> data,
+  ) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+
+    try {
+      await _remoteDataSource.submitCategoryRequest(data);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    }
+  }
 }
