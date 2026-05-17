@@ -11,6 +11,7 @@ import 'package:serviko_app/features/provider/onboarding/presentation/widgets/ca
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/pricing_header_widget.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/category_chips_widget.dart';
 import 'package:serviko_app/features/provider/onboarding/presentation/widgets/price_tiles_widget.dart';
+import 'package:serviko_app/features/provider/onboarding/presentation/widgets/services/request_category_tile.dart';
 
 class ServicesView extends StatelessWidget {
   const ServicesView({super.key});
@@ -76,6 +77,10 @@ class ServicesView extends StatelessWidget {
             CategoryHeaderWidget(selectedCount: state.selectedServices.length),
             const SizedBox(height: AppSizes.lg),
             CategoryChipsWidget(state: state, cubit: cubit),
+            const SizedBox(height: AppSizes.md),
+
+            // Custom Category Request Tile
+            const RequestCategoryTile(),
             const SizedBox(height: AppSizes.xl),
 
             Divider(color: AppColors.border.withAlpha(80), height: 1),

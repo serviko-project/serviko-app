@@ -15,6 +15,7 @@ import 'package:serviko_app/features/provider/onboarding/presentation/cubit/prov
 import 'package:serviko_app/features/provider/onboarding/presentation/cubit/provider_onboarding_state.dart';
 import 'package:serviko_app/features/shared/location/data/services/location_service.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_category_request_usecase.dart';
 
 class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
     with
@@ -31,6 +32,7 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
   final ReapplyUseCase _reapplyUseCase;
   final GetCategoriesUseCase _getCategoriesUseCase;
   final GetMyProfileUseCase _getMyProfileUseCase;
+  final SubmitCategoryRequestUseCase _submitCategoryRequestUseCase;
   final LocationService _locationService;
   final bool isReapplication;
 
@@ -54,6 +56,7 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
     required ReapplyUseCase reapplyUseCase,
     required GetCategoriesUseCase getCategoriesUseCase,
     required GetMyProfileUseCase getMyProfileUseCase,
+    required SubmitCategoryRequestUseCase submitCategoryRequestUseCase,
     LocationService? locationService,
     this.isReapplication = false,
   }) : _submitApplicationUseCase = submitApplicationUseCase,
@@ -63,6 +66,7 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
        _reapplyUseCase = reapplyUseCase,
        _getCategoriesUseCase = getCategoriesUseCase,
        _getMyProfileUseCase = getMyProfileUseCase,
+       _submitCategoryRequestUseCase = submitCategoryRequestUseCase,
        _locationService = locationService ?? LocationService(),
        pageController = PageController(),
        super(ProviderOnboardingState(isReapplication: isReapplication)) {
@@ -92,6 +96,9 @@ class ProviderOnboardingCubit extends ProviderOnboardingCubitBase
   GetCategoriesUseCase get getCategoriesUseCase => _getCategoriesUseCase;
   @override
   GetMyProfileUseCase get getMyProfileUseCase => _getMyProfileUseCase;
+  @override
+  SubmitCategoryRequestUseCase get submitCategoryRequestUseCase =>
+      _submitCategoryRequestUseCase;
   @override
   LocationService get locationService => _locationService;
 

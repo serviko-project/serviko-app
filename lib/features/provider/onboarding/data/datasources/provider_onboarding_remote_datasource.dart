@@ -22,6 +22,7 @@ abstract class ProviderOnboardingRemoteDataSource {
   Future<ProviderProfileModel> updateProviderDetails(Map<String, dynamic> data);
   Future<ProviderProfileModel> uploadBannerImage(File file);
   Future<ProviderProfileModel> deleteBannerImage();
+  Future<void> submitCategoryRequest(Map<String, dynamic> data);
 }
 
 class ProviderOnboardingRemoteDataSourceImpl
@@ -169,6 +170,16 @@ class ProviderOnboardingRemoteDataSourceImpl
         '/api/v1/providers/me/banner',
       );
       return ProviderProfileModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  @override
+  Future<void> submitCategoryRequest(Map<String, dynamic> data) async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+      await _apiClient.dio.post('/api/v1/category-requests', data: data);
     } on DioException catch (e) {
       throw _mapDioError(e);
     }

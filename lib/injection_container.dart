@@ -10,6 +10,7 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_cat
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_my_provider_profile_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/reapply_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_application_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_category_request_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_provider_details_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_banner_image_usecase.dart';
@@ -117,6 +118,7 @@ class InjectionContainer {
   late final UpdateProviderDetailsUseCase updateProviderDetailsUseCase;
   late final UploadBannerImageUseCase uploadBannerImageUseCase;
   late final DeleteBannerImageUseCase deleteBannerImageUseCase;
+  late final SubmitCategoryRequestUseCase submitCategoryRequestUseCase;
 
   // User Category
   late final CategoryRemoteDataSource categoryRemoteDataSource;
@@ -222,6 +224,9 @@ class InjectionContainer {
       providerOnboardingRepository,
     );
     deleteBannerImageUseCase = DeleteBannerImageUseCase(
+      providerOnboardingRepository,
+    );
+    submitCategoryRequestUseCase = SubmitCategoryRequestUseCase(
       providerOnboardingRepository,
     );
 
