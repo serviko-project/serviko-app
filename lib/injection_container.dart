@@ -1,4 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:serviko_app/features/shared/support/data/datasources/support_remote_datasource.dart';
+import 'package:serviko_app/features/shared/support/data/repositories/support_repository_impl.dart';
+import 'package:serviko_app/features/shared/support/domain/repositories/support_repository.dart';
+import 'package:serviko_app/features/shared/support/domain/usecases/get_faqs_usecase.dart';
+import 'package:serviko_app/features/shared/support/domain/usecases/get_privacy_policy_usecase.dart';
 import 'package:serviko_app/core/network/api_client.dart';
 import 'package:serviko_app/core/network/network_info.dart';
 import 'package:serviko_app/features/shared/communication/data/datasources/zego_remote_datasource.dart';
@@ -162,6 +167,12 @@ class InjectionContainer {
   late final CancelBookingUseCase cancelBookingUseCase;
   late final GetCustomerBookingsUseCase getCustomerBookingsUseCase;
 
+  // Support
+  late final SupportRemoteDataSource supportRemoteDataSource;
+  late final SupportRepository supportRepository;
+  late final GetFAQsUseCase getFAQsUseCase;
+  late final GetPrivacyPolicyUseCase getPrivacyPolicyUseCase;
+
   // Initialise
   Future<void> init() async {
     // Core
@@ -302,5 +313,14 @@ class InjectionContainer {
     getBookingDetailUseCase = GetBookingDetailUseCase(bookingRepository);
     cancelBookingUseCase = CancelBookingUseCase(bookingRepository);
     getCustomerBookingsUseCase = GetCustomerBookingsUseCase(bookingRepository);
+
+    // Support
+    supportRemoteDataSource = SupportRemoteDataSourceImpl(apiClient: apiClient);
+    supportRepository = SupportRepositoryImpl(
+      remoteDataSource: supportRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getFAQsUseCase = GetFAQsUseCase(supportRepository);
+    getPrivacyPolicyUseCase = GetPrivacyPolicyUseCase(supportRepository);
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
+import 'package:serviko_app/core/router/route_constants.dart';
 import 'package:serviko_app/features/user/profile/presentation/widgets/profile_menu_tile.dart';
 
 class PolicyAndHelpCardWidget extends StatelessWidget {
@@ -14,18 +16,18 @@ class PolicyAndHelpCardWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border, width: 1),
       ),
-      child: const Column(
+      child: Column(
         children: [
           ProfileMenuTile(
             title: 'Privacy Policy',
             icon: HugeIcons.strokeRoundedShield01,
-            onTap: null,
+            onTap: () => context.pushNamed(RouteNames.privacyPolicy),
           ),
-          ProfileMenuDivider(),
+          const ProfileMenuDivider(),
           ProfileMenuTile(
             title: 'Help Center',
             icon: HugeIcons.strokeRoundedInformationCircle,
-            onTap: null,
+            onTap: () => context.pushNamed(RouteNames.helpCenter),
           ),
         ],
       ),

@@ -30,6 +30,8 @@ class RouteNames {
   static const String bookingSummary = 'bookingSummary';
   static const String bookingSuccess = 'bookingSuccess';
   static const String viewBooking = 'viewBooking';
+  static const String helpCenter = 'helpCenter';
+  static const String privacyPolicy = 'privacyPolicy';
 
   // Provider route names
   static const String providerOnboarding = 'providerOnboarding';
@@ -74,6 +76,8 @@ class RoutePaths {
   static const String bookingSummary = '/booking-summary';
   static const String bookingSuccess = '/booking-success';
   static const String viewBooking = '/view-booking/:id';
+  static const String helpCenter = '/help-center';
+  static const String privacyPolicy = '/privacy-policy';
 
   // Provider paths
   static const String providerOnboarding = '/provider/onboarding';
@@ -100,6 +104,8 @@ class RoutePaths {
     otpVerification,
     createNewPassword,
     resetSuccess,
+    helpCenter,
+    privacyPolicy,
   };
 
   // Paths used for profile setup
