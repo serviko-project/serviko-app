@@ -42,6 +42,10 @@ abstract class AuthRepository {
 
   Future<Either<Failure, void>> signOut();
 
+  Future<Either<Failure, void>> updateFirebaseDisplayName({
+    required String displayName,
+  });
+
   UserEntity? getCurrentUser();
 
   bool get isSignedIn;

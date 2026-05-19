@@ -145,6 +145,18 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> updateFirebaseDisplayName({
+    required String displayName,
+  }) async {
+    try {
+      await remoteDataSource.updateFirebaseDisplayName(displayName);
+      return const Right(null);
+    } on AuthException catch (e) {
+      return Left(AuthFailure(e.message, code: e.code));
+    }
+  }
+
+  @override
   UserEntity? getCurrentUser() => remoteDataSource.getCurrentUser();
 
   @override

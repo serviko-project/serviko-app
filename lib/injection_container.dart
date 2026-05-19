@@ -1,6 +1,12 @@
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:serviko_app/core/network/api_client.dart';
 import 'package:serviko_app/core/network/network_info.dart';
+import 'package:serviko_app/features/shared/communication/data/datasources/zego_remote_datasource.dart';
+import 'package:serviko_app/features/shared/communication/data/repositories/communication_repository_impl.dart';
+import 'package:serviko_app/features/shared/communication/domain/repositories/communication_repository.dart';
+import 'package:serviko_app/features/shared/communication/domain/usecases/get_provider_directory_usecase.dart';
+import 'package:serviko_app/features/shared/communication/zego/zego_service.dart';
+import 'package:serviko_app/features/shared/communication/zego/zego_token_manager.dart';
 import 'package:serviko_app/features/shared/location/data/services/location_service.dart';
 import 'package:serviko_app/features/provider/onboarding/data/datasources/provider_onboarding_remote_datasource.dart';
 import 'package:serviko_app/features/provider/onboarding/data/repositories/provider_onboarding_repository_impl.dart';
@@ -29,6 +35,7 @@ import 'package:serviko_app/features/user/auth/domain/usecases/sign_out_usecase.
 import 'package:serviko_app/features/user/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/usecases/start_phone_reset_otp_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/usecases/verify_phone_reset_otp_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/update_firebase_display_name_usecase.dart';
 import 'package:serviko_app/features/user/profile/data/datasources/profile_local_datasource.dart';
 import 'package:serviko_app/features/user/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:serviko_app/features/user/profile/data/repositories/profile_repository_impl.dart';
@@ -79,6 +86,13 @@ class InjectionContainer {
   late final NetworkInfo networkInfo;
   late final LocationService locationService;
 
+  // Communication
+  late final ZegoRemoteDataSource zegoRemoteDataSource;
+  late final CommunicationRepository communicationRepository;
+  late final GetProviderDirectoryUseCase getProviderDirectoryUseCase;
+  late final ZegoTokenManager zegoTokenManager;
+  late final ZegoService zegoService;
+
   // Auth
   late final AuthLocalDataSource authLocalDataSource;
   late final AuthRemoteDataSource authRemoteDataSource;
@@ -93,6 +107,7 @@ class InjectionContainer {
   late final ResetPasswordWithPhoneOtpUseCase resetPasswordWithPhoneOtpUseCase;
   late final SignOutUseCase signOutUseCase;
   late final GetCurrentUserUseCase getCurrentUserUseCase;
+  late final UpdateFirebaseDisplayNameUseCase updateFirebaseDisplayNameUseCase;
 
   // Profile
   late final ProfileLocalDataSource profileLocalDataSource;
@@ -151,8 +166,20 @@ class InjectionContainer {
   Future<void> init() async {
     // Core
     apiClient = ApiClient();
-    networkInfo = NetworkInfoImpl(InternetConnection());
+    networkInfo = NetworkInfoImpl(Connectivity());
     locationService = LocationService();
+
+    // Communication
+    zegoRemoteDataSource = ZegoRemoteDataSourceImpl(apiClient: apiClient);
+    communicationRepository = CommunicationRepositoryImpl(
+      remoteDataSource: zegoRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getProviderDirectoryUseCase = GetProviderDirectoryUseCase(
+      communicationRepository,
+    );
+    zegoTokenManager = ZegoTokenManager(communicationRepository);
+    zegoService = ZegoService(tokenManager: zegoTokenManager);
 
     // Auth - Data
     authLocalDataSource = AuthLocalDataSourceImpl();
@@ -175,6 +202,9 @@ class InjectionContainer {
     );
     signOutUseCase = SignOutUseCase(authRepository);
     getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
+    updateFirebaseDisplayNameUseCase = UpdateFirebaseDisplayNameUseCase(
+      authRepository,
+    );
 
     // Profile - Data
     profileLocalDataSource = ProfileLocalDataSourceImpl();

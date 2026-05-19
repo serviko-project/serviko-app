@@ -1,10 +1,13 @@
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../features/user/home/presentation/pages/home_screen.dart';
 import '../../../features/user/main/presentation/pages/main_screen.dart';
 import '../../../features/user/profile/presentation/pages/profile_screen.dart';
 import '../../../features/user/booking/presentation/pages/my_bookings_screen.dart';
 import '../../../features/user/calendar/presentation/pages/calendar_screen.dart';
-import '../../widgets/placeholder_screen.dart';
+import '../../../features/shared/communication/presentation/cubit/contact_directory_cubit.dart';
+import '../../../features/shared/communication/presentation/pages/inbox_screen.dart';
+import 'package:serviko_app/injection_container.dart';
 import '../route_constants.dart';
 
 RouteBase customerRoutes = StatefulShellRoute.indexedStack(
@@ -44,7 +47,13 @@ RouteBase customerRoutes = StatefulShellRoute.indexedStack(
         GoRoute(
           name: RouteNames.inbox,
           path: RoutePaths.inbox,
-          builder: (context, state) => const PlaceholderScreen(title: 'Inbox'),
+          builder: (context, state) => BlocProvider(
+            create: (context) => ContactDirectoryCubit(
+              getProviderDirectoryUseCase:
+                  InjectionContainer.instance.getProviderDirectoryUseCase,
+            ),
+            child: const InboxScreen(),
+          ),
         ),
       ],
     ),

@@ -8,7 +8,7 @@ import 'package:serviko_app/features/provider/onboarding/presentation/cubit/prov
 mixin OnboardingDocumentMixin on ProviderOnboardingCubitBase {
   // Pick a file and upload it
   Future<void> pickAndUploadDocument(int docNumber) async {
-    final result = await FilePicker.pickFiles(
+    final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
     );
