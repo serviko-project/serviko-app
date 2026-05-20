@@ -7,12 +7,14 @@ import 'package:serviko_app/features/user/booking/domain/enums/booking_status.da
 
 class BookingCardActions extends StatelessWidget {
   final BookingStatus status;
+  final String paymentStatus;
   final String bookingId;
   final String serviceId;
 
   const BookingCardActions({
     super.key,
     required this.status,
+    required this.paymentStatus,
     required this.bookingId,
     required this.serviceId,
   });
@@ -25,7 +27,15 @@ class BookingCardActions extends StatelessWidget {
 
     switch (status) {
       case BookingStatus.confirmed:
-        label = 'Make Payment';
+        final isPaid =
+            paymentStatus.toLowerCase() == 'paid' ||
+            paymentStatus.toLowerCase() == 'success';
+        if (isPaid) {
+          label = 'View Details';
+          isPrimary = false;
+        } else {
+          label = 'Make Payment';
+        }
         onPressed = () {
           context.pushNamed(
             RouteNames.viewBooking,

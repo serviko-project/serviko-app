@@ -23,6 +23,7 @@ class BookingActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = booking.status;
+    final isPaid = booking.paymentStatus == 'paid';
 
     switch (status) {
       case BookingStatus.pending:
@@ -37,7 +38,17 @@ class BookingActionButtons extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildButton(label: 'Make Payment', onPressed: onPayment ?? () {}),
+            _buildButton(
+              label: isPaid ? 'View E-Receipt' : 'Make Payment',
+              onPressed: isPaid
+                  ? () => context.pushNamed(
+                      RouteNames.eReceipt,
+                      pathParameters: {'id': booking.id},
+                      extra: booking,
+                    )
+                  : onPayment ?? () {},
+              isOutlined: isPaid,
+            ),
             const SizedBox(height: 12),
             _buildButton(
               label: 'Cancel Booking',
@@ -80,7 +91,7 @@ class BookingActionButtons extends StatelessWidget {
 
   Widget _buildButton({
     required String label,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     bool isDestructive = false,
     bool isOutlined = false,
   }) {

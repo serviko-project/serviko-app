@@ -30,6 +30,7 @@ class RouteNames {
   static const String bookingSummary = 'bookingSummary';
   static const String bookingSuccess = 'bookingSuccess';
   static const String viewBooking = 'viewBooking';
+  static const String eReceipt = 'eReceipt';
   static const String helpCenter = 'helpCenter';
   static const String privacyPolicy = 'privacyPolicy';
 
@@ -76,6 +77,7 @@ class RoutePaths {
   static const String bookingSummary = '/booking-summary';
   static const String bookingSuccess = '/booking-success';
   static const String viewBooking = '/view-booking/:id';
+  static const String eReceipt = '/e-receipt/:id';
   static const String helpCenter = '/help-center';
   static const String privacyPolicy = '/privacy-policy';
 

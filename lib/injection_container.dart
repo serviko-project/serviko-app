@@ -79,6 +79,11 @@ import 'package:serviko_app/features/user/booking/domain/usecases/review_booking
 import 'package:serviko_app/features/user/booking/domain/usecases/get_booking_detail_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/cancel_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_customer_bookings_usecase.dart';
+import 'package:serviko_app/features/user/payment/data/datasources/payment_remote_datasource.dart';
+import 'package:serviko_app/features/user/payment/data/repositories/payment_repository_impl.dart';
+import 'package:serviko_app/features/user/payment/domain/repositories/payment_repository.dart';
+import 'package:serviko_app/features/user/payment/domain/usecases/create_payment_order_usecase.dart';
+import 'package:serviko_app/features/user/payment/domain/usecases/verify_payment_usecase.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -166,6 +171,12 @@ class InjectionContainer {
   late final GetBookingDetailUseCase getBookingDetailUseCase;
   late final CancelBookingUseCase cancelBookingUseCase;
   late final GetCustomerBookingsUseCase getCustomerBookingsUseCase;
+
+  // Payment
+  late final PaymentRemoteDataSource paymentRemoteDataSource;
+  late final PaymentRepository paymentRepository;
+  late final CreatePaymentOrderUseCase createPaymentOrderUseCase;
+  late final VerifyPaymentUseCase verifyPaymentUseCase;
 
   // Support
   late final SupportRemoteDataSource supportRemoteDataSource;
@@ -313,6 +324,15 @@ class InjectionContainer {
     getBookingDetailUseCase = GetBookingDetailUseCase(bookingRepository);
     cancelBookingUseCase = CancelBookingUseCase(bookingRepository);
     getCustomerBookingsUseCase = GetCustomerBookingsUseCase(bookingRepository);
+
+    // Payment
+    paymentRemoteDataSource = PaymentRemoteDataSourceImpl(apiClient: apiClient);
+    paymentRepository = PaymentRepositoryImpl(
+      remoteDataSource: paymentRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    createPaymentOrderUseCase = CreatePaymentOrderUseCase(paymentRepository);
+    verifyPaymentUseCase = VerifyPaymentUseCase(paymentRepository);
 
     // Support
     supportRemoteDataSource = SupportRemoteDataSourceImpl(apiClient: apiClient);
