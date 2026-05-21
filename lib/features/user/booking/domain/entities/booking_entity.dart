@@ -21,6 +21,7 @@ class BookingEntity extends Equatable {
   final String? customerImage;
   final String? providerName;
   final String? providerImage;
+  final String? providerFirebaseUid;
   final String? categoryName;
   final String? confirmedAt;
   final String? rejectedAt;
@@ -53,6 +54,7 @@ class BookingEntity extends Equatable {
     this.customerImage,
     this.providerName,
     this.providerImage,
+    this.providerFirebaseUid,
     this.categoryName,
     this.confirmedAt,
     this.rejectedAt,
@@ -87,6 +89,7 @@ class BookingEntity extends Equatable {
     customerImage,
     providerName,
     providerImage,
+    providerFirebaseUid,
     categoryName,
     confirmedAt,
     rejectedAt,

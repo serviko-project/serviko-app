@@ -3,19 +3,26 @@ import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/core/widgets/custom_button.dart';
+import 'package:serviko_app/features/shared/communication/presentation/widgets/provider_chat_button.dart';
 
 // Bottom bar with Service Name,Price, Message and Book Now buttons
 class ServiceBottomBar extends StatelessWidget {
   final String serviceName;
   final double price;
-  final VoidCallback? onMessageTap;
+  final String providerId;
+  final String? providerFirebaseUid;
+  final String? providerName;
+  final String? providerImage;
   final VoidCallback? onBookNowTap;
 
   const ServiceBottomBar({
     super.key,
     required this.serviceName,
     required this.price,
-    this.onMessageTap,
+    required this.providerId,
+    this.providerFirebaseUid,
+    this.providerName,
+    this.providerImage,
     this.onBookNowTap,
   });
 
@@ -86,20 +93,12 @@ class ServiceBottomBar extends StatelessWidget {
           const SizedBox(width: AppSizes.md),
 
           // Message button
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.primary.withAlpha(20),
-              borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-            ),
-            child: IconButton(
-              tooltip: "Message Provider",
-              onPressed: onMessageTap,
-              icon: const Icon(
-                Icons.message_outlined,
-                color: AppColors.primary,
-                size: 20,
-              ),
-            ),
+          ProviderChatButton(
+            providerId: providerId,
+            providerFirebaseUid: providerFirebaseUid,
+            providerName: providerName,
+            providerImage: providerImage,
+            categoryName: serviceName,
           ),
           const SizedBox(width: AppSizes.sm),
 

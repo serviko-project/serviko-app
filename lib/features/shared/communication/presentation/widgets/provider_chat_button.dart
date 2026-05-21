@@ -10,6 +10,7 @@ import 'package:serviko_app/features/shared/communication/presentation/pages/cha
 // Provider Chat Button
 class ProviderChatButton extends StatelessWidget {
   final String providerId;
+  final String? providerFirebaseUid;
   final String? providerName;
   final String? providerImage;
   final String? categoryName;
@@ -17,6 +18,7 @@ class ProviderChatButton extends StatelessWidget {
   const ProviderChatButton({
     super.key,
     required this.providerId,
+    this.providerFirebaseUid,
     this.providerName,
     this.providerImage,
     this.categoryName,
@@ -38,6 +40,16 @@ class ProviderChatButton extends StatelessWidget {
             size: 20,
           ),
           onPressed: () {
+            final firebaseUid = providerFirebaseUid;
+            if (firebaseUid == null || firebaseUid.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Unable to chat — provider info unavailable.'),
+                ),
+              );
+              return;
+            }
+
             final authState = context.read<AuthBloc>().state;
             if (authState is AuthAuthenticated) {
               Navigator.of(context, rootNavigator: true).push(
@@ -46,7 +58,7 @@ class ProviderChatButton extends StatelessWidget {
                     contact: ProviderDirectoryEntity(
                       id: providerId,
                       userId: providerId,
-                      firebaseUid: providerId,
+                      firebaseUid: firebaseUid,
                       name: providerName,
                       profileImageUrl: providerImage,
                       professionalTitle: categoryName,
