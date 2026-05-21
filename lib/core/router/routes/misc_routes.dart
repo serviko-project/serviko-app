@@ -18,7 +18,11 @@ import '../../../features/user/booking/presentation/pages/booking_location_scree
 import '../../../features/user/booking/presentation/pages/promo_selection_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_summary_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_success_screen.dart';
+import '../../../features/user/booking/domain/entities/booking_entity.dart';
+import '../../../features/user/booking/presentation/pages/e_receipt_screen.dart';
 import '../../../features/user/booking/presentation/pages/view_booking_screen.dart';
+import '../../../features/shared/support/presentation/pages/privacy_policy_screen.dart';
+import '../../../features/shared/support/presentation/pages/help_center_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -152,5 +156,28 @@ List<RouteBase> miscRoutes = [
       final bookingId = state.pathParameters['id'] ?? '';
       return ViewBookingScreen(bookingId: bookingId);
     },
+  ),
+  GoRoute(
+    name: RouteNames.eReceipt,
+    path: RoutePaths.eReceipt,
+    builder: (context, state) {
+      final booking = state.extra as BookingEntity?;
+      if (booking == null) {
+        return const Scaffold(
+          body: Center(child: Text('Missing receipt data')),
+        );
+      }
+      return EReceiptScreen(booking: booking);
+    },
+  ),
+  GoRoute(
+    name: RouteNames.privacyPolicy,
+    path: RoutePaths.privacyPolicy,
+    builder: (context, state) => const PrivacyPolicyScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.helpCenter,
+    path: RoutePaths.helpCenter,
+    builder: (context, state) => const HelpCenterScreen(),
   ),
 ];

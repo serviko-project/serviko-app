@@ -26,6 +26,7 @@ class JobsListView extends StatelessWidget {
         await context.read<ProviderJobsCubit>().getBookings(refresh: true);
       },
       child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(AppSizes.md),
         itemCount:
             bookings.length +

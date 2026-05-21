@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.serviko.serviko_app"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = maxOf(34, flutter.compileSdkVersion)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -27,10 +27,11 @@ android {
         applicationId = "com.serviko.serviko_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = maxOf(21, flutter.minSdkVersion)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
     }
 
     buildTypes {

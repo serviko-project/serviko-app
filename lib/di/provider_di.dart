@@ -1,0 +1,51 @@
+import 'package:serviko_app/features/provider/onboarding/data/datasources/provider_onboarding_remote_datasource.dart';
+import 'package:serviko_app/features/provider/onboarding/data/repositories/provider_onboarding_repository_impl.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_document_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_categories_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/get_my_provider_profile_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/reapply_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_application_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/submit_category_request_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_provider_details_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_banner_image_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_banner_image_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
+import 'package:serviko_app/injection_container.dart';
+
+// Extension to modularize provider onboarding dependencies
+extension ProviderDI on InjectionContainer {
+  void initProviderOnboarding() {
+    // Provider Onboarding - Data
+    providerOnboardingRemoteDataSource = ProviderOnboardingRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    providerOnboardingRepository = ProviderOnboardingRepositoryImpl(
+      remoteDataSource: providerOnboardingRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+
+    // Provider Onboarding - Use Cases
+    submitApplicationUseCase = SubmitApplicationUseCase(
+      providerOnboardingRepository,
+    );
+    getMyProviderProfileUseCase = GetMyProviderProfileUseCase(
+      providerOnboardingRepository,
+    );
+    uploadDocumentUseCase = UploadDocumentUseCase(providerOnboardingRepository);
+    deleteDocumentUseCase = DeleteDocumentUseCase(providerOnboardingRepository);
+    reapplyUseCase = ReapplyUseCase(providerOnboardingRepository);
+    getCategoriesUseCase = GetCategoriesUseCase(providerOnboardingRepository);
+    updateProviderDetailsUseCase = UpdateProviderDetailsUseCase(
+      providerOnboardingRepository,
+    );
+    uploadBannerImageUseCase = UploadBannerImageUseCase(
+      providerOnboardingRepository,
+    );
+    deleteBannerImageUseCase = DeleteBannerImageUseCase(
+      providerOnboardingRepository,
+    );
+    submitCategoryRequestUseCase = SubmitCategoryRequestUseCase(
+      providerOnboardingRepository,
+    );
+  }
+}

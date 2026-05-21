@@ -44,6 +44,8 @@ abstract class AuthRemoteDataSource {
 
   Future<void> signOut();
 
+  Future<void> updateFirebaseDisplayName(String displayName);
+
   UserModel? getCurrentUser();
 
   bool get isSignedIn;
@@ -227,6 +229,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       await Future.wait([_firebaseAuth.signOut(), _googleSignIn.signOut()]);
     } on fb.FirebaseAuthException catch (e) {
       throw AuthException(_mapFirebaseError(e.code), code: e.code);
+    }
+  }
+
+  @override
+  Future<void> updateFirebaseDisplayName(String displayName) async {
+    try {
+      await _firebaseAuth.currentUser?.updateDisplayName(displayName);
+    } on fb.FirebaseAuthException catch (e) {
+      throw AuthException(_mapFirebaseError(e.code), code: e.code);
+    } catch (e) {
+      throw AuthException(
+        'An unexpected error occurred while updating display name.',
+      );
     }
   }
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
+import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:zego_zimkit/zego_zimkit.dart';
 
 // Bottom Navigation Tab
 class NavTab {
@@ -77,26 +79,71 @@ class AppBottomNavShell extends StatelessWidget {
 
   // Build each BottomNavigationBarItem
   BottomNavigationBarItem _buildNavItem(dynamic icon, String label) {
+    final isInbox = label == 'Inbox';
     return BottomNavigationBarItem(
       icon: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: HugeIcon(
-          icon: icon,
-          color: AppColors.textHint,
-          size: 26,
-          strokeWidth: 1.5,
-        ),
+        padding: EdgeInsets.only(bottom: AppSizes.sm),
+        child: _buildIconWithBadge(icon, AppColors.textHint, isInbox),
       ),
       activeIcon: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: HugeIcon(
-          icon: icon,
-          color: AppColors.primary,
-          size: 26,
-          strokeWidth: 1.5,
-        ),
+        padding: EdgeInsets.only(bottom: AppSizes.sm),
+        child: _buildIconWithBadge(icon, AppColors.primary, isInbox),
       ),
       label: label,
+    );
+  }
+
+  // Build icon with unread badge if inbox tab
+  Widget _buildIconWithBadge(dynamic icon, Color color, bool isInbox) {
+    final iconWidget = HugeIcon(
+      icon: icon,
+      color: color,
+      size: 26,
+      strokeWidth: 1.5,
+    );
+
+    if (!isInbox) {
+      return iconWidget;
+    }
+
+    return ValueListenableBuilder<int>(
+      valueListenable: ZIMKit().getTotalUnreadMessageCount(),
+      builder: (context, count, child) {
+        if (count == 0) return iconWidget;
+        final badgeText = count > 99 ? '99+' : '$count';
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            iconWidget,
+
+            // Unread badge
+            Positioned(
+              right: -6,
+              top: -6,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.background, width: 1.5),
+                ),
+                constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                child: Center(
+                  child: Text(
+                    badgeText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w800,
+                      height: 1.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

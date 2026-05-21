@@ -25,6 +25,11 @@ class BookingEntity extends Equatable {
   final String? confirmedAt;
   final String? rejectedAt;
   final String? cancelledAt;
+  final String paymentStatus;
+  final String? paymentId;
+  final String? paymentReference;
+  final String? paidAt;
+  final String? refundedAt;
   final String createdAt;
   final String updatedAt;
 
@@ -52,6 +57,11 @@ class BookingEntity extends Equatable {
     this.confirmedAt,
     this.rejectedAt,
     this.cancelledAt,
+    this.paymentStatus = 'unpaid',
+    this.paymentId,
+    this.paymentReference,
+    this.paidAt,
+    this.refundedAt,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -81,6 +91,11 @@ class BookingEntity extends Equatable {
     confirmedAt,
     rejectedAt,
     cancelledAt,
+    paymentStatus,
+    paymentId,
+    paymentReference,
+    paidAt,
+    refundedAt,
     createdAt,
     updatedAt,
   ];

@@ -26,6 +26,11 @@ class BookingModel extends BookingEntity {
     super.confirmedAt,
     super.rejectedAt,
     super.cancelledAt,
+    super.paymentStatus,
+    super.paymentId,
+    super.paymentReference,
+    super.paidAt,
+    super.refundedAt,
     required super.createdAt,
     required super.updatedAt,
   });
@@ -60,6 +65,11 @@ class BookingModel extends BookingEntity {
       confirmedAt: json['confirmed_at'] as String?,
       rejectedAt: json['rejected_at'] as String?,
       cancelledAt: json['cancelled_at'] as String?,
+      paymentStatus: (json['payment_status'] as String?) ?? 'unpaid',
+      paymentId: json['payment_id'] as String?,
+      paymentReference: json['payment_reference'] as String?,
+      paidAt: json['paid_at'] as String?,
+      refundedAt: json['refunded_at'] as String?,
       createdAt: (json['created_at'] as String?) ?? '',
       updatedAt: (json['updated_at'] as String?) ?? '',
     );

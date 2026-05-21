@@ -4,6 +4,7 @@ import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_entity.dart';
+import 'package:serviko_app/features/shared/communication/presentation/widgets/provider_chat_button.dart';
 
 class ViewBookingHeader extends StatelessWidget {
   final BookingEntity booking;
@@ -52,12 +53,12 @@ class ViewBookingHeader extends StatelessWidget {
             ],
           ),
         ),
-        IconButton(
-          onPressed: () {},
-          icon: const HugeIcon(
-            icon: HugeIcons.strokeRoundedChat01,
-            color: AppColors.primary,
-          ),
+        // Chat Button
+        ProviderChatButton(
+          providerId: booking.providerId,
+          providerName: booking.providerName,
+          providerImage: booking.providerImage,
+          categoryName: booking.categoryName,
         ),
       ],
     );

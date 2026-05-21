@@ -83,6 +83,7 @@ class BookingCard extends StatelessWidget {
                 const SizedBox(height: AppSizes.md),
                 BookingCardActions(
                   status: status,
+                  paymentStatus: booking.paymentStatus,
                   bookingId: booking.id,
                   serviceId: booking.serviceId,
                 ),
