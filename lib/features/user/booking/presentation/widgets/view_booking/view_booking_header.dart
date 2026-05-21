@@ -56,6 +56,7 @@ class ViewBookingHeader extends StatelessWidget {
         // Chat Button
         ProviderChatButton(
           providerId: booking.providerId,
+          providerFirebaseUid: booking.providerFirebaseUid,
           providerName: booking.providerName,
           providerImage: booking.providerImage,
           categoryName: booking.categoryName,
