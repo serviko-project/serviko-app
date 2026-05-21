@@ -57,6 +57,7 @@ class BookingCalendarWidget extends StatelessWidget {
         ),
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
+          markersMaxCount: 3,
           defaultTextStyle: AppTextStyles.bodyLarge.copyWith(
             color: AppColors.textSecondary,
           ),

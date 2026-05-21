@@ -107,9 +107,7 @@ class BookingSuccessScreen extends StatelessWidget {
                       // Action Buttons
                       CustomButton(
                         text: "View My Bookings",
-                        onPressed: () {
-                          context.goNamed(RouteNames.calendar);
-                        },
+                        onPressed: () => context.goNamed(RouteNames.booking),
                       ),
                       const SizedBox(height: AppSizes.md),
                       CustomButton(

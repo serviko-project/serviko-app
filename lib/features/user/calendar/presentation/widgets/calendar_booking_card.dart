@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/route_constants.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_entity.dart';
+import 'package:serviko_app/features/shared/communication/presentation/widgets/provider_chat_button.dart';
 
 class CalendarBookingCard extends StatelessWidget {
   final BookingEntity booking;
@@ -110,22 +110,11 @@ class CalendarBookingCard extends StatelessWidget {
                 const SizedBox(width: AppSizes.sm),
 
                 // Chat Button
-                Skeleton.replace(
-                  replacement: const Bone.circle(size: 40),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedMessage02,
-                        color: AppColors.primary,
-                        size: 20,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
+                ProviderChatButton(
+                  providerId: booking.providerId,
+                  providerName: booking.providerName,
+                  providerImage: booking.providerImage,
+                  categoryName: booking.categoryName,
                 ),
               ],
             ),
