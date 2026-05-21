@@ -7,10 +7,12 @@ import '../../../features/provider/profile/presentation/cubit/provider_profile_c
 import '../../widgets/placeholder_screen.dart';
 import '../route_constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../injection_container.dart';
+import 'package:serviko_app/injection_container.dart';
 import '../../../features/provider/profile/presentation/pages/edit_provider_details_screen.dart';
 import '../../../features/provider/jobs/presentation/pages/provider_jobs_screen.dart';
 import '../../../features/provider/jobs/presentation/cubit/provider_jobs_cubit.dart';
+import '../../../features/shared/communication/presentation/cubit/contact_directory_cubit.dart';
+import '../../../features/shared/communication/presentation/pages/inbox_screen.dart';
 
 List<RouteBase> providerRoutes = [
   // ---- Provider Onboarding ----
@@ -76,8 +78,13 @@ List<RouteBase> providerRoutes = [
           GoRoute(
             name: RouteNames.providerInbox,
             path: RoutePaths.providerInbox,
-            builder: (context, state) =>
-                const PlaceholderScreen(title: 'Inbox'),
+            builder: (context, state) => BlocProvider(
+              create: (context) => ContactDirectoryCubit(
+                getProviderDirectoryUseCase:
+                    InjectionContainer.instance.getProviderDirectoryUseCase,
+              ),
+              child: const InboxScreen(),
+            ),
           ),
         ],
       ),

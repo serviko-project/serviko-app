@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +23,7 @@ Future<void> main() async {
 
   // Initialize all dependencies
   await InjectionContainer.instance.init();
+  await InjectionContainer.instance.zegoService.initializeSdk();
 
   // Pre-load saved role
   final roleCubit = RoleCubit();
@@ -62,6 +64,7 @@ class _ServikoAppState extends State<ServikoApp> {
       updateProfileUseCase: di.updateProfileUseCase,
       uploadProfileImageUseCase: di.uploadProfileImageUseCase,
       deleteProfileImageUseCase: di.deleteProfileImageUseCase,
+      updateFirebaseDisplayNameUseCase: di.updateFirebaseDisplayNameUseCase,
     );
     _categoryCubit = CategoryCubit(
       getCategoriesUseCase: di.userGetCategoriesUseCase,
@@ -115,9 +118,13 @@ class _ServikoAppState extends State<ServikoApp> {
             listener: (context, state) {
               if (state is AuthAuthenticated) {
                 _profileCubit.fetchProfile();
+                unawaited(
+                  InjectionContainer.instance.zegoService.login(state.user),
+                );
               } else if (state is AuthUnauthenticated) {
                 _profileCubit.reset();
                 widget.roleCubit.reset();
+                unawaited(InjectionContainer.instance.zegoService.logout());
               }
             },
           ),
@@ -126,6 +133,11 @@ class _ServikoAppState extends State<ServikoApp> {
               if (state is ProfileLoaded) {
                 widget.roleCubit.syncProviderStatusFromProfile(
                   state.profile.providerStatus,
+                );
+                unawaited(
+                  InjectionContainer.instance.zegoService.updateUserDisplayName(
+                    state.profile.fullName,
+                  ),
                 );
               }
             },

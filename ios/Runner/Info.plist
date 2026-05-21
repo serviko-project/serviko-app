@@ -70,5 +70,11 @@
 		<false/>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Serviko needs your location to set your service area and show you nearby providers.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Serviko uses your camera for video calls with service providers.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Serviko uses your microphone for audio and video calls with service providers.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Serviko uses your photo library when sharing media in chats.</string>
 	</dict>
 </plist>

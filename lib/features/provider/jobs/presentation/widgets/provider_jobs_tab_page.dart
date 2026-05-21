@@ -19,11 +19,23 @@ class ProviderJobsTabPage extends StatelessWidget {
         if (state is ProviderJobsLoading && (state.bookings?.isEmpty ?? true)) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (state is ProviderJobsError && state.bookings == null) {
-          return CustomErrorWidget(
-            message: state.message,
-            onRetry: () =>
-                context.read<ProviderJobsCubit>().getBookings(refresh: true),
+        if (state is ProviderJobsError && (state.bookings?.isEmpty ?? true)) {
+          return RefreshIndicator(
+            onRefresh: () => _refreshBookings(context),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: constraints.maxHeight,
+                    child: CustomErrorWidget(
+                      message: state.message,
+                      onRetry: () => _refreshBookings(context),
+                    ),
+                  ),
+                );
+              },
+            ),
           );
         }
 
@@ -31,7 +43,20 @@ class ProviderJobsTabPage extends StatelessWidget {
         final bookings = _filterByStatus(allBookings);
 
         if (bookings.isEmpty && state is ProviderJobsLoaded) {
-          return const ProviderJobsEmptyState();
+          return RefreshIndicator(
+            onRefresh: () => _refreshBookings(context),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: constraints.maxHeight,
+                    child: const ProviderJobsEmptyState(),
+                  ),
+                );
+              },
+            ),
+          );
         }
 
         return JobsListView(
@@ -46,5 +71,9 @@ class ProviderJobsTabPage extends StatelessWidget {
   List<BookingEntity> _filterByStatus(List<BookingEntity> bookings) {
     if (statusFilter == null) return bookings;
     return bookings.where((b) => b.status.value == statusFilter).toList();
+  }
+
+  Future<void> _refreshBookings(BuildContext context) async {
+    await context.read<ProviderJobsCubit>().getBookings(refresh: true);
   }
 }

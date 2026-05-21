@@ -8,6 +8,7 @@ import 'package:serviko_app/features/user/profile/domain/usecases/create_profile
 import 'package:serviko_app/features/user/profile/domain/usecases/delete_profile_image_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/upload_profile_image_usecase.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/update_firebase_display_name_usecase.dart';
 part 'fill_profile_state.dart';
 
 // Cubit for managing fill profile form state and submission
@@ -16,6 +17,7 @@ class FillProfileCubit extends Cubit<FillProfileState> {
   final UpdateProfileUseCase _updateUserProfileUseCase;
   final UploadProfileImageUseCase _uploadProfileImageUseCase;
   final DeleteProfileImageUseCase _deleteProfileImageUseCase;
+  final UpdateFirebaseDisplayNameUseCase _updateFirebaseDisplayNameUseCase;
   final ImagePicker _imagePicker;
 
   FillProfileCubit({
@@ -23,11 +25,13 @@ class FillProfileCubit extends Cubit<FillProfileState> {
     required UpdateProfileUseCase updateUserProfileUseCase,
     required UploadProfileImageUseCase uploadProfileImageUseCase,
     required DeleteProfileImageUseCase deleteProfileImageUseCase,
+    required UpdateFirebaseDisplayNameUseCase updateFirebaseDisplayNameUseCase,
     ImagePicker? imagePicker,
   }) : _createUserProfileUseCase = createUserProfileUseCase,
        _updateUserProfileUseCase = updateUserProfileUseCase,
        _uploadProfileImageUseCase = uploadProfileImageUseCase,
        _deleteProfileImageUseCase = deleteProfileImageUseCase,
+       _updateFirebaseDisplayNameUseCase = updateFirebaseDisplayNameUseCase,
        _imagePicker = imagePicker ?? ImagePicker(),
        super(const FillProfileState());
 
@@ -147,6 +151,8 @@ class FillProfileCubit extends Cubit<FillProfileState> {
         );
       },
       (profile) async {
+        await _updateFirebaseDisplayNameUseCase(fullNameController.text.trim());
+
         // If profile updated/created successfully, upload image if selected
         if (state.selectedImage != null) {
           final uploadResult = await _uploadProfileImageUseCase(

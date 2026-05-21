@@ -14,7 +14,6 @@ import 'package:serviko_app/features/user/service/domain/entities/service_entity
 import 'package:serviko_app/core/widgets/custom_error_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/router/route_constants.dart';
-
 import 'package:serviko_app/features/user/booking/domain/entities/booking_init_data.dart';
 
 // Service detail Screen
@@ -157,7 +156,10 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                   price:
                       state.selectedService?.basePricePerHour ??
                       service.basePricePerHour,
-                  onMessageTap: () {},
+                  providerId: service.providerId,
+                  providerFirebaseUid: service.providerFirebaseUid,
+                  providerName: service.providerName,
+                  providerImage: service.providerImage,
                   onBookNowTap: () {
                     final selectedService =
                         state.selectedService ?? categories.first;

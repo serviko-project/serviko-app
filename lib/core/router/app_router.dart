@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/router/go_router_refresh_stream.dart';
+import 'package:serviko_app/features/shared/communication/zego/zego_service.dart';
 import 'package:serviko_app/features/user/auth/presentation/bloc/auth_bloc.dart';
 import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dart';
 import 'route_constants.dart';
@@ -46,6 +47,7 @@ class AppRouter {
 
   // Router configuration with auth + role-based redirection
   static GoRouter router(AuthBloc authBloc, RoleCubit roleCubit) => GoRouter(
+    navigatorKey: ZegoService.navigatorKey,
     initialLocation: RoutePaths.splash,
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream([

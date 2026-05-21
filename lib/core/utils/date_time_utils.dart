@@ -58,4 +58,15 @@ class DateTimeUtils {
       }
     }
   }
+
+  // Payment Date on E-Receipt
+  static String paymentDate(String datetime) {
+    try {
+      return DateFormat(
+        'MMM d, yyyy | hh:mm:ss a',
+      ).format(DateTime.parse(datetime).toLocal());
+    } catch (_) {
+      return datetime;
+    }
+  }
 }

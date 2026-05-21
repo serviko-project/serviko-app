@@ -8,6 +8,7 @@ class ServiceEntity extends Equatable {
   final String providerId;
   final String providerName;
   final String? providerImage;
+  final String? providerFirebaseUid;
   final String? bannerImage;
   final String professionalTitle;
   final double basePricePerHour;
@@ -28,6 +29,7 @@ class ServiceEntity extends Equatable {
     required this.providerId,
     required this.providerName,
     this.providerImage,
+    this.providerFirebaseUid,
     this.bannerImage,
     required this.professionalTitle,
     required this.basePricePerHour,
@@ -50,6 +52,7 @@ class ServiceEntity extends Equatable {
     providerId,
     providerName,
     providerImage,
+    providerFirebaseUid,
     bannerImage,
     professionalTitle,
     basePricePerHour,

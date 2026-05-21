@@ -67,7 +67,7 @@ class _ProviderJobsScreenState extends State<ProviderJobsScreen>
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: AppColors.background,
         appBar: ProviderJobsAppBar(
           tabController: _tabController,
           statuses: _statuses,

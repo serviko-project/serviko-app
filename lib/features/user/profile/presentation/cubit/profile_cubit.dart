@@ -8,6 +8,7 @@ import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile
 import 'package:serviko_app/features/user/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/upload_profile_image_usecase.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_state.dart';
+import 'package:serviko_app/features/user/auth/domain/usecases/update_firebase_display_name_usecase.dart';
 
 // Profile Cubit
 class ProfileCubit extends Cubit<ProfileState> {
@@ -16,6 +17,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   final UpdateProfileUseCase _updateProfileUseCase;
   final UploadProfileImageUseCase _uploadProfileImageUseCase;
   final DeleteProfileImageUseCase _deleteProfileImageUseCase;
+  final UpdateFirebaseDisplayNameUseCase _updateFirebaseDisplayNameUseCase;
 
   ProfileCubit({
     required GetMyProfileUseCase getMyProfileUseCase,
@@ -23,11 +25,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     required UpdateProfileUseCase updateProfileUseCase,
     required UploadProfileImageUseCase uploadProfileImageUseCase,
     required DeleteProfileImageUseCase deleteProfileImageUseCase,
+    required UpdateFirebaseDisplayNameUseCase updateFirebaseDisplayNameUseCase,
   }) : _getMyProfileUseCase = getMyProfileUseCase,
        _getCachedProfileUseCase = getCachedProfileUseCase,
        _updateProfileUseCase = updateProfileUseCase,
        _uploadProfileImageUseCase = uploadProfileImageUseCase,
        _deleteProfileImageUseCase = deleteProfileImageUseCase,
+       _updateFirebaseDisplayNameUseCase = updateFirebaseDisplayNameUseCase,
        super(const ProfileInitial());
 
   Future<void> loadCachedProfile() async {
@@ -85,10 +89,12 @@ class ProfileCubit extends Cubit<ProfileState> {
       ),
     );
 
-    result.fold(
-      (failure) => emit(ProfileError(failure.message)),
-      (profile) => emit(ProfileLoaded(profile)),
-    );
+    await result.fold((failure) async => emit(ProfileError(failure.message)), (
+      profile,
+    ) async {
+      await _updateFirebaseDisplayNameUseCase(fullName);
+      emit(ProfileLoaded(profile));
+    });
   }
 
   Future<void> uploadProfileImage(File imageFile) async {

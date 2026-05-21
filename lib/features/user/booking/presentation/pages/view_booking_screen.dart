@@ -4,12 +4,13 @@ import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/widgets/custom_app_bar.dart';
 import 'package:serviko_app/features/user/booking/domain/enums/booking_status.dart';
+import 'package:serviko_app/features/user/booking/presentation/widgets/view_booking/view_booking_bottom_navigation_bar.dart';
+import 'package:serviko_app/features/user/payment/presentation/cubit/payment_cubit.dart';
+import 'package:serviko_app/features/user/payment/presentation/cubit/payment_state.dart';
 import 'package:serviko_app/injection_container.dart';
 import '../bloc/view_booking_cubit.dart';
 import '../bloc/view_booking_state.dart';
-import '../widgets/cancel_booking_bottom_sheet.dart';
 import '../widgets/view_booking/booking_status_banner.dart';
-import '../widgets/view_booking/booking_action_buttons.dart';
 import '../widgets/view_booking/view_booking_header.dart';
 import '../widgets/view_booking/view_booking_info_components.dart';
 import '../widgets/view_booking/view_booking_location_card.dart';
@@ -17,6 +18,7 @@ import '../widgets/view_booking/view_booking_reason_card.dart';
 import '../widgets/view_booking/view_booking_loading_state.dart';
 import '../widgets/view_booking/view_booking_information_section.dart';
 import '../widgets/view_booking/view_booking_payment_summary_section.dart';
+import '../widgets/view_booking/view_booking_listener.dart';
 
 class ViewBookingScreen extends StatelessWidget {
   final String bookingId;
@@ -25,12 +27,25 @@ class ViewBookingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ViewBookingCubit(
-        getBookingDetailUseCase:
-            InjectionContainer.instance.getBookingDetailUseCase,
-        cancelBookingUseCase: InjectionContainer.instance.cancelBookingUseCase,
-      )..fetchBookingDetails(bookingId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ViewBookingCubit(
+            getBookingDetailUseCase:
+                InjectionContainer.instance.getBookingDetailUseCase,
+            cancelBookingUseCase:
+                InjectionContainer.instance.cancelBookingUseCase,
+          )..fetchBookingDetails(bookingId),
+        ),
+        BlocProvider(
+          create: (context) => PaymentCubit(
+            createPaymentOrderUseCase:
+                InjectionContainer.instance.createPaymentOrderUseCase,
+            verifyPaymentUseCase:
+                InjectionContainer.instance.verifyPaymentUseCase,
+          ),
+        ),
+      ],
       child: const _ViewBookingScreenContent(),
     );
   }
@@ -41,28 +56,7 @@ class _ViewBookingScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ViewBookingCubit, ViewBookingState>(
-      listenWhen: (previous, current) =>
-          previous.actionStatus != current.actionStatus,
-      listener: (context, state) {
-        if (state.actionStatus == ViewBookingActionStatus.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message ?? 'Success'),
-              backgroundColor: AppColors.primary,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        } else if (state.actionStatus == ViewBookingActionStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message ?? 'An error occurred'),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
-      },
+    return ViewBookingListener(
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: CustomAppBar(title: 'Booking Details'),
@@ -153,51 +147,31 @@ class _ViewBookingScreenContent extends StatelessWidget {
                       ),
                     ),
                   ),
+                BlocBuilder<PaymentCubit, PaymentState>(
+                  buildWhen: (previous, current) =>
+                      previous.status != current.status,
+                  builder: (context, paymentState) {
+                    final isBusy =
+                        paymentState.status ==
+                            PaymentFlowStatus.creatingOrder ||
+                        paymentState.status == PaymentFlowStatus.verifying;
+                    if (!isBusy) return const SizedBox.shrink();
+                    return Container(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
             );
           },
         ),
-        bottomNavigationBar: BlocBuilder<ViewBookingCubit, ViewBookingState>(
-          buildWhen: (previous, current) => previous.booking != current.booking,
-          builder: (context, state) {
-            final booking = state.booking;
-            if (booking != null) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, -5),
-                    ),
-                  ],
-                ),
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: BookingActionButtons(
-                      booking: booking,
-                      onCancel: () =>
-                          _showCancelConfirmation(context, booking.id),
-                    ),
-                  ),
-                ),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
+        bottomNavigationBar: ViewBookingBottomNavigationBar(),
       ),
-    );
-  }
-
-  void _showCancelConfirmation(BuildContext context, String bookingId) {
-    CancelBookingBottomSheet.show(
-      context,
-      onConfirm: () {
-        context.read<ViewBookingCubit>().cancelBooking(bookingId);
-      },
     );
   }
 }

@@ -29,6 +29,8 @@ class FillProfileScreen extends StatelessWidget {
             InjectionContainer.instance.uploadProfileImageUseCase,
         deleteProfileImageUseCase:
             InjectionContainer.instance.deleteProfileImageUseCase,
+        updateFirebaseDisplayNameUseCase:
+            InjectionContainer.instance.updateFirebaseDisplayNameUseCase,
       ),
       child: const _FillProfileView(),
     );
