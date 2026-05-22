@@ -67,6 +67,8 @@ List<RouteBase> providerRoutes = [
                     InjectionContainer.instance.getProviderBookingsUseCase,
                 reviewBookingUseCase:
                     InjectionContainer.instance.reviewBookingUseCase,
+                completeBookingUseCase:
+                    InjectionContainer.instance.completeBookingUseCase,
               ),
               child: const ProviderJobsScreen(),
             ),

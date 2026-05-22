@@ -54,13 +54,22 @@ class _ProviderJobsScreenState extends State<ProviderJobsScreen>
           );
         }
         if (state is ProviderJobUpdated) {
+          if (state.booking.status == BookingStatus.completed) return;
+
+          final isSuccess = state.booking.status == BookingStatus.confirmed;
+          final isError =
+              state.booking.status == BookingStatus.rejected ||
+              state.booking.status == BookingStatus.cancelled;
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
                 'Booking ${state.booking.status.displayLabel} successfully!',
               ),
-              backgroundColor: state.booking.status == BookingStatus.confirmed
+              backgroundColor: isSuccess
                   ? AppColors.success
+                  : isError
+                  ? AppColors.error
                   : AppColors.warning,
             ),
           );

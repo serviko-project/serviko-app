@@ -4,6 +4,7 @@ import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_entity.dart';
 import '../cubit/provider_jobs_cubit.dart';
 import '../cubit/provider_jobs_state.dart';
+import '../pages/provider_job_detail_screen.dart';
 import 'job_card.dart';
 import 'rejection_dialog.dart';
 
@@ -58,6 +59,16 @@ class JobsListView extends StatelessWidget {
               );
             },
             onReject: () => showRejectionDialog(context, booking.id),
+            onTap: () {
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<ProviderJobsCubit>(),
+                    child: ProviderJobDetailScreen(booking: booking),
+                  ),
+                ),
+              );
+            },
           );
         },
       ),
