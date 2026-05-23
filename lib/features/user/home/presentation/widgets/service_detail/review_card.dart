@@ -2,23 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:serviko_app/core/utils/date_time_utils.dart';
+import 'package:serviko_app/features/user/booking/domain/entities/review_entity.dart';
 
-// Individual review card
+// Individual review card displaying customer feedback
 class ReviewCard extends StatelessWidget {
-  final int index;
+  final ReviewEntity review;
 
-  const ReviewCard({super.key, required this.index});
+  const ReviewCard({super.key, required this.review});
 
   @override
   Widget build(BuildContext context) {
-    final names = List.generate(5, (index) => "User ${index + 1}");
-    final comments = List.generate(5, (index) {
-      return "This is a sample review from User ${index + 1} and they had a great experience with the service.";
-    });
-
-    final name = names[index % names.length];
-    final comment = comments[index % comments.length];
-    final rating = 5 - (index % 3);
+    final name = review.customerName;
+    final comment = review.comment;
+    final rating = review.rating;
+    final imageUrl = review.customerImage;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSizes.md),
@@ -32,12 +30,17 @@ class ReviewCard extends StatelessWidget {
               CircleAvatar(
                 radius: 20,
                 backgroundColor: AppColors.shimmerBase,
-                child: Text(
-                  name[0],
-                  style: AppTextStyles.labelLarge.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
+                backgroundImage: imageUrl != null && imageUrl.isNotEmpty
+                    ? NetworkImage(imageUrl)
+                    : null,
+                child: imageUrl == null || imageUrl.isEmpty
+                    ? Text(
+                        name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                        style: AppTextStyles.labelLarge.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      )
+                    : null,
               ),
               const SizedBox(width: AppSizes.sm),
 
@@ -95,7 +98,10 @@ class ReviewCard extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSizes.md),
-          Text('Posted : 07/05/2026', style: AppTextStyles.caption),
+          Text(
+            'Posted : ${DateTimeUtils.formatToReadableDate(review.createdAt)}',
+            style: AppTextStyles.caption,
+          ),
 
           const SizedBox(height: AppSizes.md),
           const Divider(),

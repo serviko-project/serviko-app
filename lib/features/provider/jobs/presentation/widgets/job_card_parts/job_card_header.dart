@@ -11,8 +11,6 @@ class JobCardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Row(
       children: [
         CircleAvatar(
@@ -33,6 +31,7 @@ class JobCardHeader extends StatelessWidget {
                 booking.customerName ?? 'Customer',
                 style: AppTextStyles.h3.copyWith(fontSize: 14),
               ),
+              const SizedBox(height: 2),
               Text(
                 booking.categoryName ?? 'Service',
                 style: AppTextStyles.labelSmall,
@@ -48,7 +47,7 @@ class JobCardHeader extends StatelessWidget {
           ),
           child: Text(
             status.displayLabel.toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
+            style: AppTextStyles.labelSmall.copyWith(
               color: status.color,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,

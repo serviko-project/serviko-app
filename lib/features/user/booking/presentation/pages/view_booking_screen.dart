@@ -15,6 +15,7 @@ import '../widgets/view_booking/view_booking_header.dart';
 import '../widgets/view_booking/view_booking_info_components.dart';
 import '../widgets/view_booking/view_booking_location_card.dart';
 import '../widgets/view_booking/view_booking_reason_card.dart';
+import '../widgets/view_booking/view_booking_completion_note_card.dart';
 import '../widgets/view_booking/view_booking_loading_state.dart';
 import '../widgets/view_booking/view_booking_information_section.dart';
 import '../widgets/view_booking/view_booking_payment_summary_section.dart';
@@ -35,6 +36,8 @@ class ViewBookingScreen extends StatelessWidget {
                 InjectionContainer.instance.getBookingDetailUseCase,
             cancelBookingUseCase:
                 InjectionContainer.instance.cancelBookingUseCase,
+            submitReviewUseCase:
+                InjectionContainer.instance.submitReviewUseCase,
           )..fetchBookingDetails(bookingId),
         ),
         BlocProvider(
@@ -127,10 +130,25 @@ class _ViewBookingScreenContent extends StatelessWidget {
                                 reason: booking.rejectionReason!,
                               ),
                             ],
+
                             const SizedBox(height: AppSizes.xl),
 
                             // Payment Summary Card
                             ViewBookingPaymentSummarySection(booking: booking),
+
+                            // Completion Note Card
+                            if (status == BookingStatus.completed &&
+                                booking.completionNote != null &&
+                                booking.completionNote!.isNotEmpty) ...[
+                              const SizedBox(height: AppSizes.xl),
+                              const ViewBookingSectionTitle(
+                                title: 'Completion Note',
+                              ),
+                              const SizedBox(height: AppSizes.md),
+                              ViewBookingCompletionNoteCard(
+                                note: booking.completionNote!,
+                              ),
+                            ],
                             const SizedBox(height: AppSizes.xxl),
                           ],
                         ),

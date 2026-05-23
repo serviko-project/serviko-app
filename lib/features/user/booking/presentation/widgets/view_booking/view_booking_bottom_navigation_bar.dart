@@ -4,6 +4,7 @@ import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/features/user/booking/presentation/bloc/view_booking_cubit.dart';
 import 'package:serviko_app/features/user/booking/presentation/bloc/view_booking_state.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/cancel_booking_bottom_sheet.dart';
+import 'package:serviko_app/features/user/booking/presentation/widgets/view_booking/review_bottom_sheet.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/view_booking/booking_action_buttons.dart';
 import 'package:serviko_app/features/user/payment/presentation/cubit/payment_cubit.dart';
 
@@ -36,6 +37,11 @@ class ViewBookingBottomNavigationBar extends StatelessWidget {
                   onCancel: () => _showCancelConfirmation(context, booking.id),
                   onPayment: () =>
                       context.read<PaymentCubit>().createOrder(booking.id),
+                  onReview: () => ReviewBottomSheet.show(
+                    context,
+                    bookingId: booking.id,
+                    cubit: context.read<ViewBookingCubit>(),
+                  ),
                 ),
               ),
             ),

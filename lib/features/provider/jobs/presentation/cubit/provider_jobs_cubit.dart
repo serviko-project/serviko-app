@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../user/booking/domain/usecases/complete_booking_usecase.dart';
 import '../../../../user/booking/domain/usecases/get_provider_bookings_usecase.dart';
 import '../../../../user/booking/domain/usecases/review_booking_usecase.dart';
 import 'provider_jobs_state.dart';
@@ -6,10 +7,12 @@ import 'provider_jobs_state.dart';
 class ProviderJobsCubit extends Cubit<ProviderJobsState> {
   final GetProviderBookingsUseCase getProviderBookingsUseCase;
   final ReviewBookingUseCase reviewBookingUseCase;
+  final CompleteBookingUseCase completeBookingUseCase;
 
   ProviderJobsCubit({
     required this.getProviderBookingsUseCase,
     required this.reviewBookingUseCase,
+    required this.completeBookingUseCase,
   }) : super(ProviderJobsInitial());
 
   int _currentPage = 1;
@@ -76,6 +79,48 @@ class ProviderJobsCubit extends Cubit<ProviderJobsState> {
           ProviderJobsError(failure.message, bookings: currentState.bookings),
         );
         // Restore previous list if possible
+        if (currentState is ProviderJobsLoaded) {
+          emit(currentState);
+        }
+      },
+      (updatedBooking) {
+        final currentBookings = currentState.bookings ?? [];
+        final updatedList = currentBookings.map((b) {
+          return b.id == updatedBooking.id ? updatedBooking : b;
+        }).toList();
+        final hasReachedMax = currentState is ProviderJobsLoaded
+            ? currentState.hasReachedMax
+            : false;
+        emit(ProviderJobUpdated(updatedBooking, updatedList));
+        emit(
+          ProviderJobsLoaded(
+            bookings: updatedList,
+            hasReachedMax: hasReachedMax,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> completeBooking({
+    required String bookingId,
+    String? completionNote,
+  }) async {
+    final currentState = state;
+    emit(ProviderJobUpdating(bookingId, state.bookings ?? []));
+
+    final result = await completeBookingUseCase(
+      CompleteBookingParams(
+        bookingId: bookingId,
+        completionNote: completionNote,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(
+          ProviderJobsError(failure.message, bookings: currentState.bookings),
+        );
         if (currentState is ProviderJobsLoaded) {
           emit(currentState);
         }

@@ -15,6 +15,8 @@ import 'package:serviko_app/core/widgets/custom_error_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/router/route_constants.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_init_data.dart';
+import 'package:serviko_app/features/user/home/presentation/cubit/service_reviews_cubit.dart';
+import 'package:serviko_app/injection_container.dart';
 
 // Service detail Screen
 class ServiceDetailScreen extends StatefulWidget {
@@ -140,7 +142,17 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                   const SizedBox(height: AppSizes.md),
 
                   // Reviews
-                  const ServiceReviewsSection(),
+                  BlocProvider(
+                    create: (context) => ServiceReviewsCubit(
+                      getProviderReviewsUseCase:
+                          InjectionContainer.instance.getProviderReviewsUseCase,
+                    ),
+                    child: ServiceReviewsSection(
+                      providerId: service.providerId,
+                      rating: service.rating,
+                      reviewsCount: service.reviewsCount,
+                    ),
+                  ),
                   const SizedBox(height: AppSizes.lg),
                 ],
               ),

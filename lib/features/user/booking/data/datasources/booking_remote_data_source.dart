@@ -1,6 +1,7 @@
 import 'package:serviko_app/core/network/api_client.dart';
 import '../models/available_slots_model.dart';
 import '../models/booking_model.dart';
+import '../models/review_model.dart';
 
 abstract class BookingRemoteDataSource {
   Future<AvailableSlotsModel> getAvailableSlots({
@@ -35,8 +36,26 @@ abstract class BookingRemoteDataSource {
 
   Future<BookingModel> cancelBooking({required String bookingId});
 
+  Future<BookingModel> completeBooking({
+    required String bookingId,
+    String? completionNote,
+  });
+
   Future<List<BookingModel>> getCustomerBookings({
     String? status,
+    int page = 1,
+    int limit = 20,
+  });
+
+  Future<ReviewModel> submitReview({
+    required String bookingId,
+    required int rating,
+    required String comment,
+  });
+
+  Future<List<ReviewModel>> getProviderReviews({
+    required String providerId,
+    int? rating,
     int page = 1,
     int limit = 20,
   });
@@ -151,6 +170,20 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
   }
 
   @override
+  Future<BookingModel> completeBooking({
+    required String bookingId,
+    String? completionNote,
+  }) {
+    return apiClient.request(
+      call: () => apiClient.dio.patch(
+        '/api/v1/bookings/$bookingId/complete',
+        data: {'completion_note': completionNote},
+      ),
+      parser: (data) => BookingModel.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
   Future<List<BookingModel>> getCustomerBookings({
     String? status,
     int page = 1,
@@ -165,6 +198,47 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
       parser: (data) {
         final List list = data as List;
         return list.map((e) => BookingModel.fromJson(e)).toList();
+      },
+    );
+  }
+
+  @override
+  Future<ReviewModel> submitReview({
+    required String bookingId,
+    required int rating,
+    required String comment,
+  }) {
+    return apiClient.request(
+      call: () => apiClient.dio.post(
+        '/api/v1/reviews',
+        data: {'booking_id': bookingId, 'rating': rating, 'comment': comment},
+      ),
+      parser: (data) => ReviewModel.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<List<ReviewModel>> getProviderReviews({
+    required String providerId,
+    int? rating,
+    int page = 1,
+    int limit = 20,
+  }) {
+    final queryParams = <String, dynamic>{
+      'provider_id': providerId,
+      'page': page,
+      'limit': limit,
+    };
+    if (rating != null) {
+      queryParams['rating'] = rating;
+    }
+
+    return apiClient.request(
+      call: () =>
+          apiClient.dio.get('/api/v1/reviews', queryParameters: queryParams),
+      parser: (data) {
+        final List list = data as List;
+        return list.map((e) => ReviewModel.fromJson(e)).toList();
       },
     );
   }
