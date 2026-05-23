@@ -12,6 +12,13 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
 import 'package:serviko_app/injection_container.dart';
 
+import 'package:serviko_app/features/provider/promo_codes/data/datasources/promo_code_remote_datasource.dart';
+import 'package:serviko_app/features/provider/promo_codes/data/repositories/promo_code_repository_impl.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/get_promo_codes_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/create_promo_code_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/update_promo_code_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/deactivate_promo_code_usecase.dart';
+
 // Extension to modularize provider onboarding dependencies
 extension ProviderDI on InjectionContainer {
   void initProviderOnboarding() {
@@ -46,6 +53,21 @@ extension ProviderDI on InjectionContainer {
     );
     submitCategoryRequestUseCase = SubmitCategoryRequestUseCase(
       providerOnboardingRepository,
+    );
+
+    // Provider Promo Codes
+    promoCodeRemoteDataSource = PromoCodeRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    promoCodeRepository = PromoCodeRepositoryImpl(
+      remoteDataSource: promoCodeRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getPromoCodesUseCase = GetPromoCodesUseCase(promoCodeRepository);
+    createPromoCodeUseCase = CreatePromoCodeUseCase(promoCodeRepository);
+    updatePromoCodeUseCase = UpdatePromoCodeUseCase(promoCodeRepository);
+    deactivatePromoCodeUseCase = DeactivatePromoCodeUseCase(
+      promoCodeRepository,
     );
   }
 }

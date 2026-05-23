@@ -12,6 +12,7 @@ import 'package:serviko_app/features/user/booking/presentation/widgets/promo_cod
 import 'package:serviko_app/features/user/booking/presentation/widgets/start_time_slots_widget.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/time_slots_error_widget.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/time_slots_warning_widget.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/entities/promo_code.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/working_hours_widget.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_request_payload.dart';
 import 'package:serviko_app/core/router/route_constants.dart';
@@ -19,6 +20,8 @@ import 'package:go_router/go_router.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_init_data.dart';
 import 'package:serviko_app/injection_container.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:serviko_app/features/user/booking/presentation/bloc/booking_promos_cubit.dart';
+import 'package:serviko_app/features/user/booking/presentation/widgets/promo_list_bottom_sheet.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
   final BookingInitData initData;
@@ -108,15 +111,44 @@ class BookingDetailsScreen extends StatelessWidget {
 
                   // Promo Code Selector
                   PromoCodeWidget(
-                    selectedPromo: state.promoCode,
+                    selectedPromo: state.appliedPromo?.code ?? '',
+                    onRemove: () {
+                      context.read<BookingDetailsCubit>().updatePromoCode(null);
+                    },
                     onTap: () async {
-                      final selectedPromo = await context.pushNamed<String>(
-                        RouteNames.promoSelection,
-                      );
+                      final selectedPromo =
+                          await showModalBottomSheet<PromoCode>(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) {
+                              return BlocProvider(
+                                create: (context) => BookingPromosCubit(
+                                  getProviderPromosUseCase: InjectionContainer
+                                      .instance
+                                      .getProviderPromosUseCase,
+                                )..loadPromos(initData.providerId),
+                                child: const PromoListBottomSheet(),
+                              );
+                            },
+                          );
+
                       if (selectedPromo != null && context.mounted) {
-                        context.read<BookingDetailsCubit>().updatePromoCode(
-                          selectedPromo,
-                        );
+                        final minAmount = selectedPromo.minBookingAmount ?? 0.0;
+                        if (minAmount > 0 && state.subTotal < minAmount) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Minimum booking amount of ₹${minAmount.toStringAsFixed(0)} required for this promo.',
+                              ),
+                              backgroundColor: AppColors.error,
+                            ),
+                          );
+                        } else {
+                          context.read<BookingDetailsCubit>().updatePromoCode(
+                            selectedPromo,
+                          );
+                        }
                       }
                     },
                   ),
@@ -139,7 +171,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       selectedDate: state.selectedDate,
                       workingHours: state.workingHours,
                       selectedStartTime: state.selectedStartTime,
-                      promoCode: state.promoCode,
+                      promoCode: state.appliedPromo?.code ?? '',
                       totalPrice: state.totalPrice,
                     );
                     context.pushNamed(

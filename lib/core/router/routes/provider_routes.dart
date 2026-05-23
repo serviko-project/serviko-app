@@ -13,6 +13,8 @@ import '../../../features/provider/jobs/presentation/pages/provider_jobs_screen.
 import '../../../features/provider/jobs/presentation/cubit/provider_jobs_cubit.dart';
 import '../../../features/shared/communication/presentation/cubit/contact_directory_cubit.dart';
 import '../../../features/shared/communication/presentation/pages/inbox_screen.dart';
+import '../../../features/provider/promo_codes/presentation/pages/provider_promo_codes_screen.dart';
+import 'package:serviko_app/features/shared/communication/zego/zego_service.dart';
 
 List<RouteBase> providerRoutes = [
   // ---- Provider Onboarding ----
@@ -111,6 +113,12 @@ List<RouteBase> providerRoutes = [
                 name: RouteNames.providerEditDetails,
                 path: RoutePaths.providerEditDetails,
                 builder: (context, state) => const EditProviderDetailsScreen(),
+              ),
+              GoRoute(
+                name: RouteNames.providerPromoCodes,
+                path: RoutePaths.providerPromoCodes,
+                parentNavigatorKey: ZegoService.navigatorKey,
+                builder: (context, state) => const ProviderPromoCodesScreen(),
               ),
             ],
           ),

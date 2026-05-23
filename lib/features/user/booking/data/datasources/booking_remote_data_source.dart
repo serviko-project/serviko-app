@@ -18,6 +18,16 @@ abstract class BookingRemoteDataSource {
     double? customerLatitude,
     double? customerLongitude,
     String? customerAddress,
+    String? promoCode,
+  });
+
+  Future<Map<String, dynamic>> validatePromoCode({
+    required String code,
+    required String serviceId,
+  });
+
+  Future<List<Map<String, dynamic>>> getProviderPromos({
+    required String providerId,
   });
 
   Future<List<BookingModel>> getProviderBookings({
@@ -95,6 +105,7 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
     double? customerLatitude,
     double? customerLongitude,
     String? customerAddress,
+    String? promoCode,
   }) {
     final Map<String, dynamic> body = {
       'service_id': serviceId,
@@ -110,10 +121,43 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
     if (customerAddress != null) {
       body['customer_address'] = customerAddress;
     }
+    if (promoCode != null && promoCode.trim().isNotEmpty) {
+      body['promo_code'] = promoCode;
+    }
 
     return apiClient.request(
       call: () => apiClient.dio.post('/api/v1/bookings', data: body),
       parser: (data) => BookingModel.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> validatePromoCode({
+    required String code,
+    required String serviceId,
+  }) {
+    return apiClient.request(
+      call: () => apiClient.dio.post(
+        '/api/v1/promo-codes/validate',
+        data: {'code': code, 'service_id': serviceId},
+      ),
+      parser: (data) => data as Map<String, dynamic>,
+    );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getProviderPromos({
+    required String providerId,
+  }) {
+    return apiClient.request(
+      call: () => apiClient.dio.get(
+        '/api/v1/promo-codes',
+        queryParameters: {'provider_id': providerId},
+      ),
+      parser: (data) {
+        final List list = data as List;
+        return list.cast<Map<String, dynamic>>();
+      },
     );
   }
 

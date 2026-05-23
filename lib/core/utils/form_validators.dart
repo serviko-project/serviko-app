@@ -70,4 +70,52 @@ class FormValidators {
     }
     return null;
   }
+
+  // Validates Promo Code
+  static String? validatePromoCode(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Promo code is required";
+    }
+    if (value.trim().length < 3) {
+      return "Code must be at least 3 characters";
+    }
+    return null;
+  }
+
+  // Validates Discount Value
+  static String? validateDiscountValue(String? value, String discountType) {
+    if (value == null || value.trim().isEmpty) {
+      return "Value required";
+    }
+    final parsed = double.tryParse(value);
+    if (parsed == null || parsed <= 0) {
+      return "Must be greater than 0";
+    }
+    if (discountType == 'percentage' && parsed > 100) {
+      return "Max 100%";
+    }
+    return null;
+  }
+
+  // Validates Optional Minimum Amount
+  static String? validateOptionalMinAmount(String? value) {
+    if (value != null && value.trim().isNotEmpty) {
+      final parsed = double.tryParse(value);
+      if (parsed == null || parsed < 0) {
+        return "Must be greater than or equal to 0";
+      }
+    }
+    return null;
+  }
+
+  // Validates Optional Max Uses
+  static String? validateOptionalMaxUses(String? value) {
+    if (value != null && value.trim().isNotEmpty) {
+      final parsed = int.tryParse(value);
+      if (parsed == null || parsed <= 0) {
+        return "Must be positive number";
+      }
+    }
+    return null;
+  }
 }
