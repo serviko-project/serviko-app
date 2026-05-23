@@ -86,6 +86,7 @@ class BookingCard extends StatelessWidget {
                   paymentStatus: booking.paymentStatus,
                   bookingId: booking.id,
                   serviceId: booking.serviceId,
+                  hasReview: booking.hasReview,
                 ),
               ],
             ),

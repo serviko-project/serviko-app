@@ -35,6 +35,8 @@ class ViewBookingScreen extends StatelessWidget {
                 InjectionContainer.instance.getBookingDetailUseCase,
             cancelBookingUseCase:
                 InjectionContainer.instance.cancelBookingUseCase,
+            submitReviewUseCase:
+                InjectionContainer.instance.submitReviewUseCase,
           )..fetchBookingDetails(bookingId),
         ),
         BlocProvider(
