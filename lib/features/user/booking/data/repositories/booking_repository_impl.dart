@@ -5,6 +5,7 @@ import 'package:serviko_app/core/network/network_info.dart';
 
 import '../../domain/entities/available_slots_entity.dart';
 import '../../domain/entities/booking_entity.dart';
+import '../../domain/entities/review_entity.dart';
 import '../../domain/repositories/booking_repository.dart';
 import '../datasources/booking_remote_data_source.dart';
 
@@ -185,6 +186,54 @@ class BookingRepositoryImpl implements BookingRepository {
     try {
       final remoteData = await remoteDataSource.getCustomerBookings(
         status: status,
+        page: page,
+        limit: limit,
+      );
+      return Right(remoteData);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ReviewEntity>> submitReview({
+    required String bookingId,
+    required int rating,
+    required String comment,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.submitReview(
+        bookingId: bookingId,
+        rating: rating,
+        comment: comment,
+      );
+      return Right(remoteData);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ReviewEntity>>> getProviderReviews({
+    required String providerId,
+    int? rating,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.getProviderReviews(
+        providerId: providerId,
+        rating: rating,
         page: page,
         limit: limit,
       );

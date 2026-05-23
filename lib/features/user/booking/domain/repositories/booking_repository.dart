@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:serviko_app/core/errors/failures.dart';
 import '../entities/available_slots_entity.dart';
 import '../entities/booking_entity.dart';
+import '../entities/review_entity.dart';
 
 abstract class BookingRepository {
   Future<Either<Failure, AvailableSlotsEntity>> getAvailableSlots({
@@ -47,6 +48,19 @@ abstract class BookingRepository {
 
   Future<Either<Failure, List<BookingEntity>>> getCustomerBookings({
     String? status,
+    int page = 1,
+    int limit = 20,
+  });
+
+  Future<Either<Failure, ReviewEntity>> submitReview({
+    required String bookingId,
+    required int rating,
+    required String comment,
+  });
+
+  Future<Either<Failure, List<ReviewEntity>>> getProviderReviews({
+    required String providerId,
+    int? rating,
     int page = 1,
     int limit = 20,
   });

@@ -8,6 +8,8 @@ import 'package:serviko_app/features/user/booking/domain/usecases/review_booking
 import 'package:serviko_app/features/user/booking/domain/usecases/get_booking_detail_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/cancel_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_customer_bookings_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/submit_review_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_reviews_usecase.dart';
 import 'package:serviko_app/injection_container.dart';
 
 // Extension to modularize booking dependencies
@@ -27,5 +29,7 @@ extension BookingDI on InjectionContainer {
     cancelBookingUseCase = CancelBookingUseCase(bookingRepository);
     completeBookingUseCase = CompleteBookingUseCase(bookingRepository);
     getCustomerBookingsUseCase = GetCustomerBookingsUseCase(bookingRepository);
+    submitReviewUseCase = SubmitReviewUseCase(bookingRepository);
+    getProviderReviewsUseCase = GetProviderReviewsUseCase(bookingRepository);
   }
 }

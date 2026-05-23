@@ -1,16 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/load_more_reviews_button.dart';
+import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/review_cards_skeletonizer_widget.dart';
+import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/review_filter_chips.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
-import 'package:serviko_app/features/user/service/presentation/cubit/service_detail_cubit.dart';
+import 'package:serviko_app/features/user/home/presentation/cubit/service_reviews_cubit.dart';
+import 'package:serviko_app/features/user/home/presentation/cubit/service_reviews_state.dart';
 import 'review_card.dart';
 
 // Reviews section with filter chips and review list
-class ServiceReviewsSection extends StatelessWidget {
-  const ServiceReviewsSection({super.key});
+class ServiceReviewsSection extends StatefulWidget {
+  final String providerId;
+  final double rating;
+  final int reviewsCount;
 
-  static const List<int?> _ratingFilters = [null, 5, 4, 3, 2];
+  const ServiceReviewsSection({
+    super.key,
+    required this.providerId,
+    required this.rating,
+    required this.reviewsCount,
+  });
+
+  @override
+  State<ServiceReviewsSection> createState() => _ServiceReviewsSectionState();
+}
+
+class _ServiceReviewsSectionState extends State<ServiceReviewsSection> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.providerId.isNotEmpty) {
+      context.read<ServiceReviewsCubit>().fetchReviews(widget.providerId);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ServiceReviewsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.providerId != widget.providerId &&
+        widget.providerId.isNotEmpty) {
+      context.read<ServiceReviewsCubit>().fetchReviews(widget.providerId);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,107 +64,101 @@ class ServiceReviewsSection extends StatelessWidget {
                     size: 20,
                   ),
                   const SizedBox(width: AppSizes.xs),
-                  Text('4.8 (100 reviews)', style: AppTextStyles.h3),
-                ],
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Text(
-                  'See All',
-                  style: AppTextStyles.labelMedium.copyWith(
-                    color: AppColors.primary,
+                  Text(
+                    '${widget.rating.toStringAsFixed(1)} (${widget.reviewsCount} reviews)',
+                    style: AppTextStyles.h3,
                   ),
-                ),
+                ],
               ),
             ],
           ),
           const SizedBox(height: AppSizes.md),
 
           // Filter chips
-          BlocBuilder<ServiceDetailCubit, ServiceDetailState>(
-            buildWhen: (prev, curr) =>
-                prev.runtimeType != curr.runtimeType ||
-                prev.selectedRating != curr.selectedRating,
-            builder: (context, state) {
-              return SizedBox(
-                height: 40,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _ratingFilters.length,
-                  separatorBuilder: (_, _) =>
-                      const SizedBox(width: AppSizes.sm),
-                  itemBuilder: (context, index) {
-                    final rating = _ratingFilters[index];
-                    final isSelected = state.selectedRating == (rating ?? 0);
-                    final label = rating == null ? 'All' : '$rating';
-
-                    return GestureDetector(
-                      onTap: () => context
-                          .read<ServiceDetailCubit>()
-                          .selectRating(rating ?? 0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSizes.md,
-                          vertical: AppSizes.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              (state is ServiceDetailLoading ||
-                                  state is ServiceDetailInitial)
-                              ? AppColors.shimmerBase
-                              : isSelected
-                              ? AppColors.primary
-                              : AppColors.background,
-                          borderRadius: BorderRadius.circular(
-                            AppSizes.radiusFull,
-                          ),
-                          border: Border.all(
-                            color:
-                                (state is ServiceDetailLoading ||
-                                    state is ServiceDetailInitial)
-                                ? AppColors.shimmerBase
-                                : AppColors.primary,
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (rating != null) ...[
-                              Icon(
-                                Icons.star_rounded,
-                                size: 15,
-                                color: isSelected
-                                    ? AppColors.textOnPrimary
-                                    : AppColors.warning,
-                              ),
-                              const SizedBox(width: 4),
-                            ],
-                            Text(
-                              label,
-                              style: AppTextStyles.labelMedium.copyWith(
-                                color: isSelected
-                                    ? AppColors.textOnPrimary
-                                    : AppColors.textPrimary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
+          ReviewFilterChips(providerId: widget.providerId),
+          const SizedBox(height: AppSizes.md),
 
           // Review cards list
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 5,
-            itemBuilder: (context, index) => ReviewCard(index: index),
+          BlocBuilder<ServiceReviewsCubit, ServiceReviewsState>(
+            builder: (context, state) {
+              if (state.status == ServiceReviewsStatus.loading) {
+                return const ReviewCardsSkeletonizerWidget();
+              }
+
+              if (state.status == ServiceReviewsStatus.error) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSizes.lg),
+                  child: Center(
+                    child: Text(
+                      state.message ??
+                          'An error occurred while loading reviews.',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.error,
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              if (state.reviews.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSizes.xl),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.rate_review_outlined,
+                          size: AppSizes.xxl,
+                          color: AppColors.textSecondary.withValues(alpha: 0.3),
+                        ),
+                        const SizedBox(height: AppSizes.md),
+                        Text(
+                          state.selectedRating == null
+                              ? 'No reviews yet.'
+                              : 'No reviews yet for this rating filter.',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              return Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.reviews.length,
+                    itemBuilder: (context, index) {
+                      return ReviewCard(review: state.reviews[index]);
+                    },
+                  ),
+                  if (state.hasMore) ...[
+                    const SizedBox(height: AppSizes.md),
+                    Center(
+                      child: state.status == ServiceReviewsStatus.loadingMore
+                          ? const Padding(
+                              padding: EdgeInsets.all(AppSizes.sm),
+                              child: SizedBox(
+                                width: AppSizes.lg,
+                                height: AppSizes.lg,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            )
+                          : LoadMoreReviewsButton(
+                              providerId: widget.providerId,
+                            ),
+                    ),
+                  ],
+                ],
+              );
+            },
           ),
         ],
       ),

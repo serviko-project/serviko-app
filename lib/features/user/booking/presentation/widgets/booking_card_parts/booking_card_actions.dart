@@ -10,6 +10,7 @@ class BookingCardActions extends StatelessWidget {
   final String paymentStatus;
   final String bookingId;
   final String serviceId;
+  final bool hasReview;
 
   const BookingCardActions({
     super.key,
@@ -17,6 +18,7 @@ class BookingCardActions extends StatelessWidget {
     required this.paymentStatus,
     required this.bookingId,
     required this.serviceId,
+    required this.hasReview,
   });
 
   @override
@@ -54,13 +56,21 @@ class BookingCardActions extends StatelessWidget {
         };
         break;
       case BookingStatus.completed:
-        label = 'Leave Review';
-        onPressed = () {
-          context.pushNamed(
-            RouteNames.viewBooking,
-            pathParameters: {'id': bookingId},
-          );
-        };
+        if (hasReview) {
+          label = 'Book Again';
+          isPrimary = true;
+          onPressed = () {
+            context.pushNamed(RouteNames.serviceDetails, extra: serviceId);
+          };
+        } else {
+          label = 'Leave Review';
+          onPressed = () {
+            context.pushNamed(
+              RouteNames.viewBooking,
+              pathParameters: {'id': bookingId},
+            );
+          };
+        }
         break;
       case BookingStatus.cancelled:
       case BookingStatus.rejected:

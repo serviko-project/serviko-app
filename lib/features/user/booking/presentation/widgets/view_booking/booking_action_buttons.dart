@@ -63,15 +63,17 @@ class BookingActionButtons extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildButton(label: 'Leave Review', onPressed: onReview ?? () {}),
-            const SizedBox(height: 12),
+            if (!booking.hasReview) ...[
+              _buildButton(label: 'Leave Review', onPressed: onReview ?? () {}),
+              const SizedBox(height: 12),
+            ],
             _buildButton(
               label: 'Book Again',
               onPressed: () => context.pushNamed(
                 RouteNames.serviceDetails,
                 extra: booking.serviceId,
               ),
-              isOutlined: true,
+              isOutlined: !booking.hasReview,
             ),
           ],
         );

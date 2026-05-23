@@ -28,6 +28,7 @@ class BookingEntity extends Equatable {
   final String? cancelledAt;
   final String? completedAt;
   final String? completionNote;
+  final bool hasReview;
   final String paymentStatus;
   final String? paymentId;
   final String? paymentReference;
@@ -63,6 +64,7 @@ class BookingEntity extends Equatable {
     this.cancelledAt,
     this.completedAt,
     this.completionNote,
+    this.hasReview = false,
     this.paymentStatus = 'unpaid',
     this.paymentId,
     this.paymentReference,
@@ -71,6 +73,80 @@ class BookingEntity extends Equatable {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  BookingEntity copyWith({
+    String? id,
+    String? customerId,
+    String? providerId,
+    String? serviceId,
+    String? scheduledDate,
+    String? startTime,
+    String? endTime,
+    int? durationHours,
+    double? basePricePerHour,
+    double? totalPrice,
+    BookingStatus? status,
+    double? customerLatitude,
+    double? customerLongitude,
+    String? customerAddress,
+    String? rejectionReason,
+    String? customerName,
+    String? customerImage,
+    String? providerName,
+    String? providerImage,
+    String? providerFirebaseUid,
+    String? categoryName,
+    String? confirmedAt,
+    String? rejectedAt,
+    String? cancelledAt,
+    String? completedAt,
+    String? completionNote,
+    bool? hasReview,
+    String? paymentStatus,
+    String? paymentId,
+    String? paymentReference,
+    String? paidAt,
+    String? refundedAt,
+    String? createdAt,
+    String? updatedAt,
+  }) {
+    return BookingEntity(
+      id: id ?? this.id,
+      customerId: customerId ?? this.customerId,
+      providerId: providerId ?? this.providerId,
+      serviceId: serviceId ?? this.serviceId,
+      scheduledDate: scheduledDate ?? this.scheduledDate,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      durationHours: durationHours ?? this.durationHours,
+      basePricePerHour: basePricePerHour ?? this.basePricePerHour,
+      totalPrice: totalPrice ?? this.totalPrice,
+      status: status ?? this.status,
+      customerLatitude: customerLatitude ?? this.customerLatitude,
+      customerLongitude: customerLongitude ?? this.customerLongitude,
+      customerAddress: customerAddress ?? this.customerAddress,
+      rejectionReason: rejectionReason ?? this.rejectionReason,
+      customerName: customerName ?? this.customerName,
+      customerImage: customerImage ?? this.customerImage,
+      providerName: providerName ?? this.providerName,
+      providerImage: providerImage ?? this.providerImage,
+      providerFirebaseUid: providerFirebaseUid ?? this.providerFirebaseUid,
+      categoryName: categoryName ?? this.categoryName,
+      confirmedAt: confirmedAt ?? this.confirmedAt,
+      rejectedAt: rejectedAt ?? this.rejectedAt,
+      cancelledAt: cancelledAt ?? this.cancelledAt,
+      completedAt: completedAt ?? this.completedAt,
+      completionNote: completionNote ?? this.completionNote,
+      hasReview: hasReview ?? this.hasReview,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      paymentId: paymentId ?? this.paymentId,
+      paymentReference: paymentReference ?? this.paymentReference,
+      paidAt: paidAt ?? this.paidAt,
+      refundedAt: refundedAt ?? this.refundedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -100,6 +176,7 @@ class BookingEntity extends Equatable {
     cancelledAt,
     completedAt,
     completionNote,
+    hasReview,
     paymentStatus,
     paymentId,
     paymentReference,
