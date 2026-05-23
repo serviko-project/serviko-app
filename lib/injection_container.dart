@@ -68,6 +68,7 @@ import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_b
 import 'package:serviko_app/features/user/booking/domain/usecases/review_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_booking_detail_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/cancel_booking_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/complete_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_customer_bookings_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/submit_review_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_reviews_usecase.dart';
@@ -172,6 +173,7 @@ class InjectionContainer {
   late final ReviewBookingUseCase reviewBookingUseCase;
   late final GetBookingDetailUseCase getBookingDetailUseCase;
   late final CancelBookingUseCase cancelBookingUseCase;
+  late final CompleteBookingUseCase completeBookingUseCase;
   late final GetCustomerBookingsUseCase getCustomerBookingsUseCase;
   late final SubmitReviewUseCase submitReviewUseCase;
   late final GetProviderReviewsUseCase getProviderReviewsUseCase;

@@ -41,6 +41,11 @@ abstract class BookingRepository {
     required String bookingId,
   });
 
+  Future<Either<Failure, BookingEntity>> completeBooking({
+    required String bookingId,
+    String? completionNote,
+  });
+
   Future<Either<Failure, List<BookingEntity>>> getCustomerBookings({
     String? status,
     int page = 1,

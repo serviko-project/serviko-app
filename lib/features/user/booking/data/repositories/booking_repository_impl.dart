@@ -157,6 +157,27 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
+  Future<Either<Failure, BookingEntity>> completeBooking({
+    required String bookingId,
+    String? completionNote,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.completeBooking(
+        bookingId: bookingId,
+        completionNote: completionNote,
+      );
+      return Right(remoteData);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<BookingEntity>>> getCustomerBookings({
     String? status,
     int page = 1,
