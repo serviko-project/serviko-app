@@ -35,6 +35,11 @@ abstract class BookingRemoteDataSource {
 
   Future<BookingModel> cancelBooking({required String bookingId});
 
+  Future<BookingModel> completeBooking({
+    required String bookingId,
+    String? completionNote,
+  });
+
   Future<List<BookingModel>> getCustomerBookings({
     String? status,
     int page = 1,
@@ -146,6 +151,20 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
   Future<BookingModel> cancelBooking({required String bookingId}) {
     return apiClient.request(
       call: () => apiClient.dio.patch('/api/v1/bookings/$bookingId/cancel'),
+      parser: (data) => BookingModel.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<BookingModel> completeBooking({
+    required String bookingId,
+    String? completionNote,
+  }) {
+    return apiClient.request(
+      call: () => apiClient.dio.patch(
+        '/api/v1/bookings/$bookingId/complete',
+        data: {'completion_note': completionNote},
+      ),
       parser: (data) => BookingModel.fromJson(data as Map<String, dynamic>),
     );
   }
