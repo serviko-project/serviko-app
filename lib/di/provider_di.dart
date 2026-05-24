@@ -1,3 +1,8 @@
+import 'package:serviko_app/features/provider/earnings/data/datasources/earnings_remote_datasource.dart';
+import 'package:serviko_app/features/provider/earnings/data/repositories/earnings_repository_impl.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/get_earnings_summary_usecase.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/cash_out_usecase.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/get_transactions_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/data/datasources/provider_onboarding_remote_datasource.dart';
 import 'package:serviko_app/features/provider/onboarding/data/repositories/provider_onboarding_repository_impl.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_document_usecase.dart';
@@ -69,5 +74,19 @@ extension ProviderDI on InjectionContainer {
     deactivatePromoCodeUseCase = DeactivatePromoCodeUseCase(
       promoCodeRepository,
     );
+
+    // Provider Earnings
+    earningsRemoteDataSource = EarningsRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    earningsRepository = EarningsRepositoryImpl(
+      remoteDataSource: earningsRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getEarningsSummaryUseCase = GetEarningsSummaryUseCase(
+      repository: earningsRepository,
+    );
+    cashOutUseCase = CashOutUseCase(repository: earningsRepository);
+    getTransactionsUseCase = GetTransactionsUseCase(earningsRepository);
   }
 }

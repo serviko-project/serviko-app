@@ -40,6 +40,7 @@ class RouteNames {
   static const String providerJobs = 'providerJobs';
   static const String providerInbox = 'providerInbox';
   static const String providerEarnings = 'providerEarnings';
+  static const String providerTransactionHistory = 'providerTransactionHistory';
   static const String providerProfile = 'providerProfile';
   static const String providerEditDetails = 'providerEditDetails';
   static const String providerPromoCodes = 'providerPromoCodes';
@@ -88,6 +89,7 @@ class RoutePaths {
   static const String providerJobs = '/provider/jobs';
   static const String providerInbox = '/provider/inbox';
   static const String providerEarnings = '/provider/earnings';
+  static const String providerTransactionHistory = 'history';
   static const String providerProfile = '/provider/profile';
   static const String providerEditDetails = '/provider/profile/edit';
   static const String providerPromoCodes = '/provider/profile/promo-codes';

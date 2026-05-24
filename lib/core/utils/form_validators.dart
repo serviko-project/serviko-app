@@ -118,4 +118,33 @@ class FormValidators {
     }
     return null;
   }
+
+  // Validates Cash Out Amount
+  static String? validateCashOutAmount(String? value, double maxAmount) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter an amount';
+    }
+    final amount = double.tryParse(value);
+    if (amount == null) {
+      return 'Please enter a valid number';
+    }
+    if (amount < 100) {
+      return 'Minimum cash out amount is ₹100';
+    }
+    if (amount > maxAmount) {
+      return 'Amount exceeds available balance';
+    }
+    return null;
+  }
+
+  // Validates UPI ID
+  static String? validateUpiId(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your UPI ID';
+    }
+    if (!value.contains('@')) {
+      return 'Please enter a valid UPI ID';
+    }
+    return null;
+  }
 }

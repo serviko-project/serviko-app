@@ -15,6 +15,8 @@ import '../../../features/shared/communication/presentation/cubit/contact_direct
 import '../../../features/shared/communication/presentation/pages/inbox_screen.dart';
 import '../../../features/provider/promo_codes/presentation/pages/provider_promo_codes_screen.dart';
 import 'package:serviko_app/features/shared/communication/zego/zego_service.dart';
+import '../../../features/provider/earnings/presentation/pages/earnings_page.dart';
+import '../../../features/provider/earnings/presentation/pages/transaction_history_screen.dart';
 
 List<RouteBase> providerRoutes = [
   // ---- Provider Onboarding ----
@@ -80,6 +82,23 @@ List<RouteBase> providerRoutes = [
       StatefulShellBranch(
         routes: [
           GoRoute(
+            name: RouteNames.providerEarnings,
+            path: RoutePaths.providerEarnings,
+            builder: (context, state) => const EarningsPage(),
+            routes: [
+              GoRoute(
+                name: RouteNames.providerTransactionHistory,
+                path: RoutePaths.providerTransactionHistory,
+                parentNavigatorKey: ZegoService.navigatorKey,
+                builder: (context, state) => const TransactionHistoryScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
             name: RouteNames.providerInbox,
             path: RoutePaths.providerInbox,
             builder: (context, state) => BlocProvider(
@@ -89,16 +108,6 @@ List<RouteBase> providerRoutes = [
               ),
               child: const InboxScreen(),
             ),
-          ),
-        ],
-      ),
-      StatefulShellBranch(
-        routes: [
-          GoRoute(
-            name: RouteNames.providerEarnings,
-            path: RoutePaths.providerEarnings,
-            builder: (context, state) =>
-                const PlaceholderScreen(title: 'Earnings'),
           ),
         ],
       ),

@@ -53,6 +53,12 @@ import 'package:serviko_app/features/provider/promo_codes/domain/usecases/create
 import 'package:serviko_app/features/provider/promo_codes/domain/usecases/update_promo_code_usecase.dart';
 import 'package:serviko_app/features/provider/promo_codes/domain/usecases/deactivate_promo_code_usecase.dart';
 
+import 'package:serviko_app/features/provider/earnings/data/datasources/earnings_remote_datasource.dart';
+import 'package:serviko_app/features/provider/earnings/domain/repositories/earnings_repository.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/get_earnings_summary_usecase.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/cash_out_usecase.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/get_transactions_usecase.dart';
+
 import 'package:serviko_app/features/user/category/data/datasources/category_remote_data_source.dart';
 import 'package:serviko_app/features/user/category/domain/repositories/category_repository.dart';
 import 'package:serviko_app/features/user/category/domain/usecases/get_categories_usecase.dart'
@@ -164,6 +170,13 @@ class InjectionContainer {
   late final CreatePromoCodeUseCase createPromoCodeUseCase;
   late final UpdatePromoCodeUseCase updatePromoCodeUseCase;
   late final DeactivatePromoCodeUseCase deactivatePromoCodeUseCase;
+
+  // Provider Earnings
+  late final EarningsRemoteDataSource earningsRemoteDataSource;
+  late final EarningsRepository earningsRepository;
+  late final GetEarningsSummaryUseCase getEarningsSummaryUseCase;
+  late final CashOutUseCase cashOutUseCase;
+  late final GetTransactionsUseCase getTransactionsUseCase;
 
   // User Category
   late final CategoryRemoteDataSource categoryRemoteDataSource;
