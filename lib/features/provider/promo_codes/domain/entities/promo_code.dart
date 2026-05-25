@@ -17,6 +17,11 @@ class PromoCode extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
 
+  final String? providerName;
+  final String? providerTitle;
+  final String? providerImageUrl;
+  final String? serviceId;
+
   const PromoCode({
     required this.id,
     required this.providerId,
@@ -33,6 +38,10 @@ class PromoCode extends Equatable {
     required this.usageCount,
     required this.createdAt,
     required this.updatedAt,
+    this.providerName,
+    this.providerTitle,
+    this.providerImageUrl,
+    this.serviceId,
   });
 
   @override
@@ -52,5 +61,9 @@ class PromoCode extends Equatable {
     usageCount,
     createdAt,
     updatedAt,
+    providerName,
+    providerTitle,
+    providerImageUrl,
+    serviceId,
   ];
 }

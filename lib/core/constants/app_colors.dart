@@ -53,4 +53,21 @@ abstract final class AppColors {
     Color(0xFF65A30D),
     Color(0xFF4B5563),
   ];
+
+  // ---- For Offer Cards ----
+  static const List<Color> cardBackgrounds = [
+    Color(0xFFECE7FF),
+    Color(0xFFFFEBE3),
+    Color(0xFFFFF3C4),
+  ];
+  static const List<Color> cardBorders = [
+    Color(0xFFD1C4E9),
+    Color(0xFFFFCCBC),
+    Color(0xFFFFE082),
+  ];
+  static const List<Color> themeColors = [
+    AppColors.primary,
+    AppColors.secondary,
+    AppColors.warning,
+  ];
 }

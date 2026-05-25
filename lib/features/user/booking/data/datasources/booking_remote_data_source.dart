@@ -30,6 +30,11 @@ abstract class BookingRemoteDataSource {
     required String providerId,
   });
 
+  Future<List<Map<String, dynamic>>> getActivePromoCodes({
+    int page = 1,
+    int limit = 20,
+  });
+
   Future<List<BookingModel>> getProviderBookings({
     String? status,
     int page = 1,
@@ -153,6 +158,23 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
       call: () => apiClient.dio.get(
         '/api/v1/promo-codes',
         queryParameters: {'provider_id': providerId},
+      ),
+      parser: (data) {
+        final List list = data as List;
+        return list.cast<Map<String, dynamic>>();
+      },
+    );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getActivePromoCodes({
+    int page = 1,
+    int limit = 20,
+  }) {
+    return apiClient.request(
+      call: () => apiClient.dio.get(
+        '/api/v1/promo-codes/active',
+        queryParameters: {'page': page, 'limit': limit},
       ),
       parser: (data) {
         final List list = data as List;

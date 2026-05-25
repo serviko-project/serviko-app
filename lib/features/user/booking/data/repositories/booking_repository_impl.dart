@@ -120,6 +120,30 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
+  Future<Either<Failure, List<PromoCode>>> getActivePromoCodes({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.getActivePromoCodes(
+        page: page,
+        limit: limit,
+      );
+      final promos = remoteData
+          .map((json) => PromoCodeModel.fromJson(json))
+          .toList();
+      return Right(promos);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<BookingEntity>>> getProviderBookings({
     String? status,
     int page = 1,

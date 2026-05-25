@@ -91,6 +91,7 @@ import 'package:serviko_app/features/user/booking/domain/usecases/complete_booki
 import 'package:serviko_app/features/user/booking/domain/usecases/get_customer_bookings_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/submit_review_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/validate_promo_code_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_active_promo_codes_usecase.dart';
 import 'package:serviko_app/features/user/payment/data/datasources/payment_remote_datasource.dart';
 import 'package:serviko_app/features/user/payment/domain/repositories/payment_repository.dart';
 import 'package:serviko_app/features/user/payment/domain/usecases/create_payment_order_usecase.dart';
@@ -209,6 +210,7 @@ class InjectionContainer {
   late final BookingRepository bookingRepository;
   late final GetAvailableSlotsUseCase getAvailableSlotsUseCase;
   late final GetProviderPromosUseCase getProviderPromosUseCase;
+  late final GetActivePromoCodesUseCase getActivePromoCodesUseCase;
   late final CreateBookingUseCase createBookingUseCase;
   late final GetProviderBookingsUseCase getProviderBookingsUseCase;
   late final ReviewBookingUseCase reviewBookingUseCase;
