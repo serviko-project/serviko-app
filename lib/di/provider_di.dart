@@ -15,6 +15,9 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
+import 'package:serviko_app/features/provider/dashboard/data/datasources/provider_dashboard_remote_datasource.dart';
+import 'package:serviko_app/features/provider/dashboard/data/repositories/provider_dashboard_repository_impl.dart';
+import 'package:serviko_app/features/provider/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
 import 'package:serviko_app/injection_container.dart';
 
 import 'package:serviko_app/features/provider/promo_codes/data/datasources/promo_code_remote_datasource.dart';
@@ -88,5 +91,17 @@ extension ProviderDI on InjectionContainer {
     );
     cashOutUseCase = CashOutUseCase(repository: earningsRepository);
     getTransactionsUseCase = GetTransactionsUseCase(earningsRepository);
+
+    // Provider Dashboard
+    providerDashboardRemoteDataSource = ProviderDashboardRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    providerDashboardRepository = ProviderDashboardRepositoryImpl(
+      remoteDataSource: providerDashboardRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getDashboardStatsUseCase = GetDashboardStatsUseCase(
+      repository: providerDashboardRepository,
+    );
   }
 }

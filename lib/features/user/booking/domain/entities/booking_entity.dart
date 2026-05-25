@@ -19,6 +19,7 @@ class BookingEntity extends Equatable {
   final String? rejectionReason;
   final String? customerName;
   final String? customerImage;
+  final String? customerFirebaseUid;
   final String? providerName;
   final String? providerImage;
   final String? providerFirebaseUid;
@@ -55,6 +56,7 @@ class BookingEntity extends Equatable {
     this.rejectionReason,
     this.customerName,
     this.customerImage,
+    this.customerFirebaseUid,
     this.providerName,
     this.providerImage,
     this.providerFirebaseUid,
@@ -92,6 +94,7 @@ class BookingEntity extends Equatable {
     String? rejectionReason,
     String? customerName,
     String? customerImage,
+    String? customerFirebaseUid,
     String? providerName,
     String? providerImage,
     String? providerFirebaseUid,
@@ -128,6 +131,7 @@ class BookingEntity extends Equatable {
       rejectionReason: rejectionReason ?? this.rejectionReason,
       customerName: customerName ?? this.customerName,
       customerImage: customerImage ?? this.customerImage,
+      customerFirebaseUid: customerFirebaseUid ?? this.customerFirebaseUid,
       providerName: providerName ?? this.providerName,
       providerImage: providerImage ?? this.providerImage,
       providerFirebaseUid: providerFirebaseUid ?? this.providerFirebaseUid,
@@ -167,6 +171,7 @@ class BookingEntity extends Equatable {
     rejectionReason,
     customerName,
     customerImage,
+    customerFirebaseUid,
     providerName,
     providerImage,
     providerFirebaseUid,

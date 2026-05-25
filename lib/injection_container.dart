@@ -22,6 +22,10 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
+import 'package:serviko_app/features/provider/dashboard/data/datasources/provider_dashboard_remote_datasource.dart';
+import 'package:serviko_app/features/provider/dashboard/domain/repositories/provider_dashboard_repository.dart';
+import 'package:serviko_app/features/provider/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
+
 import 'package:serviko_app/features/user/auth/data/datasources/auth_local_datasource.dart';
 import 'package:serviko_app/features/user/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:serviko_app/features/user/auth/domain/repositories/auth_repository.dart';
@@ -162,6 +166,12 @@ class InjectionContainer {
   late final UploadBannerImageUseCase uploadBannerImageUseCase;
   late final DeleteBannerImageUseCase deleteBannerImageUseCase;
   late final SubmitCategoryRequestUseCase submitCategoryRequestUseCase;
+
+  // Provider Dashboard
+  late final ProviderDashboardRemoteDataSource
+  providerDashboardRemoteDataSource;
+  late final ProviderDashboardRepository providerDashboardRepository;
+  late final GetDashboardStatsUseCase getDashboardStatsUseCase;
 
   // Promo Codes
   late final PromoCodeRemoteDataSource promoCodeRemoteDataSource;
