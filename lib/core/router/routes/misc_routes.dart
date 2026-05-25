@@ -15,7 +15,6 @@ import '../../../features/user/booking/domain/entities/booking_init_data.dart';
 import '../../../features/user/booking/domain/entities/booking_request_payload.dart';
 import '../../../features/user/booking/presentation/pages/booking_details_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_location_screen.dart';
-import '../../../features/user/booking/presentation/pages/promo_selection_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_summary_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_success_screen.dart';
 import '../../../features/user/booking/domain/entities/booking_entity.dart';
@@ -112,11 +111,6 @@ List<RouteBase> miscRoutes = [
       }
       return BookingDetailsScreen(initData: initData);
     },
-  ),
-  GoRoute(
-    name: RouteNames.promoSelection,
-    path: RoutePaths.promoSelection,
-    builder: (context, state) => const PromoSelectionScreen(),
   ),
   GoRoute(
     name: RouteNames.bookingLocation,

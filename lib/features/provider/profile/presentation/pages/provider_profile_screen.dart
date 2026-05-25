@@ -109,6 +109,16 @@ class ProviderProfileScreen extends StatelessWidget {
                               onTap: null,
                             ),
                             ProfileMenuDivider(),
+
+                            // Promo Codes Tile
+                            ProfileMenuTile(
+                              title: 'Promo Codes',
+                              icon: HugeIcons.strokeRoundedTicket01,
+                              onTap: () => context.pushNamed(
+                                RouteNames.providerPromoCodes,
+                              ),
+                            ),
+                            ProfileMenuDivider(),
                           ],
                         ),
                       ),

@@ -99,7 +99,6 @@ class BookingActionButtons extends StatelessWidget {
   }) {
     return CustomButton(
       text: label,
-      width: null,
       onPressed: onPressed,
       isOutlined: isOutlined,
       backgroundColor: isDestructive && !isOutlined ? AppColors.error : null,

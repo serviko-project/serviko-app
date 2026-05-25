@@ -89,8 +89,8 @@ void showRejectionDialog(BuildContext context, String bookingId) {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.error,
+                  foregroundColor: AppColors.textOnPrimary,
                   padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
                   minimumSize: const Size(0, 36),
                   elevation: 0,
@@ -101,7 +101,7 @@ void showRejectionDialog(BuildContext context, String bookingId) {
                 child: Text(
                   'Reject',
                   style: AppTextStyles.labelLarge.copyWith(
-                    color: Colors.white,
+                    color: AppColors.textOnPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

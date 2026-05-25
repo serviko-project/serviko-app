@@ -62,6 +62,7 @@ class BookingSummaryCubit extends Cubit<BookingSummaryState> {
         customerLatitude: payload.customerLatitude,
         customerLongitude: payload.customerLongitude,
         customerAddress: payload.customerAddress,
+        promoCode: payload.promoCode,
       ),
     );
 

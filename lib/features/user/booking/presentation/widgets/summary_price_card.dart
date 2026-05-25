@@ -30,6 +30,14 @@ class SummaryPriceCard extends StatelessWidget {
             "₹${basePricePerHour.toStringAsFixed(0)} x $hours",
             "₹${subtotal.toStringAsFixed(2)}",
           ),
+          if (payload.promoCode.isNotEmpty) ...[
+            Divider(color: AppColors.border.withValues(alpha: 0.5)),
+            _buildPriceRow(
+              "Promo Applied",
+              "Code: ${payload.promoCode}",
+              "Calculated",
+            ),
+          ],
           Divider(color: AppColors.border.withValues(alpha: 0.5)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

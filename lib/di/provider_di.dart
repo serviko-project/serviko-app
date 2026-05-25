@@ -1,3 +1,8 @@
+import 'package:serviko_app/features/provider/earnings/data/datasources/earnings_remote_datasource.dart';
+import 'package:serviko_app/features/provider/earnings/data/repositories/earnings_repository_impl.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/get_earnings_summary_usecase.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/cash_out_usecase.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/get_transactions_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/data/datasources/provider_onboarding_remote_datasource.dart';
 import 'package:serviko_app/features/provider/onboarding/data/repositories/provider_onboarding_repository_impl.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_document_usecase.dart';
@@ -10,7 +15,17 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
+import 'package:serviko_app/features/provider/dashboard/data/datasources/provider_dashboard_remote_datasource.dart';
+import 'package:serviko_app/features/provider/dashboard/data/repositories/provider_dashboard_repository_impl.dart';
+import 'package:serviko_app/features/provider/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
 import 'package:serviko_app/injection_container.dart';
+
+import 'package:serviko_app/features/provider/promo_codes/data/datasources/promo_code_remote_datasource.dart';
+import 'package:serviko_app/features/provider/promo_codes/data/repositories/promo_code_repository_impl.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/get_promo_codes_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/create_promo_code_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/update_promo_code_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/deactivate_promo_code_usecase.dart';
 
 // Extension to modularize provider onboarding dependencies
 extension ProviderDI on InjectionContainer {
@@ -46,6 +61,47 @@ extension ProviderDI on InjectionContainer {
     );
     submitCategoryRequestUseCase = SubmitCategoryRequestUseCase(
       providerOnboardingRepository,
+    );
+
+    // Provider Promo Codes
+    promoCodeRemoteDataSource = PromoCodeRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    promoCodeRepository = PromoCodeRepositoryImpl(
+      remoteDataSource: promoCodeRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getPromoCodesUseCase = GetPromoCodesUseCase(promoCodeRepository);
+    createPromoCodeUseCase = CreatePromoCodeUseCase(promoCodeRepository);
+    updatePromoCodeUseCase = UpdatePromoCodeUseCase(promoCodeRepository);
+    deactivatePromoCodeUseCase = DeactivatePromoCodeUseCase(
+      promoCodeRepository,
+    );
+
+    // Provider Earnings
+    earningsRemoteDataSource = EarningsRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    earningsRepository = EarningsRepositoryImpl(
+      remoteDataSource: earningsRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getEarningsSummaryUseCase = GetEarningsSummaryUseCase(
+      repository: earningsRepository,
+    );
+    cashOutUseCase = CashOutUseCase(repository: earningsRepository);
+    getTransactionsUseCase = GetTransactionsUseCase(earningsRepository);
+
+    // Provider Dashboard
+    providerDashboardRemoteDataSource = ProviderDashboardRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    providerDashboardRepository = ProviderDashboardRepositoryImpl(
+      remoteDataSource: providerDashboardRemoteDataSource,
+      networkInfo: networkInfo,
+    );
+    getDashboardStatsUseCase = GetDashboardStatsUseCase(
+      repository: providerDashboardRepository,
     );
   }
 }
