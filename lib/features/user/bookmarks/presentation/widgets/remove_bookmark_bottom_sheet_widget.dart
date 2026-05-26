@@ -3,12 +3,25 @@ import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
+import 'package:serviko_app/features/user/service/domain/entities/service_entity.dart';
+import 'package:serviko_app/core/widgets/custom_button.dart';
 
 // Reusable bottom sheet widget for confirming bookmark removal
 class RemoveBookmarkBottomSheetWidget extends StatelessWidget {
-  const RemoveBookmarkBottomSheetWidget({super.key});
+  final ServiceEntity service;
+  final VoidCallback onRemoveConfirm;
 
-  static void show(BuildContext context, int index) {
+  const RemoveBookmarkBottomSheetWidget({
+    super.key,
+    required this.service,
+    required this.onRemoveConfirm,
+  });
+
+  static void show(
+    BuildContext context, {
+    required ServiceEntity service,
+    required VoidCallback onRemoveConfirm,
+  }) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.background,
@@ -17,7 +30,10 @@ class RemoveBookmarkBottomSheetWidget extends StatelessWidget {
           top: Radius.circular(AppSizes.radiusXl),
         ),
       ),
-      builder: (context) => RemoveBookmarkBottomSheetWidget(),
+      builder: (context) => RemoveBookmarkBottomSheetWidget(
+        service: service,
+        onRemoveConfirm: onRemoveConfirm,
+      ),
     );
   }
 
@@ -49,13 +65,13 @@ class RemoveBookmarkBottomSheetWidget extends StatelessWidget {
 
             // Service Card Preview
             ServiceCard(
-              bannerImage: "",
-              categoryIcon: "category_rounded",
-              providerName: 'Provider Name',
-              categoryName: 'Category 1',
-              price: 100,
-              rating: 4.5,
-              reviews: 100,
+              bannerImage: service.bannerImage,
+              categoryIcon: service.categoryIcon,
+              providerName: service.providerName,
+              categoryName: service.categoryName,
+              price: service.basePricePerHour,
+              rating: service.rating,
+              reviews: service.reviewsCount,
               isBookmarked: true,
               onBookmarkTap: null,
             ),
@@ -65,43 +81,27 @@ class RemoveBookmarkBottomSheetWidget extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: TextButton(
+                  child: CustomButton(
+                    text: 'Cancel',
                     onPressed: () => Navigator.pop(context),
-                    style: TextButton.styleFrom(
-                      backgroundColor: AppColors.primary.withAlpha(25),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppSizes.radiusXl),
-                      ),
-                    ),
-                    child: Text(
-                      'Cancel',
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    backgroundColor: AppColors.primary.withAlpha(25),
+                    textColor: AppColors.primary,
+                    borderRadius: AppSizes.radiusXl,
+                    height: 48,
                   ),
                 ),
                 const SizedBox(width: AppSizes.md),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppSizes.radiusXl),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      'Yes, Remove',
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        color: AppColors.background,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                  child: CustomButton(
+                    text: 'Yes, Remove',
+                    onPressed: () {
+                      onRemoveConfirm();
+                      Navigator.pop(context);
+                    },
+                    backgroundColor: AppColors.primary,
+                    textColor: AppColors.background,
+                    borderRadius: AppSizes.radiusXl,
+                    height: 48,
                   ),
                 ),
               ],

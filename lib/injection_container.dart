@@ -40,6 +40,11 @@ import 'package:serviko_app/features/user/auth/domain/usecases/sign_up_usecase.d
 import 'package:serviko_app/features/user/auth/domain/usecases/start_phone_reset_otp_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/usecases/verify_phone_reset_otp_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/usecases/update_firebase_display_name_usecase.dart';
+import 'package:serviko_app/features/user/bookmarks/data/datasources/bookmark_remote_datasource.dart';
+import 'package:serviko_app/features/user/bookmarks/domain/repositories/bookmark_repository.dart';
+import 'package:serviko_app/features/user/bookmarks/domain/usecases/bookmark_service_usecase.dart';
+import 'package:serviko_app/features/user/bookmarks/domain/usecases/get_bookmarks_usecase.dart';
+import 'package:serviko_app/features/user/bookmarks/domain/usecases/unbookmark_service_usecase.dart';
 import 'package:serviko_app/features/user/profile/data/datasources/profile_local_datasource.dart';
 import 'package:serviko_app/features/user/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:serviko_app/features/user/profile/domain/repositories/profile_repository.dart';
@@ -107,6 +112,7 @@ import 'di/services_di.dart';
 import 'di/booking_di.dart';
 import 'di/payment_di.dart';
 import 'di/support_di.dart';
+import 'di/bookmarks_di.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -200,6 +206,13 @@ class InjectionContainer {
   late final GetPopularServicesUseCase getPopularServicesUseCase;
   late final GetServiceDetailUseCase getServiceDetailUseCase;
 
+  // Bookmarks
+  late final BookmarkRemoteDataSource bookmarkRemoteDataSource;
+  late final BookmarkRepository bookmarkRepository;
+  late final BookmarkServiceUseCase bookmarkServiceUseCase;
+  late final UnbookmarkServiceUseCase unbookmarkServiceUseCase;
+  late final GetBookmarksUseCase getBookmarksUseCase;
+
   // Search
   late final SearchRemoteDataSource searchRemoteDataSource;
   late final SearchRepository searchRepository;
@@ -242,6 +255,7 @@ class InjectionContainer {
     initProfile();
     initProviderOnboarding();
     initServices();
+    initBookmarks();
     initBooking();
     initPayment();
     initSupport();

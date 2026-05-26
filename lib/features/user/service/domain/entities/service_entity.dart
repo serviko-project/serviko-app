@@ -20,6 +20,7 @@ class ServiceEntity extends Equatable {
   final List<ProviderServiceEntity> allCategories;
   final double? latitude;
   final double? longitude;
+  final bool isBookmarked;
 
   const ServiceEntity({
     required this.id,
@@ -41,6 +42,7 @@ class ServiceEntity extends Equatable {
     this.allCategories = const [],
     this.latitude,
     this.longitude,
+    this.isBookmarked = false,
   });
 
   @override
@@ -64,6 +66,7 @@ class ServiceEntity extends Equatable {
     allCategories,
     latitude,
     longitude,
+    isBookmarked,
   ];
 }
 

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
-import 'package:serviko_app/core/constants/app_sizes.dart';
-import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/core/widgets/custom_app_bar.dart';
+import 'package:serviko_app/core/widgets/custom_error_widget.dart';
+import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_cubit.dart';
+import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_state.dart';
 import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_filter_cubit.dart';
-import 'package:serviko_app/features/user/bookmarks/presentation/widgets/remove_bookmark_bottom_sheet_widget.dart';
-import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
+import 'package:serviko_app/features/user/bookmarks/presentation/widgets/book_marks_list_widget.dart';
+import 'package:serviko_app/features/user/service/domain/entities/service_entity.dart';
 
 class BookmarksScreen extends StatelessWidget {
   const BookmarksScreen({super.key});
@@ -20,103 +21,66 @@ class BookmarksScreen extends StatelessWidget {
   }
 }
 
-class _BookmarksView extends StatelessWidget {
+class _BookmarksView extends StatefulWidget {
   const _BookmarksView();
+
+  @override
+  State<_BookmarksView> createState() => _BookmarksViewState();
+}
+
+class _BookmarksViewState extends State<_BookmarksView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<BookmarksCubit>().fetchBookmarks();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(title: "My Bookmarks"),
-      body: CustomScrollView(
-        slivers: [
-          // Filter Chips
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 60,
-              child: BlocBuilder<BookmarksFilterCubit, String>(
-                builder: (context, selectedFilter) {
-                  return ListView.builder(
-                    itemCount: 5,
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSizes.md,
-                      vertical: AppSizes.sm,
-                    ),
-                    itemBuilder: (context, index) {
-                      final filter = index == 0 ? 'All' : 'Category $index';
-                      final isSelected = filter == selectedFilter;
-                      return Padding(
-                        padding: const EdgeInsets.only(right: AppSizes.sm),
-                        child: ChoiceChip(
-                          label: Text(filter),
-                          selected: isSelected,
-                          onSelected: (selected) {
-                            if (selected) {
-                              final controller = context
-                                  .read<BookmarksFilterCubit>();
-                              controller.updateFilter(filter);
-                            }
-                          },
-                          labelStyle: AppTextStyles.labelMedium.copyWith(
-                            fontSize: 13,
-                            letterSpacing: 0.5,
-                            color: isSelected
-                                ? AppColors.textOnPrimary
-                                : AppColors.textPrimary,
-                          ),
-                          backgroundColor: AppColors.background,
-                          selectedColor: AppColors.primary,
-                          side: const BorderSide(
-                            color: AppColors.primary,
-                            width: 1.5,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppSizes.radiusXl,
-                            ),
-                          ),
-                          showCheckmark: false,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSizes.md,
-                            vertical: 10,
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
+      body: BlocBuilder<BookmarksCubit, BookmarksState>(
+        builder: (context, state) {
+          // Error State
+          if (state is BookmarksError) {
+            return CustomErrorWidget(
+              message: state.message,
+              isFullPage: true,
+              onRetry: () => context.read<BookmarksCubit>().fetchBookmarks(),
+            );
+          }
 
-          const SliverToBoxAdapter(child: SizedBox(height: AppSizes.sm)),
+          final bool isLoading =
+              state is BookmarksLoading || state is BookmarksInitial;
+          final List<ServiceEntity> bookmarks = state is BookmarksLoaded
+              ? state.bookmarks
+              : [];
 
-          // Bookmarks List
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-            sliver: SliverList.builder(
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return ServiceCard(
-                  bannerImage: "",
-                  categoryIcon: "category_rounded",
-                  providerName: 'Provider ${index + 1}',
-                  categoryName: 'Category 1',
-                  price: 20.0 + (index * 5),
-                  rating: 4.5 + (index * 0.05),
-                  reviews: 120 + (index * 42),
-                  isBookmarked: true,
-                  onBookmarkTap: () =>
-                      RemoveBookmarkBottomSheetWidget.show(context, index),
-                  onTap: () {},
-                );
-              },
-            ),
-          ),
+          final categoriesSet = bookmarks.map((e) => e.categoryName).toSet();
+          final List<String> categories = ['All', ...categoriesSet];
 
-          const SliverToBoxAdapter(child: SizedBox(height: AppSizes.xl)),
-        ],
+          return BlocBuilder<BookmarksFilterCubit, String>(
+            builder: (context, selectedFilter) {
+              if (!categories.contains(selectedFilter)) {
+                context.read<BookmarksFilterCubit>().updateFilter('All');
+              }
+
+              final filteredServices = selectedFilter == 'All'
+                  ? bookmarks
+                  : bookmarks.where((s) {
+                      return s.categoryName == selectedFilter;
+                    }).toList();
+
+              return BookMarksListWidget(
+                isLoading: isLoading,
+                bookmarks: bookmarks,
+                categories: categories,
+                filteredServices: filteredServices,
+              );
+            },
+          );
+        },
       ),
     );
   }

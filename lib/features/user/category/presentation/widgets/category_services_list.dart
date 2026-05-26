@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
 import 'package:serviko_app/features/user/service/domain/entities/service_entity.dart';
+import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_cubit.dart';
 
 class CategoryServicesList extends StatelessWidget {
   const CategoryServicesList({
@@ -22,6 +24,9 @@ class CategoryServicesList extends StatelessWidget {
       itemCount: services.length,
       itemBuilder: (context, index) {
         final service = services[index];
+        final isBookmarked = context.watch<BookmarksCubit>().isBookmarked(
+          service.id,
+        );
         return ServiceCard(
           isLoading: isLoading,
           bannerImage: service.bannerImage,
@@ -31,7 +36,9 @@ class CategoryServicesList extends StatelessWidget {
           price: service.basePricePerHour,
           rating: service.rating,
           reviews: service.reviewsCount,
-          onBookmarkTap: () {},
+          isBookmarked: isBookmarked,
+          onBookmarkTap: () =>
+              context.read<BookmarksCubit>().toggleBookmark(service),
           onTap: () =>
               context.pushNamed(AppRouter.serviceDetails, extra: service.id),
         );

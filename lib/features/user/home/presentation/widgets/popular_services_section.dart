@@ -10,6 +10,7 @@ import 'package:serviko_app/core/widgets/section_header.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
 import 'package:serviko_app/features/user/service/presentation/cubit/popular_services_cubit.dart';
 import 'package:serviko_app/core/widgets/custom_error_widget.dart';
+import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_cubit.dart';
 
 class PopularServicesSection extends StatelessWidget {
   const PopularServicesSection({super.key});
@@ -103,6 +104,9 @@ class _PopularServicesView extends StatelessWidget {
                   itemCount: services.length,
                   itemBuilder: (context, index) {
                     final service = services[index];
+                    final cubit = context.watch<BookmarksCubit>();
+                    final isBookmarked = cubit.isBookmarked(service.id);
+
                     return ServiceCard(
                       bannerImage: service.bannerImage,
                       categoryIcon: service.categoryIcon,
@@ -111,7 +115,10 @@ class _PopularServicesView extends StatelessWidget {
                       price: service.basePricePerHour,
                       rating: service.rating,
                       reviews: service.reviewsCount,
-                      onBookmarkTap: () {},
+                      isBookmarked: isBookmarked,
+                      onBookmarkTap: () => context
+                          .read<BookmarksCubit>()
+                          .toggleBookmark(service),
                       onTap: () {
                         context.pushNamed(
                           AppRouter.serviceDetails,
