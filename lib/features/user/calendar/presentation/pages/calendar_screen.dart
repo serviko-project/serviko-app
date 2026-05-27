@@ -6,6 +6,7 @@ import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/core/widgets/custom_app_bar.dart';
+import 'package:serviko_app/core/widgets/custom_error_widget.dart';
 import 'package:serviko_app/features/user/booking/presentation/widgets/booking_calendar_widget.dart';
 import 'package:serviko_app/injection_container.dart';
 import '../bloc/calendar_cubit.dart';
@@ -46,7 +47,11 @@ class CalendarView extends StatelessWidget {
           }
 
           if (state is CalendarError) {
-            return Center(child: Text(state.message));
+            return CustomErrorWidget(
+              message: state.message,
+              onRetry: () => context.read<CalendarCubit>().fetchBookings(),
+              isFullPage: true,
+            );
           }
 
           if (state is CalendarLoaded) {
@@ -87,18 +92,18 @@ class CalendarView extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(height: AppSizes.xl),
                           Lottie.asset(
                             AppAssets.notFoundAnimation,
-                            width: 200,
-                            height: 200,
+                            width: 180,
+                            height: 180,
                             fit: BoxFit.contain,
                           ),
-                          const SizedBox(height: AppSizes.md),
+                          const SizedBox(height: AppSizes.sm),
                           Text(
                             'No bookings on this date.',
                             style: AppTextStyles.h3.copyWith(
                               letterSpacing: 0.5,
+                              fontSize: 14,
                               color: AppColors.textSecondary,
                             ),
                           ),
@@ -112,7 +117,7 @@ class CalendarView extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: bookings.length,
                       separatorBuilder: (context, index) =>
-                          const SizedBox(height: AppSizes.md),
+                          const SizedBox(height: AppSizes.sm + 2),
                       itemBuilder: (context, index) {
                         return CalendarBookingCard(booking: bookings[index]);
                       },

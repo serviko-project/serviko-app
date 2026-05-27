@@ -119,13 +119,26 @@ class EReceiptScreen extends StatelessWidget {
             ReceiptCard(
               children: [
                 ReceiptRow(
-                  label: 'Amount',
-                  value: 'Rs. ${booking.totalPrice.toStringAsFixed(2)}',
+                  label: 'Subtotal',
+                  value:
+                      'Rs. ${(booking.originalPrice ?? (booking.basePricePerHour * booking.durationHours)).toStringAsFixed(2)}',
                 ),
-                const ReceiptRow(
-                  label: 'Promo',
-                  value: 'Rs. 0.00',
-                  valueColor: AppColors.primary,
+                if (booking.discountAmount > 0)
+                  ReceiptRow(
+                    label:
+                        booking.promoCodeText != null &&
+                            booking.promoCodeText!.isNotEmpty
+                        ? 'Promo (${booking.promoCodeText})'
+                        : 'Promo',
+                    value: '-Rs. ${booking.discountAmount.toStringAsFixed(2)}',
+                    valueColor: AppColors.success,
+                  ),
+                ReceiptRow(
+                  label: 'Total Paid',
+                  value: 'Rs. ${booking.totalPrice.toStringAsFixed(2)}',
+                  valueColor: booking.discountAmount > 0
+                      ? AppColors.primary
+                      : null,
                 ),
                 const ReceiptRow(label: 'Payment Methods', value: 'Razorpay'),
                 ReceiptRow(

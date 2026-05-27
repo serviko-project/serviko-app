@@ -11,6 +11,7 @@ class ServiceCoverImage extends StatelessWidget {
   final String categoryIcon;
   final String? providerImage;
   final bool isLoading;
+  final bool isBookmarked;
 
   const ServiceCoverImage({
     super.key,
@@ -19,6 +20,7 @@ class ServiceCoverImage extends StatelessWidget {
     this.categoryIcon = 'category_rounded',
     this.providerImage,
     this.isLoading = false,
+    this.isBookmarked = false,
   });
 
   static const double _bannerHeight = 280;
@@ -97,7 +99,9 @@ class ServiceCoverImage extends StatelessWidget {
             top: MediaQuery.of(context).padding.top + AppSizes.sm,
             right: AppSizes.md,
             child: _CircleButton(
-              icon: Icons.bookmark_border_rounded,
+              icon: isBookmarked
+                  ? Icons.bookmark_rounded
+                  : Icons.bookmark_border_rounded,
               onTap: onBookmarkTap,
             ),
           ),

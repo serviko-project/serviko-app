@@ -12,6 +12,7 @@ import 'package:serviko_app/features/user/booking/domain/usecases/get_customer_b
 import 'package:serviko_app/features/user/booking/domain/usecases/submit_review_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_reviews_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/validate_promo_code_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_active_promo_codes_usecase.dart';
 import 'package:serviko_app/injection_container.dart';
 
 // Extension to modularize booking dependencies
@@ -25,6 +26,7 @@ extension BookingDI on InjectionContainer {
     );
     getAvailableSlotsUseCase = GetAvailableSlotsUseCase(bookingRepository);
     getProviderPromosUseCase = GetProviderPromosUseCase(bookingRepository);
+    getActivePromoCodesUseCase = GetActivePromoCodesUseCase(bookingRepository);
     createBookingUseCase = CreateBookingUseCase(bookingRepository);
     getProviderBookingsUseCase = GetProviderBookingsUseCase(bookingRepository);
     reviewBookingUseCase = ReviewBookingUseCase(bookingRepository);

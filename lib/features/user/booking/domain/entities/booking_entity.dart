@@ -35,6 +35,9 @@ class BookingEntity extends Equatable {
   final String? paymentReference;
   final String? paidAt;
   final String? refundedAt;
+  final double? originalPrice;
+  final double discountAmount;
+  final String? promoCodeText;
   final String createdAt;
   final String updatedAt;
 
@@ -72,6 +75,9 @@ class BookingEntity extends Equatable {
     this.paymentReference,
     this.paidAt,
     this.refundedAt,
+    this.originalPrice,
+    this.discountAmount = 0.0,
+    this.promoCodeText,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -110,6 +116,9 @@ class BookingEntity extends Equatable {
     String? paymentReference,
     String? paidAt,
     String? refundedAt,
+    double? originalPrice,
+    double? discountAmount,
+    String? promoCodeText,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -147,6 +156,9 @@ class BookingEntity extends Equatable {
       paymentReference: paymentReference ?? this.paymentReference,
       paidAt: paidAt ?? this.paidAt,
       refundedAt: refundedAt ?? this.refundedAt,
+      originalPrice: originalPrice ?? this.originalPrice,
+      discountAmount: discountAmount ?? this.discountAmount,
+      promoCodeText: promoCodeText ?? this.promoCodeText,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -187,6 +199,9 @@ class BookingEntity extends Equatable {
     paymentReference,
     paidAt,
     refundedAt,
+    originalPrice,
+    discountAmount,
+    promoCodeText,
     createdAt,
     updatedAt,
   ];

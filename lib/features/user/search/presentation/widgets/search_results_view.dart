@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/router/app_router.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_card.dart';
+import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_cubit.dart';
 import 'search_result_header.dart';
 import '../bloc/search_state.dart';
 
@@ -27,14 +29,12 @@ class SearchResultsView extends StatelessWidget {
 
         // Search results list
         Expanded(
-          child: ListView.separated(
+          child: ListView.builder(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSizes.md,
               vertical: AppSizes.sm,
             ),
             itemCount: isLoading ? 4 : (state?.results.length ?? 0),
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: AppSizes.sm),
             itemBuilder: (context, index) {
               if (isLoading) {
                 return const ServiceCard(
@@ -50,6 +50,9 @@ class SearchResultsView extends StatelessWidget {
               }
 
               final result = state!.results[index];
+              final isBookmarked = context.watch<BookmarksCubit>().isBookmarked(
+                result.id,
+              );
               return ServiceCard(
                 bannerImage: result.bannerImage,
                 categoryIcon: result.categoryIcon,
@@ -58,6 +61,9 @@ class SearchResultsView extends StatelessWidget {
                 price: result.basePricePerHour,
                 rating: result.rating,
                 reviews: result.reviewsCount,
+                isBookmarked: isBookmarked,
+                onBookmarkTap: () =>
+                    context.read<BookmarksCubit>().toggleBookmark(result),
                 onTap: () {
                   context.pushNamed(AppRouter.serviceDetails, extra: result.id);
                 },

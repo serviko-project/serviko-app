@@ -5,6 +5,7 @@ class AvailableSlotsModel extends AvailableSlotsEntity {
     required super.date,
     required super.providerId,
     required super.slots,
+    super.allSlots,
     super.maxDurationFromSlot,
   });
 
@@ -19,6 +20,7 @@ class AvailableSlotsModel extends AvailableSlotsEntity {
       date: json['date'] as String,
       providerId: json['provider_id'] as String,
       slots: List<String>.from(json['slots'] ?? []),
+      allSlots: List<String>.from(json['all_slots'] ?? []),
       maxDurationFromSlot: durationMap,
     );
   }

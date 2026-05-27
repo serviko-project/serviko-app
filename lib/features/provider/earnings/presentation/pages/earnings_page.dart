@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/app_router.dart';
-import 'package:serviko_app/core/theme/text_styles.dart';
 import 'package:serviko_app/core/widgets/custom_app_bar.dart';
+import 'package:serviko_app/core/widgets/custom_error_widget.dart';
 import 'package:serviko_app/injection_container.dart';
 import '../cubit/earnings_cubit.dart';
 import '../cubit/earnings_state.dart';
@@ -55,15 +55,12 @@ class EarningsView extends StatelessWidget {
           if (state is EarningsLoading || state is EarningsInitial) {
             return const Center(child: CircularProgressIndicator());
           }
-          // Error State
           if (state is EarningsError) {
-            return Center(
-              child: Text(
-                state.message,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.error,
-                ),
-              ),
+            return CustomErrorWidget(
+              message: state.message,
+              onRetry: () =>
+                  context.read<EarningsCubit>().loadEarnings('Weekly'),
+              isFullPage: true,
             );
           }
           // Earnings Loaded State

@@ -6,6 +6,7 @@ class BookingRequestPayload {
   final int workingHours;
   final String selectedStartTime;
   final String promoCode;
+  final double discountAmount;
   final double totalPrice;
   final double? customerLatitude;
   final double? customerLongitude;
@@ -17,6 +18,7 @@ class BookingRequestPayload {
     required this.workingHours,
     required this.selectedStartTime,
     required this.promoCode,
+    required this.discountAmount,
     required this.totalPrice,
     this.customerLatitude,
     this.customerLongitude,
@@ -34,6 +36,7 @@ class BookingRequestPayload {
       workingHours: workingHours,
       selectedStartTime: selectedStartTime,
       promoCode: promoCode,
+      discountAmount: discountAmount,
       totalPrice: totalPrice,
       customerLatitude: customerLatitude ?? this.customerLatitude,
       customerLongitude: customerLongitude ?? this.customerLongitude,

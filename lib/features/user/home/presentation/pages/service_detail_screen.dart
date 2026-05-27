@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
+import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_cubit.dart';
 import 'package:serviko_app/features/user/service/presentation/cubit/service_detail_cubit.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/service_cover_image.dart';
 import 'package:serviko_app/features/user/home/presentation/widgets/service_detail/service_info_section.dart';
@@ -75,6 +76,10 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 longitude: 76.2673,
               );
 
+        final bool isBookmarked = context.watch<BookmarksCubit>().isBookmarked(
+          service.id,
+        );
+
         final List<ProviderServiceEntity> categories =
             service.allCategories.isEmpty
             ? [
@@ -100,6 +105,12 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                     categoryIcon: service.categoryIcon,
                     providerImage: service.providerImage,
                     isLoading: isLoading,
+                    isBookmarked: isBookmarked,
+                    onBookmarkTap: () {
+                      if (!isLoading && service.id.isNotEmpty) {
+                        context.read<BookmarksCubit>().toggleBookmark(service);
+                      }
+                    },
                   ),
 
                   // Service info

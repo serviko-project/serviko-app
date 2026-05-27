@@ -32,6 +32,11 @@ abstract class BookingRepository {
     required String providerId,
   });
 
+  Future<Either<Failure, List<PromoCode>>> getActivePromoCodes({
+    int page = 1,
+    int limit = 20,
+  });
+
   Future<Either<Failure, List<BookingEntity>>> getProviderBookings({
     String? status,
     int page = 1,

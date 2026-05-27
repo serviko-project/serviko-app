@@ -7,14 +7,15 @@ part 'popular_services_state.dart';
 
 class PopularServicesCubit extends Cubit<PopularServicesState> {
   final GetPopularServicesUseCase getPopularServicesUseCase;
+  final int? limit;
 
-  PopularServicesCubit({required this.getPopularServicesUseCase})
+  PopularServicesCubit({required this.getPopularServicesUseCase, this.limit})
     : super(PopularServicesInitial());
 
   Future<void> fetchPopularServices({String? categoryId}) async {
     emit(PopularServicesLoading());
     final result = await getPopularServicesUseCase(
-      GetPopularServicesParams(categoryId: categoryId),
+      GetPopularServicesParams(categoryId: categoryId, limit: limit),
     );
     result.fold(
       (failure) => emit(PopularServicesError(message: failure.message)),

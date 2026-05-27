@@ -32,6 +32,8 @@ class RouteNames {
   static const String eReceipt = 'eReceipt';
   static const String helpCenter = 'helpCenter';
   static const String privacyPolicy = 'privacyPolicy';
+  static const String specialOffers = 'specialOffers';
+  static const String popularServices = 'popularServices';
 
   // Provider route names
   static const String providerOnboarding = 'providerOnboarding';
@@ -80,6 +82,8 @@ class RoutePaths {
   static const String eReceipt = '/e-receipt/:id';
   static const String helpCenter = '/help-center';
   static const String privacyPolicy = '/privacy-policy';
+  static const String specialOffers = '/special-offers';
+  static const String popularServices = '/popular-services';
 
   // Provider paths
   static const String providerOnboarding = '/provider/onboarding';

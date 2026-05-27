@@ -38,7 +38,7 @@ class ServiceCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSizes.sm),
-        padding: const EdgeInsets.all(AppSizes.sm),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
@@ -58,6 +58,7 @@ class ServiceCard extends StatelessWidget {
               bannerImage: bannerImage,
               categoryIcon: categoryIcon,
               isLoading: isLoading,
+              size: 90,
             ),
             const SizedBox(width: AppSizes.md),
 
@@ -84,16 +85,20 @@ class ServiceCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        onPressed: onBookmarkTap,
-                        icon: Icon(
-                          isBookmarked
-                              ? Icons.bookmark
-                              : Icons.bookmark_add_outlined,
-                          color: AppColors.primary,
-                          size: 22,
+                      GestureDetector(
+                        onTap: onBookmarkTap,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSizes.xs,
+                            horizontal: AppSizes.xs / 2,
+                          ),
+                          child: Icon(
+                            isBookmarked
+                                ? Icons.bookmark
+                                : Icons.bookmark_add_outlined,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
                         ),
                       ),
                     ],
@@ -108,7 +113,7 @@ class ServiceCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 7),
 
                   // Price
                   Text(
@@ -118,7 +123,7 @@ class ServiceCard extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 7),
 
                   // Rating & Reviews
                   Row(
@@ -128,18 +133,31 @@ class ServiceCard extends StatelessWidget {
                         color: AppColors.warning,
                         size: 16,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        rating.toStringAsFixed(1),
-                        style: AppTextStyles.labelMedium,
-                      ),
-                      const SizedBox(width: 4),
-                      Text('|', style: AppTextStyles.bodySmall),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${reviews > 1000 ? '${(reviews / 1000).toStringAsFixed(1)}k' : reviews} reviews',
-                        style: AppTextStyles.bodySmall,
-                      ),
+                      const SizedBox(width: AppSizes.xs),
+                      if (reviews == 0) ...[
+                        Text('—', style: AppTextStyles.labelMedium),
+                        const SizedBox(width: AppSizes.xs),
+                        Text('|', style: AppTextStyles.bodySmall),
+                        const SizedBox(width: AppSizes.xs),
+                        Text(
+                          'No reviews',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ] else ...[
+                        Text(
+                          rating.toStringAsFixed(1),
+                          style: AppTextStyles.labelMedium,
+                        ),
+                        const SizedBox(width: AppSizes.xs),
+                        Text('|', style: AppTextStyles.bodySmall),
+                        const SizedBox(width: AppSizes.xs),
+                        Text(
+                          '${reviews > 1000 ? '${(reviews / 1000).toStringAsFixed(1)}k' : reviews} reviews',
+                          style: AppTextStyles.bodySmall,
+                        ),
+                      ],
                     ],
                   ),
                 ],

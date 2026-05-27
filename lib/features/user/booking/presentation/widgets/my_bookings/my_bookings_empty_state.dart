@@ -62,6 +62,7 @@ class MyBookingsEmptyState extends StatelessWidget {
                 width: double.infinity,
                 child: CustomButton(
                   text: 'Explore Services',
+                  height: 45,
                   onPressed: () {
                     context.go(RouteNames.home);
                   },

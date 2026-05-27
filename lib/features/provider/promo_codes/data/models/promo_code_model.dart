@@ -17,6 +17,10 @@ class PromoCodeModel extends PromoCode {
     required super.usageCount,
     required super.createdAt,
     required super.updatedAt,
+    super.providerName,
+    super.providerTitle,
+    super.providerImageUrl,
+    super.serviceId,
   });
 
   factory PromoCodeModel.fromJson(Map<String, dynamic> json) {
@@ -42,6 +46,10 @@ class PromoCodeModel extends PromoCode {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
           : DateTime.now(),
+      providerName: json['provider_name'] as String?,
+      providerTitle: json['provider_title'] as String?,
+      providerImageUrl: json['provider_image'] as String?,
+      serviceId: json['service_id'] as String?,
     );
   }
 
@@ -62,6 +70,10 @@ class PromoCodeModel extends PromoCode {
       'usage_count': usageCount,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
+      'provider_name': providerName,
+      'provider_title': providerTitle,
+      'provider_image': providerImageUrl,
+      'service_id': serviceId,
     };
   }
 }

@@ -35,6 +35,7 @@ class AppRouter {
   static const String search = RouteNames.search;
   static const String bookmarks = RouteNames.bookmarks;
   static const String serviceDetails = RouteNames.serviceDetails;
+  static const String popularServices = RouteNames.popularServices;
 
   static const String providerOnboarding = RouteNames.providerOnboarding;
   static const String providerApplicationStatus =
