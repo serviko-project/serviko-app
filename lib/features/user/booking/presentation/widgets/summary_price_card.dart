@@ -30,6 +30,15 @@ class SummaryPriceCard extends StatelessWidget {
             "₹${basePricePerHour.toStringAsFixed(0)} x $hours",
             "₹${subtotal.toStringAsFixed(2)}",
           ),
+          if (payload.promoCode.isNotEmpty) ...[
+            Divider(color: AppColors.border.withValues(alpha: 0.5)),
+            _buildPriceRow(
+              "Promo Applied",
+              "Code: ${payload.promoCode}",
+              "-₹${payload.discountAmount.toStringAsFixed(2)}",
+              valueColor: AppColors.success,
+            ),
+          ],
           Divider(color: AppColors.border.withValues(alpha: 0.5)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +61,12 @@ class SummaryPriceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceRow(String label, String subtitle, String value) {
+  Widget _buildPriceRow(
+    String label,
+    String subtitle,
+    String value, {
+    Color? valueColor,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -78,7 +92,7 @@ class SummaryPriceCard extends StatelessWidget {
           value,
           style: AppTextStyles.bodyLarge.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: valueColor ?? AppColors.textPrimary,
           ),
         ),
       ],

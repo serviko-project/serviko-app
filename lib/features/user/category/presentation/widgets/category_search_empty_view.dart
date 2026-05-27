@@ -19,13 +19,13 @@ class CategorySearchEmptyView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Lottie animation
-            Lottie.asset(AppAssets.notFoundAnimation, width: 250, height: 250),
+            Lottie.asset(AppAssets.notFoundAnimation, width: 200, height: 200),
             const SizedBox(height: AppSizes.md),
 
             // Not Found Messages
             Text(
               'No services found..!!',
-              style: AppTextStyles.h2,
+              style: AppTextStyles.h2.copyWith(fontSize: 18),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSizes.sm),
@@ -33,8 +33,9 @@ class CategorySearchEmptyView extends StatelessWidget {
               searchQuery.isNotEmpty
                   ? 'Try a different search term.'
                   : 'No services available in this category yet.',
-              style: AppTextStyles.bodyLarge.copyWith(
+              style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
+                fontSize: 14,
               ),
               textAlign: TextAlign.center,
             ),

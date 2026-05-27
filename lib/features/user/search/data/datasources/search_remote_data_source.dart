@@ -13,6 +13,8 @@ abstract class SearchRemoteDataSource {
     int page = 1,
     int limit = 20,
   });
+
+  Future<Map<String, double>> getPriceRange({String? categoryId});
 }
 
 class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
@@ -64,6 +66,28 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
         return servicesList.map((json) {
           return ServiceModel.fromJson(json as Map<String, dynamic>);
         }).toList();
+      },
+    );
+  }
+
+  @override
+  Future<Map<String, double>> getPriceRange({String? categoryId}) {
+    final Map<String, dynamic> queryParams = {};
+    if (categoryId != null && categoryId.trim().isNotEmpty) {
+      queryParams['category_id'] = categoryId;
+    }
+
+    return apiClient.request(
+      call: () => apiClient.dio.get(
+        '/api/v1/services/price-range',
+        queryParameters: queryParams,
+      ),
+      parser: (dataField) {
+        final map = dataField as Map<String, dynamic>;
+        return {
+          'min_price': (map['min_price'] as num).toDouble(),
+          'max_price': (map['max_price'] as num).toDouble(),
+        };
       },
     );
   }

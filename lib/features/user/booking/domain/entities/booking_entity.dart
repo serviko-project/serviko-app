@@ -19,6 +19,7 @@ class BookingEntity extends Equatable {
   final String? rejectionReason;
   final String? customerName;
   final String? customerImage;
+  final String? customerFirebaseUid;
   final String? providerName;
   final String? providerImage;
   final String? providerFirebaseUid;
@@ -34,6 +35,9 @@ class BookingEntity extends Equatable {
   final String? paymentReference;
   final String? paidAt;
   final String? refundedAt;
+  final double? originalPrice;
+  final double discountAmount;
+  final String? promoCodeText;
   final String createdAt;
   final String updatedAt;
 
@@ -55,6 +59,7 @@ class BookingEntity extends Equatable {
     this.rejectionReason,
     this.customerName,
     this.customerImage,
+    this.customerFirebaseUid,
     this.providerName,
     this.providerImage,
     this.providerFirebaseUid,
@@ -70,6 +75,9 @@ class BookingEntity extends Equatable {
     this.paymentReference,
     this.paidAt,
     this.refundedAt,
+    this.originalPrice,
+    this.discountAmount = 0.0,
+    this.promoCodeText,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -92,6 +100,7 @@ class BookingEntity extends Equatable {
     String? rejectionReason,
     String? customerName,
     String? customerImage,
+    String? customerFirebaseUid,
     String? providerName,
     String? providerImage,
     String? providerFirebaseUid,
@@ -107,6 +116,9 @@ class BookingEntity extends Equatable {
     String? paymentReference,
     String? paidAt,
     String? refundedAt,
+    double? originalPrice,
+    double? discountAmount,
+    String? promoCodeText,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -128,6 +140,7 @@ class BookingEntity extends Equatable {
       rejectionReason: rejectionReason ?? this.rejectionReason,
       customerName: customerName ?? this.customerName,
       customerImage: customerImage ?? this.customerImage,
+      customerFirebaseUid: customerFirebaseUid ?? this.customerFirebaseUid,
       providerName: providerName ?? this.providerName,
       providerImage: providerImage ?? this.providerImage,
       providerFirebaseUid: providerFirebaseUid ?? this.providerFirebaseUid,
@@ -143,6 +156,9 @@ class BookingEntity extends Equatable {
       paymentReference: paymentReference ?? this.paymentReference,
       paidAt: paidAt ?? this.paidAt,
       refundedAt: refundedAt ?? this.refundedAt,
+      originalPrice: originalPrice ?? this.originalPrice,
+      discountAmount: discountAmount ?? this.discountAmount,
+      promoCodeText: promoCodeText ?? this.promoCodeText,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -167,6 +183,7 @@ class BookingEntity extends Equatable {
     rejectionReason,
     customerName,
     customerImage,
+    customerFirebaseUid,
     providerName,
     providerImage,
     providerFirebaseUid,
@@ -182,6 +199,9 @@ class BookingEntity extends Equatable {
     paymentReference,
     paidAt,
     refundedAt,
+    originalPrice,
+    discountAmount,
+    promoCodeText,
     createdAt,
     updatedAt,
   ];

@@ -23,6 +23,7 @@ class CreateBookingUseCase
       customerLatitude: params.customerLatitude,
       customerLongitude: params.customerLongitude,
       customerAddress: params.customerAddress,
+      promoCode: params.promoCode,
     );
   }
 }
@@ -35,6 +36,7 @@ class CreateBookingParams extends Equatable {
   final double? customerLatitude;
   final double? customerLongitude;
   final String? customerAddress;
+  final String? promoCode;
 
   const CreateBookingParams({
     required this.serviceId,
@@ -44,6 +46,7 @@ class CreateBookingParams extends Equatable {
     this.customerLatitude,
     this.customerLongitude,
     this.customerAddress,
+    this.promoCode,
   });
 
   @override
@@ -55,5 +58,6 @@ class CreateBookingParams extends Equatable {
     customerLatitude,
     customerLongitude,
     customerAddress,
+    promoCode,
   ];
 }

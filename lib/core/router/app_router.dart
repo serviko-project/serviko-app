@@ -35,6 +35,7 @@ class AppRouter {
   static const String search = RouteNames.search;
   static const String bookmarks = RouteNames.bookmarks;
   static const String serviceDetails = RouteNames.serviceDetails;
+  static const String popularServices = RouteNames.popularServices;
 
   static const String providerOnboarding = RouteNames.providerOnboarding;
   static const String providerApplicationStatus =
@@ -43,6 +44,8 @@ class AppRouter {
   static const String providerJobs = RouteNames.providerJobs;
   static const String providerInbox = RouteNames.providerInbox;
   static const String providerEarnings = RouteNames.providerEarnings;
+  static const String providerTransactionHistory =
+      RouteNames.providerTransactionHistory;
   static const String providerProfile = RouteNames.providerProfile;
 
   // Router configuration with auth + role-based redirection

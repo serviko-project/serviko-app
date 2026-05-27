@@ -19,10 +19,12 @@ class ServiceRepositoryImpl implements ServiceRepository {
   @override
   Future<Either<Failure, List<ServiceEntity>>> getPopularServices({
     String? categoryId,
+    int? limit,
   }) async {
     try {
       final remoteServices = await remoteDataSource.getPopularServices(
         categoryId: categoryId,
+        limit: limit,
       );
       return Right(remoteServices);
     } on ServerException catch (e) {

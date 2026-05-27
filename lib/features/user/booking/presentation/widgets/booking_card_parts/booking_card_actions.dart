@@ -84,7 +84,6 @@ class BookingCardActions extends StatelessWidget {
 
     return CustomButton(
       text: label,
-      width: null,
       height: 40,
       borderRadius: AppSizes.radiusMd,
       onPressed: onPressed,

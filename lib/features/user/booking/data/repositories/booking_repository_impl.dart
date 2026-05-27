@@ -8,6 +8,8 @@ import '../../domain/entities/booking_entity.dart';
 import '../../domain/entities/review_entity.dart';
 import '../../domain/repositories/booking_repository.dart';
 import '../datasources/booking_remote_data_source.dart';
+import 'package:serviko_app/features/provider/promo_codes/data/models/promo_code_model.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/entities/promo_code.dart';
 
 class BookingRepositoryImpl implements BookingRepository {
   final BookingRemoteDataSource remoteDataSource;
@@ -50,6 +52,7 @@ class BookingRepositoryImpl implements BookingRepository {
     double? customerLatitude,
     double? customerLongitude,
     String? customerAddress,
+    String? promoCode,
   }) async {
     try {
       final remoteData = await remoteDataSource.createBooking(
@@ -60,8 +63,76 @@ class BookingRepositoryImpl implements BookingRepository {
         customerLatitude: customerLatitude,
         customerLongitude: customerLongitude,
         customerAddress: customerAddress,
+        promoCode: promoCode,
       );
       return Right(remoteData);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> validatePromoCode({
+    required String code,
+    required String serviceId,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.validatePromoCode(
+        code: code,
+        serviceId: serviceId,
+      );
+      return Right(remoteData);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<PromoCode>>> getProviderPromos({
+    required String providerId,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.getProviderPromos(
+        providerId: providerId,
+      );
+      final promos = remoteData
+          .map((json) => PromoCodeModel.fromJson(json))
+          .toList();
+      return Right(promos);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on Exception catch (e) {
+      if (!await networkInfo.isConnected) {
+        return const Left(NetworkFailure());
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<PromoCode>>> getActivePromoCodes({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.getActivePromoCodes(
+        page: page,
+        limit: limit,
+      );
+      final promos = remoteData
+          .map((json) => PromoCodeModel.fromJson(json))
+          .toList();
+      return Right(promos);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on Exception catch (e) {

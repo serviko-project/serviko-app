@@ -53,7 +53,7 @@ class PopularServicesFilterWidget extends StatelessWidget {
                           }
                         },
                         labelStyle: AppTextStyles.labelMedium.copyWith(
-                          fontSize: 13,
+                          fontSize: 12,
                           letterSpacing: 0.5,
                           color: isSelected
                               ? AppColors.textOnPrimary
@@ -71,10 +71,7 @@ class PopularServicesFilterWidget extends StatelessWidget {
                           ),
                         ),
                         showCheckmark: false,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSizes.md,
-                          vertical: 10,
-                        ),
+                        padding: EdgeInsets.all(10),
                       ),
                     );
                   },

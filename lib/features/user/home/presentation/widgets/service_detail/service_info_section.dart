@@ -86,13 +86,23 @@ class ServiceInfoSection extends StatelessWidget {
                 color: AppColors.warning,
                 size: 18,
               ),
-              Text(rating.toStringAsFixed(1), style: AppTextStyles.h3),
-              Text(
-                '($reviewsCount Reviews)',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+              if (reviewsCount == 0) ...[
+                Text('—', style: AppTextStyles.h3),
+                Text(
+                  '(No Reviews)',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
-              ),
+              ] else ...[
+                Text(rating.toStringAsFixed(1), style: AppTextStyles.h3),
+                Text(
+                  '($reviewsCount Reviews)',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
               const SizedBox(width: AppSizes.sm),
               const Icon(
                 Icons.location_on_rounded,
@@ -159,7 +169,7 @@ class ServiceInfoSection extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: ' - ₹${service.basePricePerHour}',
+                          text: ' - ₹${service.basePricePerHour}/hr',
                           style: AppTextStyles.labelSmall.copyWith(
                             color: isSelected
                                 ? Colors.white.withAlpha(200)

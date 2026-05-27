@@ -22,6 +22,10 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
+import 'package:serviko_app/features/provider/dashboard/data/datasources/provider_dashboard_remote_datasource.dart';
+import 'package:serviko_app/features/provider/dashboard/domain/repositories/provider_dashboard_repository.dart';
+import 'package:serviko_app/features/provider/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
+
 import 'package:serviko_app/features/user/auth/data/datasources/auth_local_datasource.dart';
 import 'package:serviko_app/features/user/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:serviko_app/features/user/auth/domain/repositories/auth_repository.dart';
@@ -36,6 +40,11 @@ import 'package:serviko_app/features/user/auth/domain/usecases/sign_up_usecase.d
 import 'package:serviko_app/features/user/auth/domain/usecases/start_phone_reset_otp_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/usecases/verify_phone_reset_otp_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/usecases/update_firebase_display_name_usecase.dart';
+import 'package:serviko_app/features/user/bookmarks/data/datasources/bookmark_remote_datasource.dart';
+import 'package:serviko_app/features/user/bookmarks/domain/repositories/bookmark_repository.dart';
+import 'package:serviko_app/features/user/bookmarks/domain/usecases/bookmark_service_usecase.dart';
+import 'package:serviko_app/features/user/bookmarks/domain/usecases/get_bookmarks_usecase.dart';
+import 'package:serviko_app/features/user/bookmarks/domain/usecases/unbookmark_service_usecase.dart';
 import 'package:serviko_app/features/user/profile/data/datasources/profile_local_datasource.dart';
 import 'package:serviko_app/features/user/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:serviko_app/features/user/profile/domain/repositories/profile_repository.dart';
@@ -45,6 +54,19 @@ import 'package:serviko_app/features/user/profile/domain/usecases/get_cached_pro
 import 'package:serviko_app/features/user/profile/domain/usecases/get_my_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:serviko_app/features/user/profile/domain/usecases/upload_profile_image_usecase.dart';
+
+import 'package:serviko_app/features/provider/promo_codes/data/datasources/promo_code_remote_datasource.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/repositories/promo_code_repository.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/get_promo_codes_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/create_promo_code_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/update_promo_code_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/usecases/deactivate_promo_code_usecase.dart';
+
+import 'package:serviko_app/features/provider/earnings/data/datasources/earnings_remote_datasource.dart';
+import 'package:serviko_app/features/provider/earnings/domain/repositories/earnings_repository.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/get_earnings_summary_usecase.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/cash_out_usecase.dart';
+import 'package:serviko_app/features/provider/earnings/domain/usecases/get_transactions_usecase.dart';
 
 import 'package:serviko_app/features/user/category/data/datasources/category_remote_data_source.dart';
 import 'package:serviko_app/features/user/category/domain/repositories/category_repository.dart';
@@ -57,21 +79,30 @@ import 'package:serviko_app/features/user/service/domain/usecases/get_popular_se
 import 'package:serviko_app/features/user/service/domain/usecases/get_service_detail_usecase.dart';
 
 import 'package:serviko_app/features/user/search/data/datasources/search_remote_data_source.dart';
+import 'package:serviko_app/features/user/search/data/datasources/search_local_datasource.dart';
 import 'package:serviko_app/features/user/search/domain/repositories/search_repository.dart';
 import 'package:serviko_app/features/user/search/domain/usecases/search_services_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/get_price_range_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/get_recent_searches_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/save_recent_search_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/remove_recent_search_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/clear_recent_searches_usecase.dart';
 
 import 'package:serviko_app/features/user/booking/data/datasources/booking_remote_data_source.dart';
 import 'package:serviko_app/features/user/booking/domain/repositories/booking_repository.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/create_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_available_slots_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_bookings_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_reviews_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_promos_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/review_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_booking_detail_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/cancel_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/complete_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_customer_bookings_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/submit_review_usecase.dart';
-import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_reviews_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/validate_promo_code_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_active_promo_codes_usecase.dart';
 import 'package:serviko_app/features/user/payment/data/datasources/payment_remote_datasource.dart';
 import 'package:serviko_app/features/user/payment/domain/repositories/payment_repository.dart';
 import 'package:serviko_app/features/user/payment/domain/usecases/create_payment_order_usecase.dart';
@@ -87,6 +118,7 @@ import 'di/services_di.dart';
 import 'di/booking_di.dart';
 import 'di/payment_di.dart';
 import 'di/support_di.dart';
+import 'di/bookmarks_di.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -148,6 +180,27 @@ class InjectionContainer {
   late final DeleteBannerImageUseCase deleteBannerImageUseCase;
   late final SubmitCategoryRequestUseCase submitCategoryRequestUseCase;
 
+  // Provider Dashboard
+  late final ProviderDashboardRemoteDataSource
+  providerDashboardRemoteDataSource;
+  late final ProviderDashboardRepository providerDashboardRepository;
+  late final GetDashboardStatsUseCase getDashboardStatsUseCase;
+
+  // Promo Codes
+  late final PromoCodeRemoteDataSource promoCodeRemoteDataSource;
+  late final PromoCodeRepository promoCodeRepository;
+  late final GetPromoCodesUseCase getPromoCodesUseCase;
+  late final CreatePromoCodeUseCase createPromoCodeUseCase;
+  late final UpdatePromoCodeUseCase updatePromoCodeUseCase;
+  late final DeactivatePromoCodeUseCase deactivatePromoCodeUseCase;
+
+  // Provider Earnings
+  late final EarningsRemoteDataSource earningsRemoteDataSource;
+  late final EarningsRepository earningsRepository;
+  late final GetEarningsSummaryUseCase getEarningsSummaryUseCase;
+  late final CashOutUseCase cashOutUseCase;
+  late final GetTransactionsUseCase getTransactionsUseCase;
+
   // User Category
   late final CategoryRemoteDataSource categoryRemoteDataSource;
   late final CategoryRepository categoryRepository;
@@ -159,15 +212,30 @@ class InjectionContainer {
   late final GetPopularServicesUseCase getPopularServicesUseCase;
   late final GetServiceDetailUseCase getServiceDetailUseCase;
 
+  // Bookmarks
+  late final BookmarkRemoteDataSource bookmarkRemoteDataSource;
+  late final BookmarkRepository bookmarkRepository;
+  late final BookmarkServiceUseCase bookmarkServiceUseCase;
+  late final UnbookmarkServiceUseCase unbookmarkServiceUseCase;
+  late final GetBookmarksUseCase getBookmarksUseCase;
+
   // Search
   late final SearchRemoteDataSource searchRemoteDataSource;
+  late final SearchLocalDataSource searchLocalDataSource;
   late final SearchRepository searchRepository;
   late final SearchServicesUseCase searchServicesUseCase;
+  late final GetPriceRangeUseCase getPriceRangeUseCase;
+  late final GetRecentSearchesUseCase getRecentSearchesUseCase;
+  late final SaveRecentSearchUseCase saveRecentSearchUseCase;
+  late final RemoveRecentSearchUseCase removeRecentSearchUseCase;
+  late final ClearRecentSearchesUseCase clearRecentSearchesUseCase;
 
   // Booking
   late final BookingRemoteDataSource bookingRemoteDataSource;
   late final BookingRepository bookingRepository;
   late final GetAvailableSlotsUseCase getAvailableSlotsUseCase;
+  late final GetProviderPromosUseCase getProviderPromosUseCase;
+  late final GetActivePromoCodesUseCase getActivePromoCodesUseCase;
   late final CreateBookingUseCase createBookingUseCase;
   late final GetProviderBookingsUseCase getProviderBookingsUseCase;
   late final ReviewBookingUseCase reviewBookingUseCase;
@@ -177,6 +245,7 @@ class InjectionContainer {
   late final GetCustomerBookingsUseCase getCustomerBookingsUseCase;
   late final SubmitReviewUseCase submitReviewUseCase;
   late final GetProviderReviewsUseCase getProviderReviewsUseCase;
+  late final ValidatePromoCodeUseCase validatePromoCodeUseCase;
 
   // Payment
   late final PaymentRemoteDataSource paymentRemoteDataSource;
@@ -198,6 +267,7 @@ class InjectionContainer {
     initProfile();
     initProviderOnboarding();
     initServices();
+    initBookmarks();
     initBooking();
     initPayment();
     initSupport();

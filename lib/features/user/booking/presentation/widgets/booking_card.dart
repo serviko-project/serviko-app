@@ -66,7 +66,9 @@ class BookingCard extends StatelessWidget {
 
                 // Booking Info
                 BookingCardInfo(
-                  date: booking.scheduledDate,
+                  date: DateTimeUtils.formatToUppercaseCustomDate(
+                    booking.scheduledDate,
+                  ),
                   timeRange:
                       '${DateTimeUtils.formatTo12Hour(booking.startTime)} - ${DateTimeUtils.formatTo12Hour(booking.endTime)}',
                   totalFormatted: '₹${booking.totalPrice.toStringAsFixed(2)}',

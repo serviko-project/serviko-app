@@ -15,7 +15,6 @@ import '../../../features/user/booking/domain/entities/booking_init_data.dart';
 import '../../../features/user/booking/domain/entities/booking_request_payload.dart';
 import '../../../features/user/booking/presentation/pages/booking_details_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_location_screen.dart';
-import '../../../features/user/booking/presentation/pages/promo_selection_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_summary_screen.dart';
 import '../../../features/user/booking/presentation/pages/booking_success_screen.dart';
 import '../../../features/user/booking/domain/entities/booking_entity.dart';
@@ -23,6 +22,8 @@ import '../../../features/user/booking/presentation/pages/e_receipt_screen.dart'
 import '../../../features/user/booking/presentation/pages/view_booking_screen.dart';
 import '../../../features/shared/support/presentation/pages/privacy_policy_screen.dart';
 import '../../../features/shared/support/presentation/pages/help_center_screen.dart';
+import '../../../features/user/home/presentation/pages/special_offers_screen.dart';
+import '../../../features/user/home/presentation/pages/popular_services_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -114,11 +115,6 @@ List<RouteBase> miscRoutes = [
     },
   ),
   GoRoute(
-    name: RouteNames.promoSelection,
-    path: RoutePaths.promoSelection,
-    builder: (context, state) => const PromoSelectionScreen(),
-  ),
-  GoRoute(
     name: RouteNames.bookingLocation,
     path: RoutePaths.bookingLocation,
     builder: (context, state) {
@@ -179,5 +175,15 @@ List<RouteBase> miscRoutes = [
     name: RouteNames.helpCenter,
     path: RoutePaths.helpCenter,
     builder: (context, state) => const HelpCenterScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.specialOffers,
+    path: RoutePaths.specialOffers,
+    builder: (context, state) => const SpecialOffersScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.popularServices,
+    path: RoutePaths.popularServices,
+    builder: (context, state) => const PopularServicesScreen(),
   ),
 ];

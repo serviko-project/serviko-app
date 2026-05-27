@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:serviko_app/core/utils/date_time_utils.dart';
 import '../../domain/usecases/get_available_slots_usecase.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/entities/promo_code.dart';
 import 'booking_details_state.dart';
 
 class BookingDetailsCubit extends Cubit<BookingDetailsState> {
@@ -56,6 +57,7 @@ class BookingDetailsCubit extends Cubit<BookingDetailsState> {
           state.copyWith(
             status: BookingDetailsStatus.success,
             availableStartTimes: slotsEntity.slots,
+            allStartTimes: slotsEntity.allSlots,
             maxDurationFromSlot: slotsEntity.maxDurationFromSlot,
             selectedStartTime: selected,
           ),
@@ -78,7 +80,20 @@ class BookingDetailsCubit extends Cubit<BookingDetailsState> {
 
   void decrementHours() {
     if (state.workingHours > 1) {
-      emit(state.copyWith(workingHours: state.workingHours - 1));
+      final newHours = state.workingHours - 1;
+      final newSubTotal = state.basePrice * newHours;
+
+      bool shouldClearPromo = false;
+      if (state.appliedPromo != null) {
+        final minAmount = state.appliedPromo!.minBookingAmount ?? 0.0;
+        if (minAmount > 0 && newSubTotal < minAmount) {
+          shouldClearPromo = true;
+        }
+      }
+
+      emit(
+        state.copyWith(workingHours: newHours, clearPromo: shouldClearPromo),
+      );
       _fetchAvailableSlots();
     }
   }
@@ -87,8 +102,12 @@ class BookingDetailsCubit extends Cubit<BookingDetailsState> {
     emit(state.copyWith(selectedStartTime: DateTimeUtils.formatTo24Hour(time)));
   }
 
-  void updatePromoCode(String code) {
-    emit(state.copyWith(promoCode: code));
+  void updatePromoCode(PromoCode? promo) {
+    if (promo == null) {
+      emit(state.copyWith(clearPromo: true));
+    } else {
+      emit(state.copyWith(appliedPromo: promo, clearPromo: false));
+    }
   }
 
   void applyPromoCode() {}

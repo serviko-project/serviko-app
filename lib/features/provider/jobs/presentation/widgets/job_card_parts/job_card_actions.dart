@@ -19,10 +19,13 @@ class JobCardActions extends StatelessWidget {
       children: [
         Expanded(
           child: OutlinedButton(
-            onPressed: isUpdating ? null : onReject,
+            onPressed: () {
+              if (isUpdating) return;
+              onReject();
+            },
             style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.red,
-              side: const BorderSide(color: Colors.red),
+              foregroundColor: isUpdating ? Colors.grey : Colors.red,
+              side: BorderSide(color: isUpdating ? Colors.grey : Colors.red),
               padding: const EdgeInsets.symmetric(vertical: 0),
               minimumSize: const Size(0, 32),
               shape: RoundedRectangleBorder(
@@ -38,9 +41,12 @@ class JobCardActions extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: ElevatedButton(
-            onPressed: isUpdating ? null : onAccept,
+            onPressed: () {
+              if (isUpdating) return;
+              onAccept();
+            },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
+              backgroundColor: isUpdating ? Colors.grey : Colors.green,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 0),
               minimumSize: const Size(0, 32),

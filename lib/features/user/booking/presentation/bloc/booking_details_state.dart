@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/entities/promo_code.dart';
 
 enum BookingDetailsStatus { initial, loading, success, failure }
 
@@ -8,8 +9,9 @@ class BookingDetailsState extends Equatable {
   final int workingHours;
   final String selectedStartTime;
   final List<String> availableStartTimes;
+  final List<String> allStartTimes;
   final Map<String, int> maxDurationFromSlot;
-  final String promoCode;
+  final PromoCode? appliedPromo;
   final double basePrice;
   final String? errorMessage;
 
@@ -19,8 +21,9 @@ class BookingDetailsState extends Equatable {
     this.workingHours = 1,
     this.selectedStartTime = '',
     this.availableStartTimes = const [],
+    this.allStartTimes = const [],
     this.maxDurationFromSlot = const {},
-    this.promoCode = '',
+    this.appliedPromo,
     this.basePrice = 0.0,
     this.errorMessage,
   });
@@ -31,8 +34,10 @@ class BookingDetailsState extends Equatable {
     int? workingHours,
     String? selectedStartTime,
     List<String>? availableStartTimes,
+    List<String>? allStartTimes,
     Map<String, int>? maxDurationFromSlot,
-    String? promoCode,
+    PromoCode? appliedPromo,
+    bool clearPromo = false,
     double? basePrice,
     String? errorMessage,
   }) {
@@ -42,14 +47,44 @@ class BookingDetailsState extends Equatable {
       workingHours: workingHours ?? this.workingHours,
       selectedStartTime: selectedStartTime ?? this.selectedStartTime,
       availableStartTimes: availableStartTimes ?? this.availableStartTimes,
+      allStartTimes: allStartTimes ?? this.allStartTimes,
       maxDurationFromSlot: maxDurationFromSlot ?? this.maxDurationFromSlot,
-      promoCode: promoCode ?? this.promoCode,
+      appliedPromo: clearPromo ? null : (appliedPromo ?? this.appliedPromo),
       basePrice: basePrice ?? this.basePrice,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
-  double get totalPrice => basePrice * workingHours;
+  double get subTotal => basePrice * workingHours;
+
+  double get discountAmount {
+    if (appliedPromo == null) return 0.0;
+
+    // Check if subTotal meets minimum booking amount
+    final minAmount = appliedPromo!.minBookingAmount ?? 0.0;
+    if (minAmount > 0 && subTotal < minAmount) {
+      return 0.0;
+    }
+
+    final isPercentage =
+        appliedPromo!.discountType.toLowerCase() == 'percentage';
+
+    if (isPercentage) {
+      double calculatedDiscount =
+          subTotal * (appliedPromo!.discountValue / 100);
+      if (appliedPromo!.maxDiscountAmount != null &&
+          calculatedDiscount > appliedPromo!.maxDiscountAmount!) {
+        return appliedPromo!.maxDiscountAmount!;
+      }
+      return calculatedDiscount;
+    } else {
+      return appliedPromo!.discountValue < subTotal
+          ? appliedPromo!.discountValue
+          : subTotal;
+    }
+  }
+
+  double get totalPrice => subTotal - discountAmount;
 
   // Check if selected duration conflicts with the next booking
   bool get hasConflict {
@@ -77,8 +112,9 @@ class BookingDetailsState extends Equatable {
     workingHours,
     selectedStartTime,
     availableStartTimes,
+    allStartTimes,
     maxDurationFromSlot,
-    promoCode,
+    appliedPromo,
     basePrice,
     errorMessage,
   ];

@@ -31,9 +31,22 @@ class SearchScreen extends StatelessWidget {
           create: (context) => SearchCubit(
             searchServicesUseCase:
                 InjectionContainer.instance.searchServicesUseCase,
+            getRecentSearchesUseCase:
+                InjectionContainer.instance.getRecentSearchesUseCase,
+            saveRecentSearchUseCase:
+                InjectionContainer.instance.saveRecentSearchUseCase,
+            removeRecentSearchUseCase:
+                InjectionContainer.instance.removeRecentSearchUseCase,
+            clearRecentSearchesUseCase:
+                InjectionContainer.instance.clearRecentSearchesUseCase,
           ),
         ),
-        BlocProvider(create: (context) => FilterCubit()),
+        BlocProvider(
+          create: (context) => FilterCubit(
+            getPriceRangeUseCase:
+                InjectionContainer.instance.getPriceRangeUseCase,
+          ),
+        ),
       ],
       child: _SearchScreenView(openFilter: openFilter),
     );

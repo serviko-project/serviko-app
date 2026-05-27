@@ -28,9 +28,19 @@ class ViewBookingPaymentSummarySection extends StatelessWidget {
                   value:
                       'Rs. ${booking.basePricePerHour.toStringAsFixed(2)}/hr',
                 ),
-                const ViewBookingDetailRow(
-                  label: 'Discount',
-                  value: 'Rs. 0.00',
+                ViewBookingDetailRow(
+                  label:
+                      booking.promoCodeText != null &&
+                          booking.promoCodeText!.isNotEmpty
+                      ? 'Discount (${booking.promoCodeText})'
+                      : 'Discount',
+                  value: 'Rs. ${booking.discountAmount.toStringAsFixed(2)}',
+                  valueStyle: booking.discountAmount > 0
+                      ? AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.success,
+                          fontWeight: FontWeight.w600,
+                        )
+                      : null,
                 ),
                 ViewBookingDetailRow(
                   label: 'Payment Status',

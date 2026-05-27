@@ -21,6 +21,7 @@ class ServiceModel extends ServiceEntity {
     super.allCategories,
     super.latitude,
     super.longitude,
+    super.isBookmarked = false,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -55,6 +56,7 @@ class ServiceModel extends ServiceEntity {
       longitude: json['longitude'] != null
           ? double.tryParse(json['longitude'].toString())
           : null,
+      isBookmarked: json['is_bookmarked'] as bool? ?? false,
     );
   }
 
@@ -81,6 +83,7 @@ class ServiceModel extends ServiceEntity {
           .toList(),
       'latitude': latitude,
       'longitude': longitude,
+      'is_bookmarked': isBookmarked,
     };
   }
 }

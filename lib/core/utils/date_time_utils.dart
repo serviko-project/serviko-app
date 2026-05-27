@@ -69,4 +69,14 @@ class DateTimeUtils {
       return datetime;
     }
   }
+
+  // Formats a date string to 'dd MMM yyyy' (10 MAY 2026)
+  static String formatToUppercaseCustomDate(String dateString) {
+    try {
+      final date = DateTime.parse(dateString);
+      return DateFormat('dd MMM yyyy').format(date).toUpperCase();
+    } catch (_) {
+      return dateString;
+    }
+  }
 }

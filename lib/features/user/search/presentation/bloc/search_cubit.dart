@@ -1,13 +1,39 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serviko_app/core/usecases/usecase.dart';
 import 'package:serviko_app/features/user/search/domain/usecases/search_services_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/get_recent_searches_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/save_recent_search_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/remove_recent_search_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/clear_recent_searches_usecase.dart';
 import 'search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
   final SearchServicesUseCase searchServicesUseCase;
+  final GetRecentSearchesUseCase getRecentSearchesUseCase;
+  final SaveRecentSearchUseCase saveRecentSearchUseCase;
+  final RemoveRecentSearchUseCase removeRecentSearchUseCase;
+  final ClearRecentSearchesUseCase clearRecentSearchesUseCase;
 
-  SearchCubit({required this.searchServicesUseCase}) : super(SearchInitial([]));
+  SearchCubit({
+    required this.searchServicesUseCase,
+    required this.getRecentSearchesUseCase,
+    required this.saveRecentSearchUseCase,
+    required this.removeRecentSearchUseCase,
+    required this.clearRecentSearchesUseCase,
+  }) : super(SearchInitial([])) {
+    loadRecentSearches();
+  }
 
   final List<String> _recents = [];
+
+  Future<void> loadRecentSearches() async {
+    final result = await getRecentSearchesUseCase(const NoParams());
+    result.fold((failure) => emit(SearchInitial(const [])), (recentsList) {
+      _recents.clear();
+      _recents.addAll(recentsList);
+      emit(SearchInitial(List.from(_recents)));
+    });
+  }
 
   Future<void> search(
     String query, {
@@ -20,7 +46,6 @@ class SearchCubit extends Cubit<SearchState> {
   }) async {
     final trimmedQuery = query.trim();
 
-    // Check if any filter is applied
     final isDefaultPrice =
         (minPrice == null || minPrice == 0) &&
         (maxPrice == null || maxPrice == 500);
@@ -35,14 +60,19 @@ class SearchCubit extends Cubit<SearchState> {
         isDefaultExperience;
 
     if (isInitialState) {
-      emit(SearchInitial(List.from(_recents)));
+      await loadRecentSearches();
       return;
     }
 
     emit(SearchLoading());
 
-    if (trimmedQuery.isNotEmpty && !_recents.contains(trimmedQuery)) {
+    if (trimmedQuery.isNotEmpty) {
+      await saveRecentSearchUseCase(trimmedQuery);
+      _recents.remove(trimmedQuery);
       _recents.insert(0, trimmedQuery);
+      if (_recents.length > 10) {
+        _recents.removeLast();
+      }
     }
 
     final result = await searchServicesUseCase(
@@ -66,14 +96,16 @@ class SearchCubit extends Cubit<SearchState> {
     });
   }
 
-  void clearRecents() {
+  Future<void> clearRecents() async {
+    await clearRecentSearchesUseCase(const NoParams());
     _recents.clear();
     if (state is SearchInitial) {
-      emit(SearchInitial(List.from(_recents)));
+      emit(SearchInitial(const []));
     }
   }
 
-  void removeRecent(String query) {
+  Future<void> removeRecent(String query) async {
+    await removeRecentSearchUseCase(query);
     _recents.remove(query);
     if (state is SearchInitial) {
       emit(SearchInitial(List.from(_recents)));

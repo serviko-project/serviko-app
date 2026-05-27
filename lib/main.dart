@@ -12,6 +12,7 @@ import 'package:serviko_app/features/user/role/presentation/cubit/role_cubit.dar
 import 'package:serviko_app/features/user/category/presentation/cubit/category_cubit.dart';
 import 'package:serviko_app/features/user/service/presentation/cubit/popular_services_cubit.dart';
 import 'package:serviko_app/features/user/service/presentation/cubit/service_detail_cubit.dart';
+import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_cubit.dart';
 import 'package:serviko_app/firebase_options.dart';
 import 'package:serviko_app/injection_container.dart';
 
@@ -47,6 +48,7 @@ class _ServikoAppState extends State<ServikoApp> {
   late final CategoryCubit _categoryCubit;
   late final PopularServicesCubit _popularServicesCubit;
   late final ServiceDetailCubit _serviceDetailCubit;
+  late final BookmarksCubit _bookmarksCubit;
   late final GoRouter _router;
 
   @override
@@ -71,10 +73,16 @@ class _ServikoAppState extends State<ServikoApp> {
     );
     _popularServicesCubit = PopularServicesCubit(
       getPopularServicesUseCase: di.getPopularServicesUseCase,
+      limit: 5,
     );
     _serviceDetailCubit = ServiceDetailCubit(
       getServiceDetailUseCase: di.getServiceDetailUseCase,
       locationService: di.locationService,
+    );
+    _bookmarksCubit = BookmarksCubit(
+      bookmarkServiceUseCase: di.bookmarkServiceUseCase,
+      unbookmarkServiceUseCase: di.unbookmarkServiceUseCase,
+      getBookmarksUseCase: di.getBookmarksUseCase,
     );
 
     _authBloc.add(const AuthCheckRequested());
@@ -82,6 +90,7 @@ class _ServikoAppState extends State<ServikoApp> {
     // Trigger profile fetch
     if (_authBloc.state is AuthAuthenticated) {
       _profileCubit.fetchProfile();
+      _bookmarksCubit.fetchBookmarks();
     }
 
     _router = AppRouter.router(_authBloc, widget.roleCubit);
@@ -95,6 +104,7 @@ class _ServikoAppState extends State<ServikoApp> {
     _categoryCubit.close();
     _popularServicesCubit.close();
     _serviceDetailCubit.close();
+    _bookmarksCubit.close();
     _router.dispose();
 
     super.dispose();
@@ -110,6 +120,7 @@ class _ServikoAppState extends State<ServikoApp> {
         BlocProvider.value(value: _categoryCubit),
         BlocProvider.value(value: _popularServicesCubit),
         BlocProvider.value(value: _serviceDetailCubit),
+        BlocProvider.value(value: _bookmarksCubit),
       ],
 
       child: MultiBlocListener(
@@ -118,6 +129,7 @@ class _ServikoAppState extends State<ServikoApp> {
             listener: (context, state) {
               if (state is AuthAuthenticated) {
                 _profileCubit.fetchProfile();
+                _bookmarksCubit.fetchBookmarks();
                 unawaited(
                   InjectionContainer.instance.zegoService.login(state.user),
                 );

@@ -3,6 +3,7 @@ import 'package:serviko_app/core/errors/failures.dart';
 import '../entities/available_slots_entity.dart';
 import '../entities/booking_entity.dart';
 import '../entities/review_entity.dart';
+import 'package:serviko_app/features/provider/promo_codes/domain/entities/promo_code.dart';
 
 abstract class BookingRepository {
   Future<Either<Failure, AvailableSlotsEntity>> getAvailableSlots({
@@ -19,6 +20,21 @@ abstract class BookingRepository {
     double? customerLatitude,
     double? customerLongitude,
     String? customerAddress,
+    String? promoCode,
+  });
+
+  Future<Either<Failure, Map<String, dynamic>>> validatePromoCode({
+    required String code,
+    required String serviceId,
+  });
+
+  Future<Either<Failure, List<PromoCode>>> getProviderPromos({
+    required String providerId,
+  });
+
+  Future<Either<Failure, List<PromoCode>>> getActivePromoCodes({
+    int page = 1,
+    int limit = 20,
   });
 
   Future<Either<Failure, List<BookingEntity>>> getProviderBookings({
