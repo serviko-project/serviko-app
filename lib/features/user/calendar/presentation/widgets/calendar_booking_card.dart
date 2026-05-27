@@ -52,8 +52,8 @@ class CalendarBookingCard extends StatelessWidget {
                           booking.providerImage!.isNotEmpty
                       ? Image.network(
                           booking.providerImage!,
-                          width: 80,
-                          height: 80,
+                          width: 70,
+                          height: 70,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               _buildPlaceholder(),
@@ -70,7 +70,7 @@ class CalendarBookingCard extends StatelessWidget {
                     children: [
                       Text(
                         booking.categoryName ?? 'Service Booking',
-                        style: AppTextStyles.h3,
+                        style: AppTextStyles.h3.copyWith(fontSize: 14),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -79,6 +79,7 @@ class CalendarBookingCard extends StatelessWidget {
                         booking.providerName ?? 'Unknown Provider',
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.textSecondary,
+                          fontSize: 11,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -127,8 +128,8 @@ class CalendarBookingCard extends StatelessWidget {
 
   Widget _buildPlaceholder() {
     return Container(
-      width: 80,
-      height: 80,
+      width: 70,
+      height: 70,
       color: AppColors.divider,
       child: const Center(
         child: HugeIcon(

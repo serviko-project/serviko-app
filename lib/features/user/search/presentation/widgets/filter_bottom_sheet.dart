@@ -141,28 +141,42 @@ class FilterBottomSheet extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Price', style: AppTextStyles.h3),
-            Text(
-              '₹${state.priceRange.start.round()} - ₹${state.priceRange.end.round()}',
-              style: AppTextStyles.h3.copyWith(color: AppColors.primary),
-            ),
+            if (!state.isLoadingPriceRange)
+              Text(
+                '₹${state.priceRange.start.round()}/hr - ₹${state.priceRange.end.round()}/hr',
+                style: AppTextStyles.h3.copyWith(
+                  fontSize: 14,
+                  color: AppColors.primary,
+                ),
+              ),
           ],
         ),
         const SizedBox(height: AppSizes.sm),
-        RangeSlider(
-          values: state.priceRange,
-          min: 0,
-          max: 500,
-          divisions: 500,
-          activeColor: AppColors.primary,
-          inactiveColor: AppColors.shimmerBase,
-          labels: RangeLabels(
-            '₹${state.priceRange.start.round()}',
-            '₹${state.priceRange.end.round()}',
+        if (state.isLoadingPriceRange)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
+            child: Center(
+              child: LinearProgressIndicator(color: AppColors.primary),
+            ),
+          )
+        else
+          RangeSlider(
+            values: state.priceRange,
+            min: state.minPrice,
+            max: state.maxPrice,
+            divisions: (state.maxPrice - state.minPrice).round() > 0
+                ? (state.maxPrice - state.minPrice).round()
+                : 1,
+            activeColor: AppColors.primary,
+            inactiveColor: AppColors.shimmerBase,
+            labels: RangeLabels(
+              '₹${state.priceRange.start.round()}/hr',
+              '₹${state.priceRange.end.round()}/hr',
+            ),
+            onChanged: (RangeValues values) {
+              context.read<FilterCubit>().setPriceRange(values);
+            },
           ),
-          onChanged: (RangeValues values) {
-            context.read<FilterCubit>().setPriceRange(values);
-          },
-        ),
       ],
     );
   }
@@ -171,30 +185,20 @@ class FilterBottomSheet extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: OutlinedButton(
-            onPressed: () {
-              context.read<FilterCubit>().reset();
-            },
-            style: OutlinedButton.styleFrom(
-              backgroundColor: AppColors.primary.withAlpha(20),
-              side: BorderSide.none,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSizes.radiusXl),
-              ),
-            ),
-            child: Text(
-              'Reset',
-              style: AppTextStyles.h3.copyWith(
-                color: AppColors.primary,
-                letterSpacing: 0.5,
-              ),
-            ),
+          child: CustomButton(
+            text: 'Reset',
+            isOutlined: true,
+            height: 43,
+            onPressed: () => context.read<FilterCubit>().reset(),
           ),
         ),
-        const SizedBox(width: AppSizes.md),
+        const SizedBox(width: AppSizes.sm),
         Expanded(
-          child: CustomButton(text: 'Filter', onPressed: () => context.pop()),
+          child: CustomButton(
+            text: 'Filter',
+            height: 44,
+            onPressed: () => context.pop(),
+          ),
         ),
       ],
     );

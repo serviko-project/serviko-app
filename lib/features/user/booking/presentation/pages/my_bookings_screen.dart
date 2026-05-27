@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/widgets/custom_app_bar.dart';
+import 'package:serviko_app/core/widgets/custom_error_widget.dart';
 import 'package:serviko_app/features/user/booking/domain/entities/booking_entity.dart';
 import 'package:serviko_app/features/user/booking/domain/enums/booking_tab_type.dart';
 import 'package:serviko_app/injection_container.dart';
@@ -105,6 +106,18 @@ class MyBookingsView extends StatelessWidget {
       );
     }
 
-    return const Center(child: Text('Something went wrong'));
+    if (state is MyBookingsError) {
+      return CustomErrorWidget(
+        message: state.message,
+        onRetry: () => context.read<MyBookingsCubit>().fetchBookings(),
+        isFullPage: true,
+      );
+    }
+
+    return CustomErrorWidget(
+      message: 'Something went wrong.',
+      onRetry: () => context.read<MyBookingsCubit>().fetchBookings(),
+      isFullPage: true,
+    );
   }
 }

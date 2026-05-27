@@ -29,14 +29,12 @@ class SearchResultsView extends StatelessWidget {
 
         // Search results list
         Expanded(
-          child: ListView.separated(
+          child: ListView.builder(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSizes.md,
               vertical: AppSizes.sm,
             ),
             itemCount: isLoading ? 4 : (state?.results.length ?? 0),
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: AppSizes.sm),
             itemBuilder: (context, index) {
               if (isLoading) {
                 return const ServiceCard(

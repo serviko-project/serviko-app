@@ -36,6 +36,9 @@ class BookingModel extends BookingEntity {
     super.paymentReference,
     super.paidAt,
     super.refundedAt,
+    super.originalPrice,
+    super.discountAmount,
+    super.promoCodeText,
     required super.createdAt,
     required super.updatedAt,
   });
@@ -80,6 +83,13 @@ class BookingModel extends BookingEntity {
       paymentReference: json['payment_reference'] as String?,
       paidAt: json['paid_at'] as String?,
       refundedAt: json['refunded_at'] as String?,
+      originalPrice: json['original_price'] != null
+          ? (json['original_price'] as num).toDouble()
+          : null,
+      discountAmount: json['discount_amount'] != null
+          ? (json['discount_amount'] as num).toDouble()
+          : 0.0,
+      promoCodeText: json['promo_code_text'] as String?,
       createdAt: (json['created_at'] as String?) ?? '',
       updatedAt: (json['updated_at'] as String?) ?? '',
     );

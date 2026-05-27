@@ -14,4 +14,13 @@ abstract class SearchRepository {
     int page = 1,
     int limit = 20,
   });
+
+  Future<Either<Failure, Map<String, double>>> getPriceRange({
+    String? categoryId,
+  });
+
+  Future<Either<Failure, List<String>>> getRecentSearches();
+  Future<Either<Failure, void>> saveRecentSearch(String query);
+  Future<Either<Failure, void>> removeRecentSearch(String query);
+  Future<Either<Failure, void>> clearRecentSearches();
 }

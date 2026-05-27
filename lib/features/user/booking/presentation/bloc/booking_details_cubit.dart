@@ -57,6 +57,7 @@ class BookingDetailsCubit extends Cubit<BookingDetailsState> {
           state.copyWith(
             status: BookingDetailsStatus.success,
             availableStartTimes: slotsEntity.slots,
+            allStartTimes: slotsEntity.allSlots,
             maxDurationFromSlot: slotsEntity.maxDurationFromSlot,
             selectedStartTime: selected,
           ),

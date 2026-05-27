@@ -159,7 +159,7 @@ class ServiceInfoSection extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: ' - ₹${service.basePricePerHour}',
+                          text: ' - ₹${service.basePricePerHour}/hr',
                           style: AppTextStyles.labelSmall.copyWith(
                             color: isSelected
                                 ? Colors.white.withAlpha(200)

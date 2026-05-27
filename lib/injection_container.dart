@@ -79,8 +79,14 @@ import 'package:serviko_app/features/user/service/domain/usecases/get_popular_se
 import 'package:serviko_app/features/user/service/domain/usecases/get_service_detail_usecase.dart';
 
 import 'package:serviko_app/features/user/search/data/datasources/search_remote_data_source.dart';
+import 'package:serviko_app/features/user/search/data/datasources/search_local_datasource.dart';
 import 'package:serviko_app/features/user/search/domain/repositories/search_repository.dart';
 import 'package:serviko_app/features/user/search/domain/usecases/search_services_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/get_price_range_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/get_recent_searches_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/save_recent_search_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/remove_recent_search_usecase.dart';
+import 'package:serviko_app/features/user/search/domain/usecases/clear_recent_searches_usecase.dart';
 
 import 'package:serviko_app/features/user/booking/data/datasources/booking_remote_data_source.dart';
 import 'package:serviko_app/features/user/booking/domain/repositories/booking_repository.dart';
@@ -215,8 +221,14 @@ class InjectionContainer {
 
   // Search
   late final SearchRemoteDataSource searchRemoteDataSource;
+  late final SearchLocalDataSource searchLocalDataSource;
   late final SearchRepository searchRepository;
   late final SearchServicesUseCase searchServicesUseCase;
+  late final GetPriceRangeUseCase getPriceRangeUseCase;
+  late final GetRecentSearchesUseCase getRecentSearchesUseCase;
+  late final SaveRecentSearchUseCase saveRecentSearchUseCase;
+  late final RemoveRecentSearchUseCase removeRecentSearchUseCase;
+  late final ClearRecentSearchesUseCase clearRecentSearchesUseCase;
 
   // Booking
   late final BookingRemoteDataSource bookingRemoteDataSource;

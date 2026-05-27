@@ -18,7 +18,7 @@ class BookmarksEmptyState extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.xl),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Lottie.asset(
                 AppAssets.notFoundAnimation,
@@ -28,7 +28,7 @@ class BookmarksEmptyState extends StatelessWidget {
               const SizedBox(height: AppSizes.md),
               Text(
                 'No Bookmarks Found..!!',
-                style: AppTextStyles.h2,
+                style: AppTextStyles.h2.copyWith(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSizes.md),
@@ -37,7 +37,7 @@ class BookmarksEmptyState extends StatelessWidget {
                     ? 'No bookmarked services found in the category "$categoryName".'
                     : "You haven't added any services to your bookmarks yet.",
                 style: AppTextStyles.bodyMedium.copyWith(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: AppColors.textSecondary,
                 ),
                 textAlign: TextAlign.center,

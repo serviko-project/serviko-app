@@ -95,11 +95,12 @@ class BookingDetailsScreen extends StatelessWidget {
                         style: const TextStyle(color: Colors.red),
                       ),
                     )
-                  else if (state.availableStartTimes.isEmpty)
+                  else if (state.allStartTimes.isEmpty)
                     TimeSlotsWarningWidget()
                   else
                     StartTimeSlotsWidget(
-                      timeSlots: state.availableStartTimes,
+                      timeSlots: state.allStartTimes,
+                      availableSlots: state.availableStartTimes,
                       selectedTime: state.selectedStartTime,
                       onTimeSelected: (time) {
                         context.read<BookingDetailsCubit>().selectStartTime(
@@ -172,6 +173,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       workingHours: state.workingHours,
                       selectedStartTime: state.selectedStartTime,
                       promoCode: state.appliedPromo?.code ?? '',
+                      discountAmount: state.discountAmount,
                       totalPrice: state.totalPrice,
                     );
                     context.pushNamed(

@@ -99,7 +99,7 @@ class ReviewCard extends StatelessWidget {
 
           const SizedBox(height: AppSizes.md),
           Text(
-            'Posted : ${DateTimeUtils.formatToReadableDate(review.createdAt)}',
+            'Posted : ${DateTimeUtils.formatToUppercaseCustomDate(review.createdAt)}',
             style: AppTextStyles.caption,
           ),
 

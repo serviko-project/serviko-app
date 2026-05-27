@@ -50,10 +50,18 @@ class ReceiptPdfService {
               _section(
                 children: [
                   _row(
-                    'Amount',
+                    'Subtotal',
+                    'Rs. ${(booking.originalPrice ?? (booking.basePricePerHour * booking.durationHours)).toStringAsFixed(2)}',
+                  ),
+                  if (booking.discountAmount > 0)
+                    _row(
+                      'Promo Discount (${booking.promoCodeText ?? "Promo"})',
+                      '-Rs. ${booking.discountAmount.toStringAsFixed(2)}',
+                    ),
+                  _row(
+                    'Total Paid',
                     'Rs. ${booking.totalPrice.toStringAsFixed(2)}',
                   ),
-                  _row('Promo', 'Rs. 0.00'),
                   _row('Payment Method', 'Razorpay'),
                   _row(
                     'Payment Date',

@@ -30,19 +30,23 @@ class SearchEmptyView extends StatelessWidget {
               children: [
                 Lottie.asset(
                   AppAssets.notFoundAnimation,
-                  width: 300,
-                  height: 300,
+                  width: 200,
+                  height: 200,
                 ),
                 Text(
                   "No results found..!!",
-                  style: AppTextStyles.h2,
+                  style: AppTextStyles.h2.copyWith(
+                    letterSpacing: 0.5,
+                    fontSize: 18,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSizes.sm),
                 Text(
                   "We couldn't find anything for that.",
-                  style: AppTextStyles.bodyLarge.copyWith(
+                  style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
+                    fontSize: 12,
                   ),
                   textAlign: TextAlign.center,
                 ),

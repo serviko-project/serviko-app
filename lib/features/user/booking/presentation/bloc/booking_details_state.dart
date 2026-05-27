@@ -9,6 +9,7 @@ class BookingDetailsState extends Equatable {
   final int workingHours;
   final String selectedStartTime;
   final List<String> availableStartTimes;
+  final List<String> allStartTimes;
   final Map<String, int> maxDurationFromSlot;
   final PromoCode? appliedPromo;
   final double basePrice;
@@ -20,6 +21,7 @@ class BookingDetailsState extends Equatable {
     this.workingHours = 1,
     this.selectedStartTime = '',
     this.availableStartTimes = const [],
+    this.allStartTimes = const [],
     this.maxDurationFromSlot = const {},
     this.appliedPromo,
     this.basePrice = 0.0,
@@ -32,6 +34,7 @@ class BookingDetailsState extends Equatable {
     int? workingHours,
     String? selectedStartTime,
     List<String>? availableStartTimes,
+    List<String>? allStartTimes,
     Map<String, int>? maxDurationFromSlot,
     PromoCode? appliedPromo,
     bool clearPromo = false,
@@ -44,6 +47,7 @@ class BookingDetailsState extends Equatable {
       workingHours: workingHours ?? this.workingHours,
       selectedStartTime: selectedStartTime ?? this.selectedStartTime,
       availableStartTimes: availableStartTimes ?? this.availableStartTimes,
+      allStartTimes: allStartTimes ?? this.allStartTimes,
       maxDurationFromSlot: maxDurationFromSlot ?? this.maxDurationFromSlot,
       appliedPromo: clearPromo ? null : (appliedPromo ?? this.appliedPromo),
       basePrice: basePrice ?? this.basePrice,
@@ -108,6 +112,7 @@ class BookingDetailsState extends Equatable {
     workingHours,
     selectedStartTime,
     availableStartTimes,
+    allStartTimes,
     maxDurationFromSlot,
     appliedPromo,
     basePrice,

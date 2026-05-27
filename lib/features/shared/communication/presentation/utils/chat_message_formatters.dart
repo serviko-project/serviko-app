@@ -1,4 +1,5 @@
-import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:zego_zimkit/zego_zimkit.dart';
 
 String chatMessagePreview(ZIMKitMessage? message) {
@@ -26,4 +27,41 @@ String chatMessageTime(ZIMKitMessage? message) {
     return 'Yesterday';
   }
   return DateFormat('MMM d, yyyy').format(dateTime);
+}
+
+String formatChatDateSeparator(DateTime datetime) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(const Duration(days: 1));
+  final dateToCompare = DateTime(datetime.year, datetime.month, datetime.day);
+
+  if (dateToCompare == today) {
+    return 'TODAY';
+  } else if (dateToCompare == yesterday) {
+    return 'YESTERDAY';
+  } else {
+    return DateFormat('dd MMM yyyy').format(datetime).toUpperCase();
+  }
+}
+
+double calculateChatInputHeight(String text, double screenWidth) {
+  if (text.isEmpty) return 70.0;
+
+  final textPainter = TextPainter(
+    text: TextSpan(
+      text: text,
+      style: const TextStyle(fontSize: 16, height: 1.2),
+    ),
+    textDirection: TextDirection.ltr,
+  );
+  final textWidth = screenWidth - 180;
+  textPainter.layout(maxWidth: textWidth > 0 ? textWidth : 180);
+  final numLines = textPainter.computeLineMetrics().length;
+
+  if (numLines == 2) {
+    return 92.0;
+  } else if (numLines >= 3) {
+    return 112.0;
+  }
+  return 70.0;
 }
