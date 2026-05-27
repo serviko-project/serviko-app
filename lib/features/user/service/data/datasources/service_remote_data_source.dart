@@ -2,7 +2,10 @@ import 'package:serviko_app/core/network/api_client.dart';
 import '../models/service_model.dart';
 
 abstract class ServiceRemoteDataSource {
-  Future<List<ServiceModel>> getPopularServices({String? categoryId});
+  Future<List<ServiceModel>> getPopularServices({
+    String? categoryId,
+    int? limit,
+  });
   Future<ServiceModel> getServiceDetail(String id);
 }
 
@@ -12,10 +15,16 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   ServiceRemoteDataSourceImpl({required this.apiClient});
 
   @override
-  Future<List<ServiceModel>> getPopularServices({String? categoryId}) async {
+  Future<List<ServiceModel>> getPopularServices({
+    String? categoryId,
+    int? limit,
+  }) async {
     final Map<String, dynamic> queryParams = {};
     if (categoryId != null && categoryId.trim().isNotEmpty) {
       queryParams['category_id'] = categoryId;
+    }
+    if (limit != null) {
+      queryParams['limit'] = limit;
     }
 
     return apiClient.request<List<ServiceModel>>(

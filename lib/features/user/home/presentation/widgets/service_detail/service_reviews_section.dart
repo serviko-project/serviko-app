@@ -65,7 +65,9 @@ class _ServiceReviewsSectionState extends State<ServiceReviewsSection> {
                   ),
                   const SizedBox(width: AppSizes.xs),
                   Text(
-                    '${widget.rating.toStringAsFixed(1)} (${widget.reviewsCount} reviews)',
+                    widget.reviewsCount == 0
+                        ? '— (No reviews)'
+                        : '${widget.rating.toStringAsFixed(1)} (${widget.reviewsCount} reviews)',
                     style: AppTextStyles.h3,
                   ),
                 ],
@@ -107,9 +109,10 @@ class _ServiceReviewsSectionState extends State<ServiceReviewsSection> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const SizedBox(height: AppSizes.md),
                         Icon(
                           Icons.rate_review_outlined,
-                          size: AppSizes.xxl,
+                          size: AppSizes.xl * 2,
                           color: AppColors.textSecondary.withValues(alpha: 0.3),
                         ),
                         const SizedBox(height: AppSizes.md),
@@ -118,9 +121,11 @@ class _ServiceReviewsSectionState extends State<ServiceReviewsSection> {
                               ? 'No reviews yet.'
                               : 'No reviews yet for this rating filter.',
                           style: AppTextStyles.bodyMedium.copyWith(
+                            fontSize: 13,
                             color: AppColors.textSecondary,
                           ),
                         ),
+                        const SizedBox(height: AppSizes.xxl),
                       ],
                     ),
                   ),

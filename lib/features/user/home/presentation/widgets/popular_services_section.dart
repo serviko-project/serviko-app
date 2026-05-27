@@ -39,7 +39,10 @@ class _PopularServicesView extends StatelessWidget {
           child: Column(
             children: [
               // Header
-              SectionHeader(title: 'Most Popular Services', onSeeAllTap: () {}),
+              SectionHeader(
+                title: 'Most Popular Services',
+                onSeeAllTap: () => context.pushNamed(AppRouter.popularServices),
+              ),
               const SizedBox(height: AppSizes.md),
 
               // Filters

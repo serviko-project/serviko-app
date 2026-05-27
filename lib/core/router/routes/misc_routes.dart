@@ -23,6 +23,7 @@ import '../../../features/user/booking/presentation/pages/view_booking_screen.da
 import '../../../features/shared/support/presentation/pages/privacy_policy_screen.dart';
 import '../../../features/shared/support/presentation/pages/help_center_screen.dart';
 import '../../../features/user/home/presentation/pages/special_offers_screen.dart';
+import '../../../features/user/home/presentation/pages/popular_services_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -179,5 +180,10 @@ List<RouteBase> miscRoutes = [
     name: RouteNames.specialOffers,
     path: RoutePaths.specialOffers,
     builder: (context, state) => const SpecialOffersScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.popularServices,
+    path: RoutePaths.popularServices,
+    builder: (context, state) => const PopularServicesScreen(),
   ),
 ];

@@ -73,6 +73,7 @@ class _ServikoAppState extends State<ServikoApp> {
     );
     _popularServicesCubit = PopularServicesCubit(
       getPopularServicesUseCase: di.getPopularServicesUseCase,
+      limit: 5,
     );
     _serviceDetailCubit = ServiceDetailCubit(
       getServiceDetailUseCase: di.getServiceDetailUseCase,

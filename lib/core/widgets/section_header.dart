@@ -22,7 +22,13 @@ class SectionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: AppTextStyles.h2),
+          Text(
+            title,
+            style: AppTextStyles.h2.copyWith(
+              fontSize: title.length > 15 ? 18 : 19,
+              letterSpacing: 0.5,
+            ),
+          ),
           if (onSeeAllTap != null)
             TextButton(
               onPressed: onSeeAllTap,

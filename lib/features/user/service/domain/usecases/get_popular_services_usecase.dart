@@ -16,15 +16,19 @@ class GetPopularServicesUseCase
   Future<Either<Failure, List<ServiceEntity>>> call(
     GetPopularServicesParams params,
   ) async {
-    return await repository.getPopularServices(categoryId: params.categoryId);
+    return await repository.getPopularServices(
+      categoryId: params.categoryId,
+      limit: params.limit,
+    );
   }
 }
 
 class GetPopularServicesParams extends Equatable {
   final String? categoryId;
+  final int? limit;
 
-  const GetPopularServicesParams({this.categoryId});
+  const GetPopularServicesParams({this.categoryId, this.limit});
 
   @override
-  List<Object?> get props => [categoryId];
+  List<Object?> get props => [categoryId, limit];
 }

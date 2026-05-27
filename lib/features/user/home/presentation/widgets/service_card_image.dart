@@ -8,12 +8,14 @@ class ServiceCardImage extends StatelessWidget {
   final String? bannerImage;
   final String categoryIcon;
   final bool isLoading;
+  final double size;
 
   const ServiceCardImage({
     super.key,
     this.bannerImage,
     required this.categoryIcon,
     this.isLoading = false,
+    this.size = 90.0,
   });
 
   @override
@@ -31,14 +33,14 @@ class ServiceCardImage extends StatelessWidget {
   // Build shimmer effect while loading the image
   Widget _buildShimmer() {
     return Container(
-      width: 100,
-      height: 100,
+      width: size,
+      height: size,
       color: AppColors.shimmerBase,
       child: Center(
         child: Icon(
           IconMapper.fromName(categoryIcon),
           color: Colors.white.withAlpha(100),
-          size: 32,
+          size: size * 0.35,
         ),
       ),
     );
@@ -47,8 +49,8 @@ class ServiceCardImage extends StatelessWidget {
   Widget _buildNetworkImage() {
     return CachedNetworkImage(
       imageUrl: bannerImage!,
-      width: 100,
-      height: 100,
+      width: size,
+      height: size,
       fit: BoxFit.cover,
       placeholder: (context, url) => _buildShimmer(),
       fadeInDuration: const Duration(milliseconds: 400),
@@ -60,8 +62,8 @@ class ServiceCardImage extends StatelessWidget {
   Widget _buildPlaceholder() {
     final Color baseColor = _getCategoryColor(categoryIcon);
     return Container(
-      width: 100,
-      height: 100,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -75,7 +77,7 @@ class ServiceCardImage extends StatelessWidget {
       ),
       child: Center(
         child: Container(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: EdgeInsets.all(size * 0.15),
           decoration: BoxDecoration(
             color: Colors.white.withAlpha(40),
             shape: BoxShape.circle,
@@ -83,7 +85,7 @@ class ServiceCardImage extends StatelessWidget {
           ),
           child: Icon(
             IconMapper.fromName(categoryIcon),
-            size: 32,
+            size: size * 0.35,
             color: Colors.white,
           ),
         ),
