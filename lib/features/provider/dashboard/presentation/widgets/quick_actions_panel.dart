@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/route_constants.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:serviko_app/features/provider/profile/presentation/cubit/provider_profile_cubit.dart';
 
 // Quick Action Shortcuts Panel
 class QuickActionsPanel extends StatelessWidget {
@@ -40,7 +42,10 @@ class QuickActionsPanel extends StatelessWidget {
               icon: HugeIcons.strokeRoundedUserEdit01,
               color: AppColors.info,
               bgColor: AppColors.info.withValues(alpha: 0.1),
-              onTap: () => context.pushNamed(RouteNames.providerEditDetails),
+              onTap: () => context.pushNamed(
+                RouteNames.providerEditDetails,
+                extra: context.read<ProviderProfileCubit>(),
+              ),
             ),
             _buildActionItem(
               context,

@@ -14,6 +14,7 @@ import 'package:serviko_app/features/user/profile/presentation/widgets/logout_ti
 import 'package:serviko_app/features/user/profile/presentation/widgets/policy_and_help_card_widget.dart';
 import 'package:serviko_app/features/user/profile/presentation/widgets/profile_info_header.dart';
 import 'package:serviko_app/features/user/profile/presentation/widgets/profile_menu_tile.dart';
+import 'package:serviko_app/features/provider/profile/presentation/cubit/provider_profile_cubit.dart';
 
 // Profile Screen of Provider
 class ProviderProfileScreen extends StatelessWidget {
@@ -82,6 +83,7 @@ class ProviderProfileScreen extends StatelessWidget {
                               icon: HugeIcons.strokeRoundedUserEdit01,
                               onTap: () => context.pushNamed(
                                 RouteNames.providerEditDetails,
+                                extra: context.read<ProviderProfileCubit>(),
                               ),
                             ),
                             ProfileMenuDivider(),
@@ -90,7 +92,10 @@ class ProviderProfileScreen extends StatelessWidget {
                             ProfileMenuTile(
                               title: 'Manage Services',
                               icon: HugeIcons.strokeRoundedBriefcase01,
-                              onTap: null,
+                              onTap: () => context.pushNamed(
+                                RouteNames.providerEditServices,
+                                extra: context.read<ProviderProfileCubit>(),
+                              ),
                             ),
                             ProfileMenuDivider(),
 
@@ -98,7 +103,10 @@ class ProviderProfileScreen extends StatelessWidget {
                             ProfileMenuTile(
                               title: 'Timing & Availability',
                               icon: HugeIcons.strokeRoundedClock01,
-                              onTap: null,
+                              onTap: () => context.pushNamed(
+                                RouteNames.providerEditAvailability,
+                                extra: context.read<ProviderProfileCubit>(),
+                              ),
                             ),
                             ProfileMenuDivider(),
 
@@ -106,7 +114,10 @@ class ProviderProfileScreen extends StatelessWidget {
                             ProfileMenuTile(
                               title: 'Service Area',
                               icon: HugeIcons.strokeRoundedLocation01,
-                              onTap: null,
+                              onTap: () => context.pushNamed(
+                                RouteNames.providerEditServiceArea,
+                                extra: context.read<ProviderProfileCubit>(),
+                              ),
                             ),
                             ProfileMenuDivider(),
 

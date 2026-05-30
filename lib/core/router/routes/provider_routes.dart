@@ -11,6 +11,9 @@ import '../route_constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/injection_container.dart';
 import '../../../features/provider/profile/presentation/pages/edit_provider_details_screen.dart';
+import '../../../features/provider/profile/presentation/pages/edit_provider_services_screen.dart';
+import '../../../features/provider/profile/presentation/pages/edit_provider_availability_screen.dart';
+import '../../../features/provider/profile/presentation/pages/edit_provider_service_area_screen.dart';
 import '../../../features/provider/jobs/presentation/pages/provider_jobs_screen.dart';
 import '../../../features/provider/jobs/presentation/cubit/provider_jobs_cubit.dart';
 import '../../../features/shared/communication/presentation/cubit/contact_directory_cubit.dart';
@@ -142,13 +145,56 @@ List<RouteBase> providerRoutes = [
               GoRoute(
                 name: RouteNames.providerEditDetails,
                 path: RoutePaths.providerEditDetails,
-                builder: (context, state) => const EditProviderDetailsScreen(),
+                parentNavigatorKey: ZegoService.navigatorKey,
+                builder: (context, state) {
+                  final profileCubit = state.extra as ProviderProfileCubit;
+                  return BlocProvider.value(
+                    value: profileCubit,
+                    child: const EditProviderDetailsScreen(),
+                  );
+                },
               ),
               GoRoute(
                 name: RouteNames.providerPromoCodes,
                 path: RoutePaths.providerPromoCodes,
                 parentNavigatorKey: ZegoService.navigatorKey,
                 builder: (context, state) => const ProviderPromoCodesScreen(),
+              ),
+              GoRoute(
+                name: RouteNames.providerEditServices,
+                path: RoutePaths.providerEditServices,
+                parentNavigatorKey: ZegoService.navigatorKey,
+                builder: (context, state) {
+                  final profileCubit = state.extra as ProviderProfileCubit;
+                  return BlocProvider.value(
+                    value: profileCubit,
+                    child: const EditProviderServicesScreen(),
+                  );
+                },
+              ),
+              GoRoute(
+                name: RouteNames.providerEditAvailability,
+                path: RoutePaths.providerEditAvailability,
+                parentNavigatorKey: ZegoService.navigatorKey,
+                builder: (context, state) {
+                  final profileCubit = state.extra as ProviderProfileCubit;
+                  return BlocProvider.value(
+                    value: profileCubit,
+                    child: const EditProviderAvailabilityScreen(),
+                  );
+                },
+              ),
+              GoRoute(
+                name: RouteNames.providerEditServiceArea,
+                path: RoutePaths.providerEditServiceArea,
+                parentNavigatorKey: ZegoService.navigatorKey,
+                builder: (context, state) {
+                  final profileCubit = state.extra as ProviderProfileCubit;
+                  return BlocProvider.value(
+                    value: profileCubit,
+                    child: const EditProviderServiceAreaScreen(),
+                  );
+                },
               ),
             ],
           ),
