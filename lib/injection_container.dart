@@ -22,6 +22,8 @@ import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/delete_banner_image_usecase.dart';
 import 'package:serviko_app/features/provider/onboarding/domain/usecases/upload_document_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_provider_services_usecase.dart';
+import 'package:serviko_app/features/provider/onboarding/domain/usecases/update_provider_availability_usecase.dart';
 import 'package:serviko_app/features/provider/dashboard/data/datasources/provider_dashboard_remote_datasource.dart';
 import 'package:serviko_app/features/provider/dashboard/domain/repositories/provider_dashboard_repository.dart';
 import 'package:serviko_app/features/provider/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
@@ -94,6 +96,7 @@ import 'package:serviko_app/features/user/booking/domain/usecases/create_booking
 import 'package:serviko_app/features/user/booking/domain/usecases/get_available_slots_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_bookings_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_reviews_usecase.dart';
+import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_reviews_stats_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_provider_promos_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/review_booking_usecase.dart';
 import 'package:serviko_app/features/user/booking/domain/usecases/get_booking_detail_usecase.dart';
@@ -179,6 +182,9 @@ class InjectionContainer {
   late final UploadBannerImageUseCase uploadBannerImageUseCase;
   late final DeleteBannerImageUseCase deleteBannerImageUseCase;
   late final SubmitCategoryRequestUseCase submitCategoryRequestUseCase;
+  late final UpdateProviderServicesUseCase updateProviderServicesUseCase;
+  late final UpdateProviderAvailabilityUseCase
+  updateProviderAvailabilityUseCase;
 
   // Provider Dashboard
   late final ProviderDashboardRemoteDataSource
@@ -245,6 +251,7 @@ class InjectionContainer {
   late final GetCustomerBookingsUseCase getCustomerBookingsUseCase;
   late final SubmitReviewUseCase submitReviewUseCase;
   late final GetProviderReviewsUseCase getProviderReviewsUseCase;
+  late final GetProviderReviewsStatsUseCase getProviderReviewsStatsUseCase;
   late final ValidatePromoCodeUseCase validatePromoCodeUseCase;
 
   // Payment

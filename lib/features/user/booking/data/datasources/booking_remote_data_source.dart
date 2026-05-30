@@ -74,6 +74,10 @@ abstract class BookingRemoteDataSource {
     int page = 1,
     int limit = 20,
   });
+
+  Future<Map<String, dynamic>> getProviderReviewStats({
+    required String providerId,
+  });
 }
 
 class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
@@ -306,6 +310,19 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
         final List list = data as List;
         return list.map((e) => ReviewModel.fromJson(e)).toList();
       },
+    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> getProviderReviewStats({
+    required String providerId,
+  }) {
+    return apiClient.request(
+      call: () => apiClient.dio.get(
+        '/api/v1/reviews/stats',
+        queryParameters: {'provider_id': providerId},
+      ),
+      parser: (data) => data as Map<String, dynamic>,
     );
   }
 }

@@ -46,6 +46,10 @@ class RouteNames {
   static const String providerProfile = 'providerProfile';
   static const String providerEditDetails = 'providerEditDetails';
   static const String providerPromoCodes = 'providerPromoCodes';
+  static const String providerEditServices = 'providerEditServices';
+  static const String providerEditAvailability = 'providerEditAvailability';
+  static const String providerEditServiceArea = 'providerEditServiceArea';
+  static const String providerReviews = 'providerReviews';
 }
 
 class RoutePaths {
@@ -97,6 +101,12 @@ class RoutePaths {
   static const String providerProfile = '/provider/profile';
   static const String providerEditDetails = '/provider/profile/edit';
   static const String providerPromoCodes = '/provider/profile/promo-codes';
+  static const String providerEditServices = '/provider/profile/edit-services';
+  static const String providerEditAvailability =
+      '/provider/profile/edit-availability';
+  static const String providerEditServiceArea =
+      '/provider/profile/edit-service-area';
+  static const String providerReviews = '/provider/profile/reviews';
 
   // Auth-related paths
   static final Set<String> authPaths = {onboarding, login, register};

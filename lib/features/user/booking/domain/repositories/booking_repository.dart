@@ -80,4 +80,8 @@ abstract class BookingRepository {
     int page = 1,
     int limit = 20,
   });
+
+  Future<Either<Failure, Map<String, dynamic>>> getProviderReviewStats({
+    required String providerId,
+  });
 }
