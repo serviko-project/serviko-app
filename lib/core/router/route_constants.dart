@@ -34,6 +34,7 @@ class RouteNames {
   static const String privacyPolicy = 'privacyPolicy';
   static const String specialOffers = 'specialOffers';
   static const String popularServices = 'popularServices';
+  static const String notifications = 'notifications';
 
   // Provider route names
   static const String providerOnboarding = 'providerOnboarding';
@@ -88,6 +89,7 @@ class RoutePaths {
   static const String privacyPolicy = '/privacy-policy';
   static const String specialOffers = '/special-offers';
   static const String popularServices = '/popular-services';
+  static const String notifications = '/notifications';
 
   // Provider paths
   static const String providerOnboarding = '/provider/onboarding';

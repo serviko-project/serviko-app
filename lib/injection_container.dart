@@ -110,6 +110,16 @@ import 'package:serviko_app/features/user/payment/data/datasources/payment_remot
 import 'package:serviko_app/features/user/payment/domain/repositories/payment_repository.dart';
 import 'package:serviko_app/features/user/payment/domain/usecases/create_payment_order_usecase.dart';
 import 'package:serviko_app/features/user/payment/domain/usecases/verify_payment_usecase.dart';
+import 'package:serviko_app/features/shared/notifications/data/datasources/notification_remote_datasource.dart';
+import 'package:serviko_app/features/shared/notifications/domain/repositories/notification_repository.dart';
+import 'package:serviko_app/features/shared/notifications/domain/usecases/get_notifications_usecase.dart';
+import 'package:serviko_app/features/shared/notifications/domain/usecases/get_unread_count_usecase.dart';
+import 'package:serviko_app/features/shared/notifications/domain/usecases/mark_notification_read_usecase.dart';
+import 'package:serviko_app/features/shared/notifications/domain/usecases/mark_all_notifications_read_usecase.dart';
+import 'package:serviko_app/features/shared/notifications/domain/usecases/register_device_token_usecase.dart';
+import 'package:serviko_app/features/shared/notifications/domain/usecases/remove_device_token_usecase.dart';
+import 'package:serviko_app/core/services/local_notification_service.dart';
+import 'package:serviko_app/core/services/push_notification_service.dart';
 
 // Extensions for modular DI
 import 'di/core_di.dart';
@@ -122,6 +132,7 @@ import 'di/booking_di.dart';
 import 'di/payment_di.dart';
 import 'di/support_di.dart';
 import 'di/bookmarks_di.dart';
+import 'di/notifications_di.dart';
 
 class InjectionContainer {
   InjectionContainer._();
@@ -266,6 +277,18 @@ class InjectionContainer {
   late final GetFAQsUseCase getFAQsUseCase;
   late final GetPrivacyPolicyUseCase getPrivacyPolicyUseCase;
 
+  // Notifications
+  late final NotificationRemoteDataSource notificationRemoteDataSource;
+  late final NotificationRepository notificationRepository;
+  late final GetNotificationsUseCase getNotificationsUseCase;
+  late final GetUnreadCountUseCase getUnreadCountUseCase;
+  late final MarkNotificationReadUseCase markNotificationReadUseCase;
+  late final MarkAllNotificationsReadUseCase markAllNotificationsReadUseCase;
+  late final RegisterDeviceTokenUseCase registerDeviceTokenUseCase;
+  late final RemoveDeviceTokenUseCase removeDeviceTokenUseCase;
+  late final LocalNotificationService localNotificationService;
+  late final PushNotificationService pushNotificationService;
+
   // Initialise
   Future<void> init() async {
     initCore();
@@ -278,5 +301,6 @@ class InjectionContainer {
     initBooking();
     initPayment();
     initSupport();
+    initNotifications();
   }
 }

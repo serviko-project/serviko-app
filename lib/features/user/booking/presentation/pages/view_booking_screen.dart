@@ -62,7 +62,7 @@ class _ViewBookingScreenContent extends StatelessWidget {
     return ViewBookingListener(
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: CustomAppBar(title: 'Booking Details'),
+        appBar: const CustomAppBar(title: 'Booking Details'),
         body: BlocBuilder<ViewBookingCubit, ViewBookingState>(
           buildWhen: (previous, current) =>
               previous.status != current.status ||
@@ -188,7 +188,7 @@ class _ViewBookingScreenContent extends StatelessWidget {
             );
           },
         ),
-        bottomNavigationBar: ViewBookingBottomNavigationBar(),
+        bottomNavigationBar: const ViewBookingBottomNavigationBar(),
       ),
     );
   }

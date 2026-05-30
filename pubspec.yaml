@@ -50,6 +50,8 @@ dependencies:
   zego_uikit_signaling_plugin: ^2.8.21
   zego_zimkit: ^1.19.9
   fl_chart: ^1.2.0
+  firebase_messaging: ^16.2.2
+  flutter_local_notifications: ^21.0.0
 
 dependency_overrides:
   intl: 0.20.2
