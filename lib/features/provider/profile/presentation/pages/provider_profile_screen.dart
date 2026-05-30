@@ -130,6 +130,17 @@ class ProviderProfileScreen extends StatelessWidget {
                               ),
                             ),
                             ProfileMenuDivider(),
+
+                            // Reviews Tile
+                            ProfileMenuTile(
+                              title: 'My Reviews',
+                              icon: HugeIcons.strokeRoundedStar,
+                              onTap: () => context.pushNamed(
+                                RouteNames.providerReviews,
+                                extra: context.read<ProviderProfileCubit>(),
+                              ),
+                            ),
+                            ProfileMenuDivider(),
                           ],
                         ),
                       ),

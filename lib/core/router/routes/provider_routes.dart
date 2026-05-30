@@ -22,6 +22,8 @@ import '../../../features/provider/promo_codes/presentation/pages/provider_promo
 import 'package:serviko_app/features/shared/communication/zego/zego_service.dart';
 import '../../../features/provider/earnings/presentation/pages/earnings_page.dart';
 import '../../../features/provider/earnings/presentation/pages/transaction_history_screen.dart';
+import '../../../features/provider/profile/presentation/pages/provider_reviews_screen.dart';
+import '../../../features/provider/profile/presentation/cubit/provider_reviews_cubit.dart';
 
 List<RouteBase> providerRoutes = [
   // ---- Provider Onboarding ----
@@ -193,6 +195,30 @@ List<RouteBase> providerRoutes = [
                   return BlocProvider.value(
                     value: profileCubit,
                     child: const EditProviderServiceAreaScreen(),
+                  );
+                },
+              ),
+              GoRoute(
+                name: RouteNames.providerReviews,
+                path: RoutePaths.providerReviews,
+                parentNavigatorKey: ZegoService.navigatorKey,
+                builder: (context, state) {
+                  final profileCubit = state.extra as ProviderProfileCubit;
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: profileCubit),
+                      BlocProvider(
+                        create: (context) => ProviderReviewsCubit(
+                          getProviderReviewsUseCase: InjectionContainer
+                              .instance
+                              .getProviderReviewsUseCase,
+                          getProviderReviewsStatsUseCase: InjectionContainer
+                              .instance
+                              .getProviderReviewsStatsUseCase,
+                        ),
+                      ),
+                    ],
+                    child: const ProviderReviewsScreen(),
                   );
                 },
               ),
