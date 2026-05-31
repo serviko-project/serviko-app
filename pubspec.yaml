@@ -59,6 +59,7 @@ dependency_overrides:
 # Dev Dependencies
 dev_dependencies:
   build_runner: ^2.13.1
+  flutter_launcher_icons: ^0.14.4
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.6
   flutter_test:
@@ -84,3 +85,12 @@ flutter_native_splash:
   android_12:
     color: "#6C3CE1"
     image: assets/images/app_logo_splash.png
+
+# ---- Launcher Icons Configuration ----
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/app_icon.png"
+  adaptive_icon_background: "#6C3CE1"
+  adaptive_icon_foreground: "assets/images/app_icon_foreground.png"
