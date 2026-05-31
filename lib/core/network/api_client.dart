@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:serviko_app/core/errors/exceptions.dart';
 
 // Centralized Dio HTTP client configuration.
 class ApiClient {
   // Emulator
-  static const String _baseUrl = 'http://10.0.2.2:8000';
+  static const String _baseUrl = 'https://serviko-backend-3ai7.onrender.com';
 
   late final Dio dio;
 
@@ -22,10 +23,12 @@ class ApiClient {
       ),
     );
 
-    // Logging interceptor
-    dio.interceptors.add(
-      LogInterceptor(requestBody: true, responseBody: true, error: true),
-    );
+    // Enable logging interceptor in debug mode only
+    if (kDebugMode) {
+      dio.interceptors.add(
+        LogInterceptor(requestBody: true, responseBody: true, error: true),
+      );
+    }
   }
 
   // Fetch a fresh Firebase ID token and set it as the auth header.
