@@ -22,7 +22,4 @@ abstract final class AppAssets {
   // ---- Social Media Icons ----
   static const String googleIcon =
       'assets/images/social_media_icons/google.webp';
-  static const String facebookIcon =
-      'assets/images/social_media_icons/facebook.webp';
-  static const String appleIcon = 'assets/images/social_media_icons/apple.webp';
 }
