@@ -23,11 +23,17 @@ class UpdateProviderDetailsParams extends Equatable {
   final String? professionalTitle;
   final String? bio;
   final int? yearsOfExperience;
+  final double? latitude;
+  final double? longitude;
+  final double? coverageRadiusKm;
 
   const UpdateProviderDetailsParams({
     this.professionalTitle,
     this.bio,
     this.yearsOfExperience,
+    this.latitude,
+    this.longitude,
+    this.coverageRadiusKm,
   });
 
   Map<String, dynamic> toJson() {
@@ -41,9 +47,25 @@ class UpdateProviderDetailsParams extends Equatable {
     if (yearsOfExperience != null) {
       data['years_of_experience'] = yearsOfExperience;
     }
+    if (latitude != null) {
+      data['latitude'] = latitude;
+    }
+    if (longitude != null) {
+      data['longitude'] = longitude;
+    }
+    if (coverageRadiusKm != null) {
+      data['coverage_radius_km'] = coverageRadiusKm;
+    }
     return data;
   }
 
   @override
-  List<Object?> get props => [professionalTitle, bio, yearsOfExperience];
+  List<Object?> get props => [
+    professionalTitle,
+    bio,
+    yearsOfExperience,
+    latitude,
+    longitude,
+    coverageRadiusKm,
+  ];
 }

@@ -13,6 +13,8 @@ import 'package:serviko_app/features/user/category/presentation/cubit/category_c
 import 'package:serviko_app/features/user/service/presentation/cubit/popular_services_cubit.dart';
 import 'package:serviko_app/features/user/service/presentation/cubit/service_detail_cubit.dart';
 import 'package:serviko_app/features/user/bookmarks/presentation/cubit/bookmarks_cubit.dart';
+import 'package:serviko_app/features/shared/notifications/presentation/cubit/notifications_cubit.dart';
+import 'package:serviko_app/features/shared/notifications/presentation/utils/notification_navigation_handler.dart';
 import 'package:serviko_app/firebase_options.dart';
 import 'package:serviko_app/injection_container.dart';
 
@@ -24,6 +26,12 @@ Future<void> main() async {
 
   // Initialize all dependencies
   await InjectionContainer.instance.init();
+
+  // Notification setup
+  await InjectionContainer.instance.localNotificationService.initialize(
+    onNotificationTapped: NotificationNavigationHandler.handleNotificationTap,
+  );
+  // Zego SDK initialization
   await InjectionContainer.instance.zegoService.initializeSdk();
 
   // Pre-load saved role
@@ -49,6 +57,7 @@ class _ServikoAppState extends State<ServikoApp> {
   late final PopularServicesCubit _popularServicesCubit;
   late final ServiceDetailCubit _serviceDetailCubit;
   late final BookmarksCubit _bookmarksCubit;
+  late final NotificationsCubit _notificationsCubit;
   late final GoRouter _router;
 
   @override
@@ -59,6 +68,8 @@ class _ServikoAppState extends State<ServikoApp> {
       repository: di.authRepository,
       getMyProfileUseCase: di.getMyProfileUseCase,
       profileLocalDataSource: di.profileLocalDataSource,
+      removeDeviceTokenUseCase: di.removeDeviceTokenUseCase,
+      pushNotificationService: di.pushNotificationService,
     );
     _profileCubit = ProfileCubit(
       getMyProfileUseCase: di.getMyProfileUseCase,
@@ -84,6 +95,14 @@ class _ServikoAppState extends State<ServikoApp> {
       unbookmarkServiceUseCase: di.unbookmarkServiceUseCase,
       getBookmarksUseCase: di.getBookmarksUseCase,
     );
+    _notificationsCubit = NotificationsCubit(
+      getNotificationsUseCase: di.getNotificationsUseCase,
+      getUnreadCountUseCase: di.getUnreadCountUseCase,
+      markNotificationReadUseCase: di.markNotificationReadUseCase,
+      markAllNotificationsReadUseCase: di.markAllNotificationsReadUseCase,
+      registerDeviceTokenUseCase: di.registerDeviceTokenUseCase,
+      removeDeviceTokenUseCase: di.removeDeviceTokenUseCase,
+    );
 
     _authBloc.add(const AuthCheckRequested());
 
@@ -91,6 +110,7 @@ class _ServikoAppState extends State<ServikoApp> {
     if (_authBloc.state is AuthAuthenticated) {
       _profileCubit.fetchProfile();
       _bookmarksCubit.fetchBookmarks();
+      _notificationsCubit.fetchNotifications();
     }
 
     _router = AppRouter.router(_authBloc, widget.roleCubit);
@@ -105,6 +125,7 @@ class _ServikoAppState extends State<ServikoApp> {
     _popularServicesCubit.close();
     _serviceDetailCubit.close();
     _bookmarksCubit.close();
+    _notificationsCubit.close();
     _router.dispose();
 
     super.dispose();
@@ -121,6 +142,7 @@ class _ServikoAppState extends State<ServikoApp> {
         BlocProvider.value(value: _popularServicesCubit),
         BlocProvider.value(value: _serviceDetailCubit),
         BlocProvider.value(value: _bookmarksCubit),
+        BlocProvider.value(value: _notificationsCubit),
       ],
 
       child: MultiBlocListener(
@@ -130,6 +152,11 @@ class _ServikoAppState extends State<ServikoApp> {
               if (state is AuthAuthenticated) {
                 _profileCubit.fetchProfile();
                 _bookmarksCubit.fetchBookmarks();
+                _notificationsCubit.fetchNotifications();
+
+                NotificationNavigationHandler.setupPushNotifications(
+                  _notificationsCubit,
+                );
                 unawaited(
                   InjectionContainer.instance.zegoService.login(state.user),
                 );

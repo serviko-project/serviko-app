@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
 import 'package:serviko_app/core/router/route_constants.dart';
 import 'package:serviko_app/core/theme/text_styles.dart';
+import 'package:serviko_app/features/provider/profile/presentation/cubit/provider_profile_cubit.dart';
 
 // Quick Action Shortcuts Panel
 class QuickActionsPanel extends StatelessWidget {
@@ -23,8 +25,13 @@ class QuickActionsPanel extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSizes.md),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 4,
+          childAspectRatio: 0.85,
+          crossAxisSpacing: AppSizes.xs,
+          mainAxisSpacing: AppSizes.md,
           children: [
             _buildActionItem(
               context,
@@ -40,7 +47,10 @@ class QuickActionsPanel extends StatelessWidget {
               icon: HugeIcons.strokeRoundedUserEdit01,
               color: AppColors.info,
               bgColor: AppColors.info.withValues(alpha: 0.1),
-              onTap: () => context.pushNamed(RouteNames.providerEditDetails),
+              onTap: () => context.pushNamed(
+                RouteNames.providerEditDetails,
+                extra: context.read<ProviderProfileCubit>(),
+              ),
             ),
             _buildActionItem(
               context,
@@ -58,6 +68,17 @@ class QuickActionsPanel extends StatelessWidget {
               bgColor: AppColors.primaryLight.withValues(alpha: 0.1),
               onTap: () => context.go(RoutePaths.providerJobs),
             ),
+            _buildActionItem(
+              context,
+              title: 'My Reviews',
+              icon: HugeIcons.strokeRoundedStar,
+              color: AppColors.warning,
+              bgColor: AppColors.warning.withValues(alpha: 0.1),
+              onTap: () => context.pushNamed(
+                RouteNames.providerReviews,
+                extra: context.read<ProviderProfileCubit>(),
+              ),
+            ),
           ],
         ),
       ],
@@ -72,31 +93,31 @@ class QuickActionsPanel extends StatelessWidget {
     required Color bgColor,
     required VoidCallback onTap,
   }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 54,
-              height: 54,
-              decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-              child: Center(
-                child: HugeIcon(icon: icon, color: color, size: 24),
-              ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+            child: Center(
+              child: HugeIcon(icon: icon, color: color, size: 24),
             ),
-            const SizedBox(height: AppSizes.sm),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
+          ),
+          const SizedBox(height: AppSizes.sm),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w500,
             ),
-          ],
-        ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

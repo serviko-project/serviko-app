@@ -23,6 +23,12 @@ abstract class ProviderOnboardingRemoteDataSource {
   Future<ProviderProfileModel> uploadBannerImage(File file);
   Future<ProviderProfileModel> deleteBannerImage();
   Future<void> submitCategoryRequest(Map<String, dynamic> data);
+  Future<ProviderProfileModel> updateProviderServices(
+    List<Map<String, dynamic>> services,
+  );
+  Future<ProviderProfileModel> updateProviderAvailability(
+    List<Map<String, dynamic>> availability,
+  );
 }
 
 class ProviderOnboardingRemoteDataSourceImpl
@@ -134,6 +140,38 @@ class ProviderOnboardingRemoteDataSourceImpl
       final response = await _apiClient.dio.patch(
         '/api/v1/providers/me',
         data: data,
+      );
+      return ProviderProfileModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  @override
+  Future<ProviderProfileModel> updateProviderServices(
+    List<Map<String, dynamic>> services,
+  ) async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+      final response = await _apiClient.dio.put(
+        '/api/v1/providers/me/services',
+        data: {'services': services},
+      );
+      return ProviderProfileModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
+    }
+  }
+
+  @override
+  Future<ProviderProfileModel> updateProviderAvailability(
+    List<Map<String, dynamic>> availability,
+  ) async {
+    try {
+      await _apiClient.setFirebaseAuthToken();
+      final response = await _apiClient.dio.put(
+        '/api/v1/providers/me/availability',
+        data: {'availability': availability},
       );
       return ProviderProfileModel.fromJson(response.data['data']);
     } on DioException catch (e) {

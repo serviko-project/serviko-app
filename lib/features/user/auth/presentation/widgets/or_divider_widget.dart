@@ -14,7 +14,7 @@ class OrDividerWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
           child: Text(
-            'or continue with',
+            'OR',
             style: GoogleFonts.poppins(fontSize: 13, color: AppColors.textHint),
           ),
         ),

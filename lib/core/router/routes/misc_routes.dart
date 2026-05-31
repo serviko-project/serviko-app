@@ -24,6 +24,7 @@ import '../../../features/shared/support/presentation/pages/privacy_policy_scree
 import '../../../features/shared/support/presentation/pages/help_center_screen.dart';
 import '../../../features/user/home/presentation/pages/special_offers_screen.dart';
 import '../../../features/user/home/presentation/pages/popular_services_screen.dart';
+import '../../../features/shared/notifications/presentation/pages/notifications_screen.dart';
 import '../route_constants.dart';
 
 List<RouteBase> miscRoutes = [
@@ -185,5 +186,10 @@ List<RouteBase> miscRoutes = [
     name: RouteNames.popularServices,
     path: RoutePaths.popularServices,
     builder: (context, state) => const PopularServicesScreen(),
+  ),
+  GoRoute(
+    name: RouteNames.notifications,
+    path: RoutePaths.notifications,
+    builder: (context, state) => const NotificationsScreen(),
   ),
 ];

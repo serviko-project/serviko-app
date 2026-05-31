@@ -39,4 +39,12 @@ abstract class ProviderOnboardingRepository {
   Future<Either<Failure, void>> submitCategoryRequest(
     Map<String, dynamic> data,
   );
+
+  Future<Either<Failure, ProviderProfileEntity>> updateProviderServices(
+    List<Map<String, dynamic>> services,
+  );
+
+  Future<Either<Failure, ProviderProfileEntity>> updateProviderAvailability(
+    List<Map<String, dynamic>> availability,
+  );
 }

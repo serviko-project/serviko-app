@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/core/constants/app_sizes.dart';
@@ -13,6 +14,37 @@ class ViewBookingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+    final isBookingOwner = booking.customerFirebaseUid == currentUserUid;
+
+    final displayName = isBookingOwner
+        ? (booking.providerName ?? 'Unknown Provider')
+        : (booking.customerName ?? 'Customer');
+
+    final displayImage = isBookingOwner
+        ? booking.providerImage
+        : booking.customerImage;
+
+    final displaySubtitle = isBookingOwner
+        ? (booking.categoryName ?? 'Service')
+        : 'Customer';
+
+    final chatRecipientId = isBookingOwner
+        ? booking.providerId
+        : booking.customerId;
+    final chatRecipientFirebaseUid = isBookingOwner
+        ? booking.providerFirebaseUid
+        : booking.customerFirebaseUid;
+    final chatRecipientName = isBookingOwner
+        ? booking.providerName
+        : booking.customerName;
+    final chatRecipientImage = isBookingOwner
+        ? booking.providerImage
+        : booking.customerImage;
+    final chatRecipientTitle = isBookingOwner
+        ? booking.categoryName
+        : 'Customer';
+
     return Row(
       children: [
         Container(
@@ -21,14 +53,14 @@ class ViewBookingHeader extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(12),
-            image: booking.providerImage != null
+            image: displayImage != null
                 ? DecorationImage(
-                    image: NetworkImage(booking.providerImage!),
+                    image: NetworkImage(displayImage),
                     fit: BoxFit.cover,
                   )
                 : null,
           ),
-          child: booking.providerImage == null
+          child: displayImage == null
               ? const HugeIcon(
                   icon: HugeIcons.strokeRoundedUser,
                   color: AppColors.textSecondary,
@@ -40,12 +72,9 @@ class ViewBookingHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(displayName, style: AppTextStyles.h3),
               Text(
-                booking.providerName ?? 'Unknown Provider',
-                style: AppTextStyles.h3,
-              ),
-              Text(
-                booking.categoryName ?? 'Service',
+                displaySubtitle,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -55,11 +84,11 @@ class ViewBookingHeader extends StatelessWidget {
         ),
         // Chat Button
         ProviderChatButton(
-          providerId: booking.providerId,
-          providerFirebaseUid: booking.providerFirebaseUid,
-          providerName: booking.providerName,
-          providerImage: booking.providerImage,
-          categoryName: booking.categoryName,
+          providerId: chatRecipientId,
+          providerFirebaseUid: chatRecipientFirebaseUid,
+          providerName: chatRecipientName,
+          providerImage: chatRecipientImage,
+          categoryName: chatRecipientTitle,
         ),
       ],
     );

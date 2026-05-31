@@ -178,4 +178,36 @@ class ProviderOnboardingRepositoryImpl implements ProviderOnboardingRepository {
       return Left(ServerFailure(e.message, statusCode: e.statusCode));
     }
   }
+
+  @override
+  Future<Either<Failure, ProviderProfileEntity>> updateProviderServices(
+    List<Map<String, dynamic>> services,
+  ) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+    try {
+      final profile = await _remoteDataSource.updateProviderServices(services);
+      return Right(profile);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ProviderProfileEntity>> updateProviderAvailability(
+    List<Map<String, dynamic>> availability,
+  ) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+    try {
+      final profile = await _remoteDataSource.updateProviderAvailability(
+        availability,
+      );
+      return Right(profile);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, statusCode: e.statusCode));
+    }
+  }
 }

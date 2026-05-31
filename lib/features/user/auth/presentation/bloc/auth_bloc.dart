@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:serviko_app/core/usecases/usecase.dart';
+import 'package:serviko_app/core/services/push_notification_service.dart';
+import 'package:serviko_app/features/shared/notifications/domain/usecases/remove_device_token_usecase.dart';
 import 'package:serviko_app/features/user/auth/domain/entities/user_entity.dart';
 import 'package:serviko_app/features/user/auth/domain/repositories/auth_repository.dart';
 import 'package:serviko_app/features/user/profile/data/datasources/profile_local_datasource.dart';
@@ -14,15 +16,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _repository;
   final GetMyProfileUseCase? _getMyProfileUseCase;
   final ProfileLocalDataSource? _profileLocalDataSource;
+  final RemoveDeviceTokenUseCase? _removeDeviceTokenUseCase;
+  final PushNotificationService? _pushNotificationService;
   late final StreamSubscription<UserEntity?> _authSub;
 
   AuthBloc({
     required AuthRepository repository,
     GetMyProfileUseCase? getMyProfileUseCase,
     ProfileLocalDataSource? profileLocalDataSource,
+    RemoveDeviceTokenUseCase? removeDeviceTokenUseCase,
+    PushNotificationService? pushNotificationService,
   }) : _repository = repository,
        _getMyProfileUseCase = getMyProfileUseCase,
        _profileLocalDataSource = profileLocalDataSource,
+       _removeDeviceTokenUseCase = removeDeviceTokenUseCase,
+       _pushNotificationService = pushNotificationService,
        super(const AuthInitial()) {
     on<AuthCheckRequested>(_onCheckRequested);
     on<AuthUserChanged>(_onUserChanged);
@@ -83,6 +91,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignOutRequested event,
     Emitter<AuthState> emit,
   ) async {
+    try {
+      final token = await _pushNotificationService?.getToken();
+      if (token != null && _removeDeviceTokenUseCase != null) {
+        await _removeDeviceTokenUseCase.call(token);
+      }
+    } catch (_) {}
+
     await _profileLocalDataSource?.clearCache();
     await _repository.signOut();
   }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_cubit.dart';
 import 'package:serviko_app/features/user/profile/presentation/cubit/profile_state.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:serviko_app/features/shared/notifications/presentation/widgets/notification_badge.dart';
 
 // Profile image, User Name and action icons at the top of the home screen
 class HomeHeader extends StatefulWidget {
@@ -89,14 +89,8 @@ class _HomeHeaderState extends State<HomeHeader> {
           ),
 
           // Action Icons
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              CupertinoIcons.bell,
-              color: AppColors.textPrimary,
-              size: 25,
-            ),
-          ),
+          const NotificationBadge(),
+
           IconButton(
             onPressed: () => context.pushNamed(AppRouter.bookmarks),
             icon: const HugeIcon(

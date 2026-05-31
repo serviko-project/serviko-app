@@ -56,4 +56,5 @@ firebase.json
 *.jks
 *.keystore
 android/key.properties
+android/app/upload-keystore
 

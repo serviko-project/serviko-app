@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:serviko_app/core/constants/app_colors.dart';
 import 'package:serviko_app/features/user/booking/presentation/bloc/view_booking_cubit.dart';
 import 'package:serviko_app/features/user/booking/presentation/bloc/view_booking_state.dart';
@@ -18,6 +19,13 @@ class ViewBookingBottomNavigationBar extends StatelessWidget {
       builder: (context, state) {
         final booking = state.booking;
         if (booking != null) {
+          final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+          final isBookingOwner = booking.customerFirebaseUid == currentUserUid;
+
+          if (!isBookingOwner) {
+            return const SizedBox.shrink();
+          }
+
           return Container(
             decoration: BoxDecoration(
               color: AppColors.surface,
